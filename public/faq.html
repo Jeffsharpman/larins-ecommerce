@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FAQ · Larins</title>
+    <link rel="stylesheet" href="css/output.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <div data-include="components/header.html"></div>
+    <main id="main-content" class="max-w-7xl mx-auto px-4 py-16" tabindex="-1">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <div class="relative mb-8">
+                <div class="absolute inset-0 -z-10">
+                    <div class="w-32 h-32 bg-primary/10 rounded-full blur-3xl mx-auto"></div>
+                </div>
+                <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="help-circle" class="w-10 h-10 text-primary"></i>
+                </div>
+                <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">Frequently Asked Questions</h1>
+                <p class="text-xl text-muted-foreground max-w-3xl mx-auto">Find answers to common questions about our products, orders, shipping, and more.</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="max-w-md mx-auto mb-12">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground"></i>
+                    <input type="text" id="faqSearch" placeholder="Search FAQs..." class="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary">
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQ Categories -->
+        <div class="grid gap-8 lg:grid-cols-2">
+            <!-- Orders & Shipping -->
+            <div class="bg-card p-8 rounded-xl shadow-soft border">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="package" class="w-6 h-6 text-primary"></i>
+                    Orders & Shipping
+                </h2>
+                <div class="space-y-4">
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            How do I place an order?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Browse our products, add items to your cart, and proceed to checkout. You'll need to create an account or sign in to complete your purchase.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            How long does shipping take?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Standard shipping takes 3-5 business days within the US. Express shipping (1-2 days) and international shipping options are also available.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            Can I track my order?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Yes! You'll receive a tracking number via email once your order ships. You can also track your order status in your account dashboard.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            What if my order is delayed?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            We aim to ship all orders within 1-2 business days. If your order is delayed, you'll receive an email notification with an updated delivery date.
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Returns & Exchanges -->
+            <div class="bg-card p-8 rounded-xl shadow-soft border">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="refresh-ccw" class="w-6 h-6 text-primary"></i>
+                    Returns & Exchanges
+                </h2>
+                <div class="space-y-4">
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            What is your return policy?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            We offer a 30-day return policy on unused items in their original packaging. Returns are free for US customers; international returns may incur shipping costs.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            How do I return an item?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Contact our customer service team to initiate a return. We'll provide a return label and instructions. Once received, refunds are processed within 3-5 business days.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            Can I exchange an item?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Yes, exchanges are available within 30 days. Contact us to arrange an exchange for a different size, color, or product.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            What items cannot be returned?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Items that have been used, damaged, or are part of our clearance sale cannot be returned. Gift cards and certain personal care items are also non-returnable.
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Products & Ingredients -->
+            <div class="bg-card p-8 rounded-xl shadow-soft border">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="flask" class="w-6 h-6 text-primary"></i>
+                    Products & Ingredients
+                </h2>
+                <div class="space-y-4">
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            Are your products cruelty-free?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Yes! All Larins products are 100% cruelty-free. We never test on animals and work only with cruelty-free certified suppliers.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            Do you use natural ingredients?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            We prioritize natural and organic ingredients whenever possible. Each product lists all ingredients clearly, and we avoid harmful chemicals like parabens and phthalates.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            Are your products vegan?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Most of our products are vegan. We clearly label vegan products, and you can filter by this preference in our product catalog.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            How should I store my products?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Store products in a cool, dry place away from direct sunlight. Some products may require refrigeration - check the packaging for specific storage instructions.
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Account & Support -->
+            <div class="bg-card p-8 rounded-xl shadow-soft border">
+                <h2 class="text-2xl font-semibold mb-6 flex items-center gap-2">
+                    <i data-lucide="user" class="w-6 h-6 text-primary"></i>
+                    Account & Support
+                </h2>
+                <div class="space-y-4">
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            How do I create an account?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Click "Sign Up" in the header and fill out the registration form. You'll need a valid email address to create your account.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            How do I reset my password?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Click "Forgot Password" on the login page and enter your email address. We'll send you a reset link within a few minutes.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            How do I contact customer service?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            You can reach us via email at support@larins.com, phone at +1 (234) 567-8900, or through our contact form. We respond within 24 hours.
+                        </div>
+                    </details>
+
+                    <details class="group">
+                        <summary class="flex items-center justify-between cursor-pointer py-3 font-medium hover:text-primary transition-colors">
+                            Do you offer gift wrapping?
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="pb-4 text-muted-foreground">
+                            Yes! Gift wrapping is available at checkout for a small fee. You can also add a personalized message to your order.
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <!-- Still Need Help? -->
+        <div class="mt-16 text-center">
+            <div class="bg-gradient-to-r from-primary/5 to-primary/10 rounded-2xl p-12">
+                <h2 class="text-3xl font-bold mb-4">Still Need Help?</h2>
+                <p class="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+                    Can't find the answer you're looking for? Our customer service team is here to help.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="contact.html" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        Contact Us
+                    </a>
+                    <a href="tel:+1234567890" class="inline-flex items-center gap-2 px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors font-semibold">
+                        <i data-lucide="phone" class="w-5 h-5"></i>
+                        Call Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div data-include="components/footer.html"></div>
+    <script src="js/includes.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-auth.js"></script>
+    <script>
+        // FAQ Search functionality
+        const faqSearch = document.getElementById('faqSearch');
+        const faqItems = document.querySelectorAll('details');
+
+        faqSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('summary').textContent.toLowerCase();
+                const answer = item.querySelector('div').textContent.toLowerCase();
+
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>

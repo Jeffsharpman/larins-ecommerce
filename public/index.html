@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Larins</title>
+    <link rel="stylesheet" href="css/output.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <!-- Header include -->
+    <div data-include="components/header.html"></div>
+
+    <main id="main-content" tabindex="-1" class="pt-16 min-h-screen">
+        <div data-include="components/carousel.html"></div>
+        <!-- Categories preview -->
+        <div id="categoriesSection">
+            <div data-include="components/categories-section.html"></div>
+        </div>
+
+        <!-- Brands preview -->
+        <div id="brandsSection">
+            <div data-include="components/brands-section.html"></div>
+        </div>
+
+        <!-- Featured products preview -->
+        <div id="featuredProducts">
+            <div data-include="components/featured-products.html"></div>
+        </div>
+
+        <!-- Trust badges preview -->
+        <div data-include="trustbadge.html"></div>
+
+    </main>
+    <!-- Footer include -->
+    <div data-include="components/footer.html"></div>
+
+    <script src="js/includes.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/orders.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

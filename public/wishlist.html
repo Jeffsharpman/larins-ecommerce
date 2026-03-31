@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wishlist · Larins</title>
+    <link rel="stylesheet" href="css/output.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <div data-include="components/header.html"></div>
+    <main id="main-content" class="max-w-7xl mx-auto px-4 py-16" tabindex="-1">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <div class="relative mb-8">
+                <div class="absolute inset-0 -z-10">
+                    <div class="w-32 h-32 bg-primary/10 rounded-full blur-3xl mx-auto"></div>
+                </div>
+                <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="heart" class="w-10 h-10 text-primary"></i>
+                </div>
+                <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">Your Wishlist</h1>
+                <p class="text-xl text-muted-foreground max-w-3xl mx-auto">Save your favorite products for later and never miss out on items you love.</p>
+            </div>
+        </div>
+
+        <!-- Wishlist Stats -->
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-8 mb-12">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="package" class="w-8 h-8 text-primary"></i>
+                </div>
+                <div class="text-2xl font-bold text-primary" id="wishlistCount">0</div>
+                <div class="text-sm text-muted-foreground">Items Saved</div>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="dollar-sign" class="w-8 h-8 text-primary"></i>
+                </div>
+                <div class="text-2xl font-bold text-primary" id="wishlistTotal">$0.00</div>
+                <div class="text-sm text-muted-foreground">Total Value</div>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="shopping-cart" class="w-8 h-8 text-primary"></i>
+                </div>
+                <div class="text-2xl font-bold text-primary" id="wishlistAdded">0</div>
+                <div class="text-sm text-muted-foreground">Added to Cart</div>
+            </div>
+        </div>
+
+        <!-- Wishlist Actions -->
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+            <div class="flex items-center gap-4">
+                <button id="sortNewest" class="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Newest First</button>
+                <button id="sortOldest" class="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Oldest First</button>
+                <button id="sortPrice" class="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Price: Low to High</button>
+            </div>
+            <button id="clearWishlist" class="px-6 py-2 text-sm font-medium text-destructive hover:text-destructive/80 transition-colors hidden">
+                <i data-lucide="trash-2" class="w-4 h-4 inline mr-2"></i>
+                Clear All
+            </button>
+        </div>
+
+        <!-- Wishlist Grid -->
+        <div id="wishlistContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            <!-- Default Wishlist Items (shown when wishlist is empty) -->
+            <div class="bg-card rounded-xl overflow-hidden shadow-soft border hover:shadow-card transition-all duration-300" data-default-item="true">
+                <div class="relative aspect-square bg-muted overflow-hidden group">
+                    <img src="https://thumbs.dreamstime.com/b/luxury-hair-care-set-wooden-brush-comb-serum-bottle-healthy-discover-premium-collection-featuring-natural-massaging-409366939.jpg"
+                        alt="Luxury Hair Serum & Brush Set" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-medium bg-primary text-primary-foreground rounded-full">Best Seller</span>
+                    <button class="absolute top-3 right-3 w-9 h-9 bg-white/85 backdrop-blur-sm border-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-250 wishlist-btn cursor-pointer" aria-label="Add to wishlist">
+                        <i data-lucide="heart" class="w-5 h-5 text-primary fill-current"></i>
+                    </button>
+                    <div class="absolute inset-x-0 bottom-0 w-full p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="w-full px-0 py-2.5 bg-primary text-primary-foreground border-0 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer hover:bg-primary/90 transition-colors duration-200 add-to-cart-btn">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs text-primary font-medium">Olaplex</span>
+                        <span class="text-xs text-muted-foreground">Hair Care</span>
+                    </div>
+                    <h3 class="text-sm font-medium mb-2">
+                        <a href="details.html?product=1" class="text-foreground hover:text-primary no-underline">Luxury Hair Serum Set</a>
+                    </h3>
+                    <div class="flex items-center gap-1 mb-3 text-xs">
+                        <div class="flex gap-0.5">
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span>4.8</span>
+                        <span class="text-muted-foreground">(142)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold text-foreground">$48.00</span>
+                            <span class="text-muted-foreground line-through font-normal text-sm">$65.00</span>
+                        </div>
+                        <span class="text-xs text-green-600 font-medium">Save $17</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-card rounded-xl overflow-hidden shadow-soft border hover:shadow-card transition-all duration-300" data-default-item="true">
+                <div class="relative aspect-square bg-muted overflow-hidden group">
+                    <img src="https://thumbs.dreamstime.com/b/transparent-bottle-perfume-light-background-elegant-minimalist-product-shot-fragrance-presentation-trending-minimal-studio-334865768.jpg"
+                        alt="Elegant Amber Perfume" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-medium bg-primary text-primary-foreground rounded-full">New</span>
+                    <button class="absolute top-3 right-3 w-9 h-9 bg-white/85 backdrop-blur-sm border-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-250 wishlist-btn cursor-pointer" aria-label="Add to wishlist">
+                        <i data-lucide="heart" class="w-5 h-5 text-primary fill-current"></i>
+                    </button>
+                    <div class="absolute inset-x-0 bottom-0 w-full p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="w-full px-0 py-2.5 bg-primary text-primary-foreground border-0 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer hover:bg-primary/90 transition-colors duration-200 add-to-cart-btn">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs text-primary font-medium">Chanel</span>
+                        <span class="text-xs text-muted-foreground">Perfumes</span>
+                    </div>
+                    <h3 class="text-sm font-medium mb-2">
+                        <a href="details.html?product=2" class="text-foreground hover:text-primary no-underline">Amber Elegance Eau de Parfum</a>
+                    </h3>
+                    <div class="flex items-center gap-1 mb-3 text-xs">
+                        <div class="flex gap-0.5">
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span>4.9</span>
+                        <span class="text-muted-foreground">(89)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="font-semibold text-foreground">$92.00</div>
+                        <span class="text-xs text-primary font-medium">Premium</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-card rounded-xl overflow-hidden shadow-soft border hover:shadow-card transition-all duration-300" data-default-item="true">
+                <div class="relative aspect-square bg-muted overflow-hidden group">
+                    <img src="https://thumbs.dreamstime.com/b/skincare-products-cosmetics-moisturizer-serum-bottle-foundation-cream-jars-healthy-glowing-skin-care-routine-beauty-406916819.jpg"
+                        alt="Hydrating Skincare Set" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-medium bg-green-500 text-white rounded-full">Organic</span>
+                    <button class="absolute top-3 right-3 w-9 h-9 bg-white/85 backdrop-blur-sm border-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-250 wishlist-btn cursor-pointer" aria-label="Add to wishlist">
+                        <i data-lucide="heart" class="w-5 h-5 text-primary fill-current"></i>
+                    </button>
+                    <div class="absolute inset-x-0 bottom-0 w-full p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="w-full px-0 py-2.5 bg-primary text-primary-foreground border-0 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer hover:bg-primary/90 transition-colors duration-200 add-to-cart-btn">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs text-primary font-medium">The Ordinary</span>
+                        <span class="text-xs text-muted-foreground">Skincare</span>
+                    </div>
+                    <h3 class="text-sm font-medium mb-2">
+                        <a href="details.html?product=3" class="text-foreground hover:text-primary no-underline">Hydrating Skincare Essentials</a>
+                    </h3>
+                    <div class="flex items-center gap-1 mb-3 text-xs">
+                        <div class="flex gap-0.5">
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span>4.7</span>
+                        <span class="text-muted-foreground">(203)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold text-foreground">$35.00</span>
+                            <span class="text-muted-foreground line-through font-normal text-sm">$45.00</span>
+                        </div>
+                        <span class="text-xs text-green-600 font-medium">Save $10</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-card rounded-xl overflow-hidden shadow-soft border hover:shadow-card transition-all duration-300" data-default-item="true">
+                <div class="relative aspect-square bg-muted overflow-hidden group">
+                    <img src="https://thumbs.dreamstime.com/b/luxury-makeup-brush-set-professional-cosmetics-beauty-tools-collection-elegant-black-background-high-quality-photography-406916819.jpg"
+                        alt="Professional Makeup Brush Set" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                    <span class="absolute top-3 left-3 px-2.5 py-1 text-xs font-medium bg-purple-500 text-white rounded-full">Pro Kit</span>
+                    <button class="absolute top-3 right-3 w-9 h-9 bg-white/85 backdrop-blur-sm border-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-250 wishlist-btn cursor-pointer" aria-label="Add to wishlist">
+                        <i data-lucide="heart" class="w-5 h-5 text-primary fill-current"></i>
+                    </button>
+                    <div class="absolute inset-x-0 bottom-0 w-full p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="w-full px-0 py-2.5 bg-primary text-primary-foreground border-0 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer hover:bg-primary/90 transition-colors duration-200 add-to-cart-btn">
+                            <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs text-primary font-medium">MAC</span>
+                        <span class="text-xs text-muted-foreground">Makeup</span>
+                    </div>
+                    <h3 class="text-sm font-medium mb-2">
+                        <a href="details.html?product=4" class="text-foreground hover:text-primary no-underline">Professional Brush Collection</a>
+                    </h3>
+                    <div class="flex items-center gap-1 mb-3 text-xs">
+                        <div class="flex gap-0.5">
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span>4.6</span>
+                        <span class="text-muted-foreground">(156)</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="font-semibold text-foreground">$75.00</div>
+                        <span class="text-xs text-primary font-medium">Complete Set</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (hidden by default) -->
+        <div id="wishlistEmpty" class="text-center py-16 hidden">
+            <div class="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="heart" class="w-12 h-12 text-muted-foreground"></i>
+            </div>
+            <h3 class="text-2xl font-semibold mb-4">Your wishlist is empty</h3>
+            <p class="text-muted-foreground mb-8 max-w-md mx-auto">Start saving your favorite products for later. Browse our collection and add items to your wishlist!</p>
+            <a href="products.html" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                Browse Products
+            </a>
+        </div>
+
+        <!-- Load More Button (for when there are many items) -->
+        <div class="text-center mt-12" id="loadMoreContainer" style="display: none;">
+            <button id="loadMoreBtn" class="px-8 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
+                Load More Items
+            </button>
+        </div>
+    </main>
+    <div data-include="components/footer.html"></div>
+    <script src="js/includes.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-auth.js"></script>
+    <script src="js/wishlist.js"></script>
+    <script src="js/toast.js"></script>
+    <script>
+        // Enhanced wishlist functionality
+        let sortOrder = 'newest';
+        let itemsAddedToCart = 0;
+
+        function updateWishlistStats() {
+            const count = wishlist.length;
+            const total = wishlist.reduce((sum, item) => sum + (parseFloat(item.price?.replace('$', '')) || 0), 0);
+
+            document.getElementById('wishlistCount').textContent = count;
+            document.getElementById('wishlistTotal').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('wishlistAdded').textContent = itemsAddedToCart;
+
+            // Show/hide clear button
+            document.getElementById('clearWishlist').classList.toggle('hidden', count === 0);
+        }
+
+        function sortWishlist(order) {
+            sortOrder = order;
+
+            // Update active sort button
+            document.querySelectorAll('#sortNewest, #sortOldest, #sortPrice').forEach(btn => {
+                btn.classList.remove('text-primary');
+                btn.classList.add('text-muted-foreground');
+            });
+            document.getElementById(`sort${order.charAt(0).toUpperCase() + order.slice(1)}`).classList.add('text-primary');
+
+            // Sort wishlist array
+            switch(order) {
+                case 'newest':
+                    wishlist.sort((a, b) => (b.dateAdded || 0) - (a.dateAdded || 0));
+                    break;
+                case 'oldest':
+                    wishlist.sort((a, b) => (a.dateAdded || 0) - (b.dateAdded || 0));
+                    break;
+                case 'price':
+                    wishlist.sort((a, b) => {
+                        const priceA = parseFloat((a.price || '$0').replace('$', ''));
+                        const priceB = parseFloat((b.price || '$0').replace('$', ''));
+                        return priceA - priceB;
+                    });
+                    break;
+            }
+
+            saveWishlist();
+            renderWishlist();
+        }
+
+        function clearWishlist() {
+            if (confirm('Are you sure you want to clear your entire wishlist?')) {
+                wishlist = [];
+                saveWishlist();
+                renderWishlist();
+                updateWishlistStats();
+                showToast('Wishlist cleared');
+            }
+        }
+
+        // Enhanced render function
+        function renderWishlist() {
+            const container = document.getElementById('wishlistContainer');
+            const emptyMsg = document.getElementById('wishlistEmpty');
+            const defaultItems = container.querySelectorAll('[data-default-item]');
+
+            if (wishlist.length === 0) {
+                emptyMsg.classList.remove('hidden');
+                defaultItems.forEach(item => item.style.display = 'block');
+                container.classList.remove('hidden');
+            } else {
+                emptyMsg.classList.add('hidden');
+                defaultItems.forEach(item => item.style.display = 'none');
+
+                // Clear existing items (except default)
+                const existingItems = container.querySelectorAll('.wishlist-item');
+                existingItems.forEach(item => item.remove());
+
+                // Render wishlist items
+                wishlist.forEach(item => {
+                    const el = document.createElement('div');
+                    el.className = 'wishlist-item bg-card rounded-xl overflow-hidden shadow-soft border hover:shadow-card transition-all duration-300';
+                    el.innerHTML = `
+                        <div class="relative aspect-square bg-muted overflow-hidden group">
+                            <img src="${item.image || 'https://via.placeholder.com/300x300?text=No+Image'}" alt="${item.name}"
+                                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy">
+                            <button class="absolute top-3 right-3 w-9 h-9 bg-white/85 backdrop-blur-sm border-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-250 remove-btn cursor-pointer" data-id="${item.id}" aria-label="Remove from wishlist">
+                                <i data-lucide="x" class="w-5 h-5 text-destructive"></i>
+                            </button>
+                            <div class="absolute inset-x-0 bottom-0 w-full p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <button class="w-full px-0 py-2.5 bg-primary text-primary-foreground border-0 rounded-lg font-semibold flex items-center justify-center gap-2 cursor-pointer hover:bg-primary/90 transition-colors duration-200 move-to-cart-btn" data-id="${item.id}">
+                                    <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-xs text-primary font-medium">${item.brand || 'Brand'}</span>
+                                <span class="text-xs text-muted-foreground">${item.category || 'Category'}</span>
+                            </div>
+                            <h3 class="text-sm font-medium mb-2">
+                                <a href="details.html?product=${item.id}" class="text-foreground hover:text-primary no-underline">${item.name}</a>
+                            </h3>
+                            <div class="flex items-center gap-1 mb-3 text-xs">
+                                <div class="flex gap-0.5">
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-yellow-400 text-yellow-400"></i>
+                                </div>
+                                <span>${item.rating || '4.5'}</span>
+                                <span class="text-muted-foreground">(${item.reviews || '0'})</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="font-semibold text-foreground">${item.price || '$0.00'}</div>
+                                <span class="text-xs text-primary font-medium">In Wishlist</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+
+            updateWishlistStats();
+            lucide.createIcons();
+        }
+
+        // Event listeners
+        document.getElementById('sortNewest').addEventListener('click', () => sortWishlist('newest'));
+        document.getElementById('sortOldest').addEventListener('click', () => sortWishlist('oldest'));
+        document.getElementById('sortPrice').addEventListener('click', () => sortWishlist('price'));
+        document.getElementById('clearWishlist').addEventListener('click', clearWishlist);
+
+        // Enhanced move to cart tracking
+        document.addEventListener('addToCartFromWishlist', () => {
+            itemsAddedToCart++;
+            updateWishlistStats();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateWishlistStats();
+            renderWishlist();
+            sortWishlist('newest'); // Default sort
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>

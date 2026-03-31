@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Reviews · Larins</title>
+    <link rel="stylesheet" href="css/output.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+    <div data-include="components/header.html"></div>
+    <main id="main-content" class="max-w-7xl mx-auto px-4 py-16" tabindex="-1">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <div class="relative mb-8">
+                <div class="absolute inset-0 -z-10">
+                    <div class="w-32 h-32 bg-primary/10 rounded-full blur-3xl mx-auto"></div>
+                </div>
+                <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="star" class="w-10 h-10 text-primary"></i>
+                </div>
+                <h1 class="text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">Customer Reviews</h1>
+                <p class="text-xl text-muted-foreground max-w-3xl mx-auto">See what our customers are saying about their Larins experience.</p>
+            </div>
+
+            <!-- Overall Rating -->
+            <div class="bg-card p-8 rounded-xl shadow-soft border max-w-md mx-auto mb-12">
+                <div class="flex items-center justify-center gap-2 mb-4">
+                    <div class="flex gap-1">
+                        <i data-lucide="star" class="w-6 h-6 fill-yellow-400 text-yellow-400"></i>
+                        <i data-lucide="star" class="w-6 h-6 fill-yellow-400 text-yellow-400"></i>
+                        <i data-lucide="star" class="w-6 h-6 fill-yellow-400 text-yellow-400"></i>
+                        <i data-lucide="star" class="w-6 h-6 fill-yellow-400 text-yellow-400"></i>
+                        <i data-lucide="star" class="w-6 h-6 fill-yellow-400 text-yellow-400"></i>
+                    </div>
+                    <span class="text-2xl font-bold">4.9</span>
+                </div>
+                <p class="text-muted-foreground">Based on 2,847 reviews</p>
+            </div>
+        </div>
+
+        <!-- Rating Breakdown -->
+        <div class="grid gap-8 lg:grid-cols-3 mb-16">
+            <div class="lg:col-span-2">
+                <h2 class="text-2xl font-semibold mb-6">Rating Breakdown</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium w-12">5 stars</span>
+                        <div class="flex-1 bg-muted rounded-full h-2">
+                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 78%"></div>
+                        </div>
+                        <span class="text-sm text-muted-foreground w-12">78%</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium w-12">4 stars</span>
+                        <div class="flex-1 bg-muted rounded-full h-2">
+                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 18%"></div>
+                        </div>
+                        <span class="text-sm text-muted-foreground w-12">18%</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium w-12">3 stars</span>
+                        <div class="flex-1 bg-muted rounded-full h-2">
+                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 3%"></div>
+                        </div>
+                        <span class="text-sm text-muted-foreground w-12">3%</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium w-12">2 stars</span>
+                        <div class="flex-1 bg-muted rounded-full h-2">
+                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 1%"></div>
+                        </div>
+                        <span class="text-sm text-muted-foreground w-12">1%</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-medium w-12">1 star</span>
+                        <div class="flex-1 bg-muted rounded-full h-2">
+                            <div class="bg-yellow-400 h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <span class="text-sm text-muted-foreground w-12">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Write a Review CTA -->
+            <div class="bg-gradient-to-br from-primary/5 to-primary/10 p-8 rounded-xl border">
+                <h3 class="text-xl font-semibold mb-4">Share Your Experience</h3>
+                <p class="text-muted-foreground mb-6">Help other customers by sharing your thoughts about our products and service.</p>
+                <button onclick="openReviewModal()" class="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
+                    <i data-lucide="edit" class="w-5 h-5"></i>
+                    Write a Review
+                </button>
+            </div>
+        </div>
+
+        <!-- Featured Reviews -->
+        <div class="mb-16">
+            <h2 class="text-2xl font-semibold mb-8">Featured Reviews</h2>
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <!-- Review 1 -->
+                <div class="bg-card p-6 rounded-xl shadow-soft border">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="flex gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span class="text-sm text-muted-foreground">2 weeks ago</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Amazing Quality Products!</h3>
+                    <p class="text-muted-foreground mb-4 text-sm">
+                        "I've been using Larins products for 6 months now and I'm absolutely in love! The foundation stays on all day without looking cakey, and the skincare line has transformed my skin. Highly recommend!"
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-semibold text-primary">SJ</span>
+                        </div>
+                        <span class="text-sm font-medium">Sarah Johnson</span>
+                        <span class="text-xs text-muted-foreground">Verified Purchase</span>
+                    </div>
+                </div>
+
+                <!-- Review 2 -->
+                <div class="bg-card p-6 rounded-xl shadow-soft border">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="flex gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span class="text-sm text-muted-foreground">1 month ago</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Exceptional Customer Service</h3>
+                    <p class="text-muted-foreground mb-4 text-sm">
+                        "I had an issue with my order and the customer service team was incredibly helpful and responsive. They resolved everything quickly and even sent me a free sample as a thank you. 5 stars!"
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-semibold text-primary">MC</span>
+                        </div>
+                        <span class="text-sm font-medium">Maria Chen</span>
+                        <span class="text-xs text-muted-foreground">Verified Purchase</span>
+                    </div>
+                </div>
+
+                <!-- Review 3 -->
+                <div class="bg-card p-6 rounded-xl shadow-soft border">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="flex gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span class="text-sm text-muted-foreground">3 weeks ago</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Natural and Effective</h3>
+                    <p class="text-muted-foreground mb-4 text-sm">
+                        "Love that all products are natural and cruelty-free. The moisturizer is lightweight but incredibly hydrating. My skin has never looked better. Will definitely be ordering more!"
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-semibold text-primary">AR</span>
+                        </div>
+                        <span class="text-sm font-medium">Alex Rodriguez</span>
+                        <span class="text-xs text-muted-foreground">Verified Purchase</span>
+                    </div>
+                </div>
+
+                <!-- Review 4 -->
+                <div class="bg-card p-6 rounded-xl shadow-soft border">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="flex gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span class="text-sm text-muted-foreground">1 week ago</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Fast Shipping & Great Packaging</h3>
+                    <p class="text-muted-foreground mb-4 text-sm">
+                        "Ordered on Monday, arrived on Wednesday! Everything was perfectly packaged and the products were exactly as described. The free samples were a nice touch too."
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-semibold text-primary">KT</span>
+                        </div>
+                        <span class="text-sm font-medium">Katie Thompson</span>
+                        <span class="text-xs text-muted-foreground">Verified Purchase</span>
+                    </div>
+                </div>
+
+                <!-- Review 5 -->
+                <div class="bg-card p-6 rounded-xl shadow-soft border">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="flex gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span class="text-sm text-muted-foreground">2 months ago</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Perfect for Sensitive Skin</h3>
+                    <p class="text-muted-foreground mb-4 text-sm">
+                        "I've tried countless skincare brands and Larins is the only one that doesn't irritate my sensitive skin. The products are gentle yet effective. Finally found my holy grail routine!"
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-semibold text-primary">LW</span>
+                        </div>
+                        <span class="text-sm font-medium">Lisa Wang</span>
+                        <span class="text-xs text-muted-foreground">Verified Purchase</span>
+                    </div>
+                </div>
+
+                <!-- Review 6 -->
+                <div class="bg-card p-6 rounded-xl shadow-soft border">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="flex gap-1">
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+                        </div>
+                        <span class="text-sm text-muted-foreground">4 weeks ago</span>
+                    </div>
+                    <h3 class="font-semibold mb-2">Worth Every Penny</h3>
+                    <p class="text-muted-foreground mb-4 text-sm">
+                        "Initially hesitant about the price, but after using the products for a month, I can say they're absolutely worth it. Quality ingredients, amazing results, and beautiful packaging."
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <span class="text-sm font-semibold text-primary">JD</span>
+                        </div>
+                        <span class="text-sm font-medium">James Davis</span>
+                        <span class="text-xs text-muted-foreground">Verified Purchase</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review Modal -->
+        <div id="reviewModal" class="fixed inset-0 bg-black/50 hidden z-50">
+            <div class="flex items-center justify-center min-h-screen p-4">
+                <div class="bg-card rounded-xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+                    <div class="p-6 border-b">
+                        <h3 class="text-xl font-semibold">Write a Review</h3>
+                    </div>
+                    <form id="reviewForm" class="p-6 space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Rating</label>
+                            <div class="flex gap-1" id="ratingStars">
+                                <button type="button" class="star-btn w-8 h-8" data-rating="1">
+                                    <i data-lucide="star" class="w-full h-full text-muted-foreground hover:text-yellow-400"></i>
+                                </button>
+                                <button type="button" class="star-btn w-8 h-8" data-rating="2">
+                                    <i data-lucide="star" class="w-full h-full text-muted-foreground hover:text-yellow-400"></i>
+                                </button>
+                                <button type="button" class="star-btn w-8 h-8" data-rating="3">
+                                    <i data-lucide="star" class="w-full h-full text-muted-foreground hover:text-yellow-400"></i>
+                                </button>
+                                <button type="button" class="star-btn w-8 h-8" data-rating="4">
+                                    <i data-lucide="star" class="w-full h-full text-muted-foreground hover:text-yellow-400"></i>
+                                </button>
+                                <button type="button" class="star-btn w-8 h-8" data-rating="5">
+                                    <i data-lucide="star" class="w-full h-full text-muted-foreground hover:text-yellow-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Review Title</label>
+                            <input type="text" id="reviewTitle" class="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary" placeholder="Summarize your experience" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Your Review</label>
+                            <textarea id="reviewText" rows="4" class="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-primary resize-none" placeholder="Tell others about your experience..." required></textarea>
+                        </div>
+                        <div class="flex gap-3">
+                            <button type="button" onclick="closeReviewModal()" class="flex-1 px-4 py-3 border border-border rounded-lg hover:bg-muted transition-colors">
+                                Cancel
+                            </button>
+                            <button type="submit" class="flex-1 px-4 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold">
+                                Submit Review
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div data-include="components/footer.html"></div>
+    <script src="js/includes.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-auth.js"></script>
+    <script src="js/toast.js"></script>
+    <script>
+        let selectedRating = 0;
+
+        function openReviewModal() {
+            document.getElementById('reviewModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            resetReviewForm();
+        }
+
+        function resetReviewForm() {
+            selectedRating = 0;
+            document.getElementById('reviewTitle').value = '';
+            document.getElementById('reviewText').value = '';
+            updateStarDisplay();
+        }
+
+        function updateStarDisplay() {
+            const stars = document.querySelectorAll('.star-btn i');
+            stars.forEach((star, index) => {
+                if (index < selectedRating) {
+                    star.className = 'w-full h-full fill-yellow-400 text-yellow-400';
+                } else {
+                    star.className = 'w-full h-full text-muted-foreground hover:text-yellow-400';
+                }
+            });
+        }
+
+        // Star rating functionality
+        document.getElementById('ratingStars').addEventListener('click', function(e) {
+            if (e.target.closest('.star-btn')) {
+                selectedRating = parseInt(e.target.closest('.star-btn').dataset.rating);
+                updateStarDisplay();
+            }
+        });
+
+        // Review form submission
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (selectedRating === 0) {
+                showToast('Please select a rating', 'error');
+                return;
+            }
+            showToast('Thank you for your review! It will be published after moderation.');
+            closeReviewModal();
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('reviewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReviewModal();
+            }
+        });
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>

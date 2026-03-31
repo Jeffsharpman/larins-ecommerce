@@ -1,0 +1,44 @@
+/* Admin-specific styles */
+body {
+    background-color: var(--muted);
+    color: var(--foreground);
+}
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.auth-card {
+    background-color: var(--card);
+    padding: 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    width: 320px;
+}
+.auth-card h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+.form-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--input);
+    border-radius: var(--radius);
+}
+.small {
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: 0.75rem;
+}
+.small a {
+    color: var(--primary);
+}

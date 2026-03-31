@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Filament\Resources\Products\Tables;
+
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Tables\Table;
+
+class ProductsTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+           ->columns([
+                // 1. Primary Info: Name + Slug + Image
+                // If you have a 'images' field, consider adding an ImageColumn here!
+                TextColumn::make('name')
+                    ->label('Product')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold')
+                    ->description(fn ($record) => $record->slug), // Keeps the table narrow by stacking
+
+                // 2. Categories & Brands as Badges
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->badge()
+                    ->color('gray')
+                    ->sortable(),
+
+                TextColumn::make('brand.name')
+                    ->label('Brand')
+                    ->badge()
+                    ->color('primary')
+                    ->sortable(),
+
+                SpatieMediaLibraryImageColumn::make('main_image')
+    ->collection('main_image')
+    ->conversion('thumb') // Uses the 200x200 version for speed
+    ->circular(),
+
+                // In ProductResource.php
+                TextColumn::make('variants_sum_stock')
+                    ->label('Total Stock')
+                    ->numeric()
+                    ->sortable() // Now you can sort products by their total variant stock!
+                    ->badge()
+                    ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
+                    ->suffix(' units'),
+
+                // 3. Pricing: Colored and formatted
+                TextColumn::make('price')
+                    ->money('NGN') // Set your currency
+                    ->color('success')
+                    ->weight('black')
+                    ->sortable(),
+
+                // 4. Status Group: Using different icons/colors for each state
+                IconColumn::make('is_active')
+                    ->label('Active')
+                    ->boolean()
+                    ->toggleable(),
+
+                IconColumn::make('in_stock')
+                    ->label('In Stock')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-minus-circle')
+                    ->toggleable(),
+
+                IconColumn::make('is_featured')
+                    ->label('Featured')
+                    ->boolean()
+                    ->trueIcon('heroicon-s-star') // Solid star for featured
+                    ->falseIcon('heroicon-o-star')
+                    ->trueColor('warning')
+                    ->toggleable(),
+
+                IconColumn::make('on_sale')
+                    ->label('Sale')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-tag')
+                    ->trueColor('danger')
+                    ->toggleable(),
+
+                // 5. Timestamps
+                TextColumn::make('created_at')
+                    ->label('Date')
+                    ->dateTime('M j, Y')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                // Added useful filters for a product store
+                SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                SelectFilter::make('brand')
+                    ->relationship('brand', 'name')
+                    ->searchable()
+                    ->preload(),
+
+                TernaryFilter::make('in_stock')
+                    ->label('Stock Status'),
+                    
+                TernaryFilter::make('on_sale')
+                    ->label('Discounted Items'),
+            ])
+            ->recordActions(
+                    ActionGroup::make([
+                        ViewAction::make(),
+                        EditAction::make(),
+                        DeleteAction::make(),
+                ]))
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}

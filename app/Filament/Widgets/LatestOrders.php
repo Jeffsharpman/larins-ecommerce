@@ -1,0 +1,147 @@
+<?php
+
+namespace App\Filament\Widgets;
+
+use App\Filament\Resources\Orders\OrderResource;
+use App\Models\Order;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\Summarizers\Sum;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
+use Filament\Widgets\TableWidget;
+use Illuminate\Database\Eloquent\Builder;
+
+class LatestOrders extends TableWidget
+{
+    protected int | string | array $columnSpan = 'full';
+
+    protected Static ?int $sort = 2;
+    
+    public function table(Table $table): Table
+    {
+        return $table
+            ->query(fn (): Builder => Order::query())
+            ->defaultPaginationPageOption(5)
+            ->defaultSort('created_at', 'desc')
+            ->columns([
+                // Customer Name with a Subtitle (Order Number)
+                TextColumn::make('user.name')
+                    ->label('Customer')
+                    ->description(fn ($record) => $record->order_number) // Shows ID under name
+                    ->searchable()
+                    ->sortable(),
+
+                // Grand Total with formatting and a summary
+                TextColumn::make('grand_total')
+                    ->label('Total Amount')
+                    ->money('NGN')
+                    ->color('success')
+                    ->weight('bold')
+                    ->sortable()
+                    ->summarize(Sum::make()
+                        ->label('Total Revenue')
+                        ->money('NGN')
+                    ),
+
+                // Payment Method as a Badge
+                TextColumn::make('payments_method')
+                    ->label('Payment')
+                    ->badge()
+                    ->color('gray')
+                    ->searchable(),
+
+                // Payment Status with dynamic colors
+                TextColumn::make('payments_status')
+                    ->label('Payment Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'paid' => 'success',
+                        'pending' => 'warning',
+                        'failed' => 'danger',
+                        default => 'gray',
+                    }),
+
+                // Interactive Status Column (Change status directly from the table)
+                TextColumn::make('status')
+                    ->badge()
+                    ->icon(fn (string $state): string => match ($state) {
+                        'new' => 'heroicon-m-sparkles',
+                        'processing' => 'heroicon-m-arrow-path',
+                        'shipped' => 'heroicon-m-truck',
+                        'delivered' => 'heroicon-m-check-badge',
+                        'cancelled' => 'heroicon-m-x-circle',
+                        default => 'heroicon-m-question-mark-circle',
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'new' => 'info',
+                        'processing' => 'warning',
+                        'shipped' => 'success',
+                        'delivered' => 'success',
+                        'cancelled' => 'danger',
+                        default => 'gray',
+                    }),
+
+                TextColumn::make('shipping_method')
+                    ->label('Shipping')
+                    ->toggleable()
+                    ->searchable(),
+
+                TextColumn::make('created_at')
+                    ->label('Date')
+                    ->dateTime('M j, Y')
+                    ->sortable()
+                    ->toggleable(),
+            ])
+            ->filters([
+                SelectFilter::make('status')
+                    ->options([
+                        'new' => 'New',
+                        'processing' => 'Processing',
+                        'shipped' => 'Shipped',
+                        'delivered' => 'Delivered',
+                        'cancelled' => 'Cancelled',
+                    ]),
+                SelectFilter::make('payments_status')
+                    ->label('Payment')
+                    ->options([
+                        'paid' => 'Paid',
+                        'pending' => 'Pending',
+                        'failed' => 'Failed',
+                    ]),
+            ])
+            ->recordActions([
+                ActionGroup::make([
+                    // 1. View Action
+                    Action::make('View')
+                        ->url(fn (Order $record): string => OrderResource::getUrl('view', ['record' => $record]))
+                        ->icon('heroicon-m-eye')
+                        ->color('info'),
+
+                    // 2. Edit Action
+                    Action::make('Edit')
+                        ->url(fn (Order $record): string => OrderResource::getUrl('edit', ['record' => $record]))
+                        ->icon('heroicon-m-pencil-square') // Fixed icon name
+                        ->color('warning'),
+
+                    // 3. Delete Action
+                    DeleteAction::make(),
+                ])
+                ->icon('heroicon-m-ellipsis-vertical') // The "Three Dots" trigger
+                ->tooltip('Actions')
+                ->color('gray')
+                ->button(), // Optional: makes the trigger look like a button
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}

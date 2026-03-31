@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Larins • Hair Care</title>
+    <link rel="stylesheet" href="css/output.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div data-include="components/header.html"></div>
+
+    <main id="main-content" tabindex="-1">
+        <!-- Hero / Category Header -->
+        <div class="bg-gradient-to-br from-blush via-muted to-sage py-12 md:py-16 text-center">
+            <div class="max-w-7xl mx-auto px-4">
+                <h1 id="categoryTitle" class="text-4xl md:text-5xl font-bold mb-4 tracking-tight">Hair Care</h1>
+                <p id="categoryDesc" class="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                    Premium shampoos, conditioners, masks, oils & treatments for stronger, shinier, healthier hair
+                </p>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Desktop Filters Sidebar -->
+                <aside class="hidden lg:block w-64 flex-shrink-0">
+                    <div class="sticky top-24">
+                        <h3 class="text-xl font-semibold mb-6">Filters</h3>
+
+                        <!-- Price Range -->
+                        <div class="mb-8">
+                            <h4 class="text-sm font-medium mb-3">Price Range</h4>
+                            <div class="space-y-3">
+                                <input type="range" id="priceMin" min="0" max="300" value="0" step="10" class="w-full" />
+                                <input type="range" id="priceMax" min="0" max="300" value="300" step="10" class="w-full" />
+                                <div class="flex justify-between text-sm text-muted-foreground">
+                                    <span>$<span id="minValue">0</span></span>
+                                    <span>$<span id="maxValue">300</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Brands -->
+                        <div class="mb-8">
+                            <h4 class="text-sm font-medium mb-3">Brands</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" value="Olaplex" class="rounded border-border" />
+                                    Olaplex
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" value="Kérastase" class="rounded border-border" />
+                                    Kérastase
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" value="Moroccanoil" class="rounded border-border" />
+                                    Moroccanoil
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" value="Aveda" class="rounded border-border" />
+                                    Aveda
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="checkbox" value="Briogeo" class="rounded border-border" />
+                                    Briogeo
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Rating -->
+                        <div class="mb-8">
+                            <h4 class="text-sm font-medium mb-3">Minimum Rating</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="radio" name="rating" value="4.5" class="text-primary" />
+                                    4.5 & up
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="radio" name="rating" value="4.0" class="text-primary" />
+                                    4.0 & up
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="radio" name="rating" value="3.5" class="text-primary" />
+                                    3.5 & up
+                                </label>
+                                <label class="flex items-center gap-2 text-sm">
+                                    <input type="radio" name="rating" value="" class="text-primary" />
+                                    All Ratings
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Products Area -->
+                <div class="flex-1">
+                    <!-- Toolbar -->
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <p class="text-muted-foreground"><span id="productCount">0</span> products</p>
+
+                        <div class="flex items-center gap-4">
+                            <!-- Mobile Filters Trigger -->
+                            <button id="openFilters" class="lg:hidden flex items-center gap-2 px-4 py-2 border border-border rounded-lg bg-card hover:bg-muted transition-colors">
+                                <i data-lucide="sliders-horizontal"></i> Filters
+                            </button>
+
+                            <!-- Sort -->
+                            <select id="sortSelect" class="px-4 py-2 border border-border rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                                <option value="featured">Featured</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="rating">Highest Rated</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Filters Drawer -->
+                    <div class="fixed inset-0 z-50 bg-black/50 hidden" id="mobileFilters">
+                        <div class="absolute right-0 top-0 h-full w-80 bg-card shadow-xl">
+                            <div class="flex items-center justify-between p-4 border-b border-border">
+                                <h3 class="text-lg font-semibold">Filters</h3>
+                                <button id="closeFilters" class="p-2 hover:bg-muted rounded-lg transition-colors">
+                                    <i data-lucide="x"></i>
+                                </button>
+                            </div>
+                            <div class="p-4 space-y-6">
+                                <!-- Same filters as desktop – duplicated or use same HTML -->
+                                <div>
+                                    <h4 class="text-sm font-medium mb-3">Price Range</h4>
+                                    <!-- ... same price range inputs ... -->
+                                </div>
+                                <!-- Brands, Rating, etc. -->
+                            </div>
+                            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-border bg-card">
+                                <button id="applyMobileFilters" class="w-full px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-gold-dark transition-colors">Apply Filters</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productsGrid">
+                        <!-- Dynamically filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div data-include="components/footer.html"></div>
+
+    <script src="js/includes.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/header-auth.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/category.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+
+</html>
