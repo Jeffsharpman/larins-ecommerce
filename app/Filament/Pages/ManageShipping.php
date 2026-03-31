@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Settings\ShippingSettings;
+use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\TextInput;
@@ -21,6 +22,8 @@ class ManageShipping extends SettingsPage
     use HasPageShield;
 
     protected static ?string $permissionPrefix = 'shipping_settings';
+
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-truck';
 
     protected static string $settings = ShippingSettings::class;
 

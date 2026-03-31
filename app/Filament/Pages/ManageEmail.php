@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Settings\EmailSettings;
+use BackedEnum;
 use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
@@ -22,6 +23,8 @@ class ManageEmail extends SettingsPage
     use HasPageShield;
 
     protected static ?string $permissionPrefix = 'email_settings';
+
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-envelope';
 
     protected static string $settings = EmailSettings::class;
 
