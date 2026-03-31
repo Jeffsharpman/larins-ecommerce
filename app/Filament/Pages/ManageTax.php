@@ -60,7 +60,7 @@ class ManageTax extends SettingsPage
                             ]),
 
                         Tab::make('Configuration')
-                            ->icon('heroicon-m-adjustments')
+                            ->icon('heroicon-m-adjustments-horizontal')
                             ->schema([
                                 Section::make('Tax Calculation')
                                     ->schema([
