@@ -2,9 +2,16 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\ManageEmail;
+use App\Filament\Pages\ManageGeneral;
+use App\Filament\Pages\ManageShipping;
+use App\Filament\Pages\ManageTax;
 use App\Filament\Resources\Orders\Widgets\OrderStats;
+use App\Filament\Widgets\AuditLogWidget;
+use App\Filament\Widgets\LowStockProductsWidget;
 use App\Filament\Widgets\OrdersByStatusWidget;
 use App\Filament\Widgets\RecentCustomersWidget;
+use App\Filament\Widgets\RecentOrdersWidget;
 use App\Filament\Widgets\RevenueChartWidget;
 use App\Filament\Widgets\SalesByMonthWidget;
 use App\Filament\Widgets\TopProductsWidget;
@@ -46,6 +53,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+                ManageGeneral::class,
+                ManageEmail::class,
+                ManageShipping::class,
+                ManageTax::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
@@ -55,6 +66,9 @@ class AdminPanelProvider extends PanelProvider
                 OrdersByStatusWidget::class,
                 TopProductsWidget::class,
                 RecentCustomersWidget::class,
+                RecentOrdersWidget::class,
+                LowStockProductsWidget::class,
+                AuditLogWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
