@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navbar;
 use App\Models\Product;
+use App\Models\Review;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -15,9 +16,51 @@ class ProductDetailPage extends Component
 
     public $quantity = 1;
 
+    public $product;
+
+    public $reviews;
+
+    public $averageRating = 0;
+
+    public $totalReviews = 0;
+
+    public $ratingCounts = [];
+
+    public $showReviewForm = false;
+
+    #[Title('Leave a Review')]
+    public $review_title;
+
+    public $review_rating = 5;
+
+    public $review_comment;
+
     public function mount($slug)
     {
         $this->slug = $slug;
+        $this->loadProduct();
+    }
+
+    public function loadProduct()
+    {
+        $this->product = Product::where('slug', $this->slug)->firstOrFail();
+        $this->loadReviews();
+    }
+
+    public function loadReviews()
+    {
+        $this->reviews = $this->product->reviews()->approved()->with('user')->latest()->get();
+        $this->totalReviews = $this->reviews->count();
+
+        if ($this->totalReviews > 0) {
+            $this->averageRating = round($this->reviews->avg('rating'), 1);
+            $this->ratingCounts = $this->reviews->groupBy('rating')->map->count()->toArray();
+            for ($i = 1; $i <= 5; $i++) {
+                if (! isset($this->ratingCounts[$i])) {
+                    $this->ratingCounts[$i] = 0;
+                }
+            }
+        }
     }
 
     public function increaseQty()
@@ -34,13 +77,8 @@ class ProductDetailPage extends Component
 
     public function addToCart($product_id)
     {
-        // Process the dynamic quantity from your component's $quantity property
         $total_count = CartManagement::addItemToCartWithQty($product_id, $this->quantity);
-
-        // Update the Navbar counter
         $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
-
-        // Boutique Style Alert with Quantity Context
         $this->dispatch('swal:alert',
             icon: 'success',
             title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Selection Logged</span>',
@@ -58,10 +96,42 @@ class ProductDetailPage extends Component
         );
     }
 
+    public function submitReview()
+    {
+        if (! auth()->check()) {
+            return redirect('/login');
+        }
+
+        $this->validate([
+            'review_rating' => 'required|integer|min:1|max:5',
+            'review_title' => 'required|string|max:255',
+            'review_comment' => 'required|string|min:10|max:1000',
+        ]);
+
+        Review::create([
+            'user_id' => auth()->id(),
+            'product_id' => $this->product->id,
+            'rating' => $this->review_rating,
+            'title' => $this->review_title,
+            'comment' => $this->review_comment,
+            'is_approved' => false,
+        ]);
+
+        $this->reset(['review_title', 'review_rating', 'review_comment', 'showReviewForm']);
+        $this->dispatch('swal:alert',
+            icon: 'success',
+            title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Review Submitted</span>',
+            html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">Your review has been submitted and is pending approval.</p>',
+            position: 'bottom-end',
+            timer: 4000,
+            toast: true,
+        );
+    }
+
     public function render()
     {
         return view('livewire.product-detail-page', [
-            'product' => Product::where('slug', $this->slug)->firstOrFail(),
+            'product' => $this->product,
         ])->layout('components.layouts.app');
     }
 }

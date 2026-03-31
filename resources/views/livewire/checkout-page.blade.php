@@ -88,6 +88,53 @@
                         </div>
                     </div>
 
+                    {{-- Shipping Method Card --}}
+                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden group">
+                        <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-700"></div>
+                        
+                        <div class="flex items-center gap-5 mb-8 pb-6 border-b border-border">
+                            <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                                <x-lucide-package class="w-7 h-7" />
+                            </div>
+                            <div>
+                                <h2 class="font-black italic uppercase text-xl tracking-tighter">Delivery Method</h2>
+                                <p class="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-black">Select Logistics Protocol</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            @foreach($shipping_methods as $method)
+                                <label class="relative flex items-start gap-6 p-6 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5 @error('selected_shipping_method_id') border-red-500 @enderror">
+                                    <input wire:model="selected_shipping_method_id" type="radio" value="{{ $method->id }}" class="sr-only peer">
+                                    <div class="flex justify-between items-start flex-1">
+                                        <div class="flex items-start gap-4">
+                                            <div class="w-12 h-12 bg-muted rounded-2xl flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-500 @if($method->is_default) ring-2 ring-primary ring-offset-4 ring-offset-background @endif">
+                                                <x-lucide-truck class="w-6 h-6" />
+                                            </div>
+                                            <div class="space-y-1">
+                                                <span class="font-black italic uppercase tracking-tighter text-lg block">{{ $method->name }}</span>
+                                                <span class="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-70">{{ $method->delivery_time }}</span>
+                                                @if($method->description)
+                                                    <p class="text-[9px] text-muted-foreground font-medium uppercase tracking-wider mt-2">{{ $method->description }}</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            @if($method->base_cost == 0)
+                                                <span class="text-[10px] font-black uppercase tracking-widest text-primary">Complimentary</span>
+                                            @else
+                                                <span class="text-lg font-black italic tracking-tighter">{{ Number::currency($method->base_cost, 'NGN') }}</span>
+                                            @endif
+                                            <div class="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary transition-all duration-500 mt-2 ml-auto">
+                                                <div class="w-2.5 h-2.5 rounded-full bg-background opacity-0 peer-checked:opacity-100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
                     {{-- Payment Method Card --}}
                     <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card">
                         <div class="flex items-center gap-5 mb-12 pb-8 border-b border-border">
@@ -139,21 +186,77 @@
                     <div class="bg-card rounded-[3rem] p-10 shadow-card relative overflow-hidden border border-border">
                         <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl opacity-50"></div>
                         
-                        <h3 class="text-[10px] font-black uppercase tracking-[0.5em] mb-12 opacity-40 text-center lg:text-left">Order Manifest</h3>
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.5em] mb-8 opacity-40 text-center lg:text-left">Order Manifest</h3>
                         
-                        <div class="space-y-6 mb-12 pb-12 border-b border-border">
+                        {{-- Coupon Section --}}
+                        <div class="mb-8 pb-8 border-b border-border">
+                            @if($applied_coupon)
+                                <div class="flex items-center justify-between p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                                            <x-lucide-tag class="w-5 h-5 text-primary" />
+                                        </div>
+                                        <div>
+                                            <span class="text-[10px] font-black uppercase tracking-widest text-primary block">{{ $applied_coupon->code }}</span>
+                                            <span class="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
+                                                @if($applied_coupon->discount_type === 'percentage')
+                                                    {{ $applied_coupon->discount_value }}% off
+                                                @else
+                                                    {{ Number::currency($applied_coupon->discount_value, 'NGN') }} off
+                                                @endif
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button wire:click="removeCoupon" type="button" class="text-muted-foreground hover:text-red-500 transition-colors">
+                                        <x-lucide-x class="w-5 h-5" />
+                                    </button>
+                                </div>
+                            @else
+                                <div class="flex gap-3">
+                                    <input wire:model="coupon_code" type="text" placeholder="Enter coupon code"
+                                        class="flex-1 bg-background/50 border-border rounded-2xl px-5 py-4 text-[10px] font-bold uppercase tracking-widest focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:opacity-30">
+                                    <button wire:click="applyCoupon" type="button"
+                                        class="px-6 py-4 bg-primary text-background rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                        Apply
+                                    </button>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Order Totals --}}
+                        <div class="space-y-5 mb-8 pb-8 border-b border-border">
                             <div class="flex justify-between items-center">
                                 <span class="text-[10px] font-black uppercase tracking-[0.3em] opacity-50">Subtotal</span>
-                                <span class="text-sm font-black italic tracking-tighter">{{ Number::currency($grand_total, 'NGN') }}</span>
+                                <span class="text-sm font-black italic tracking-tighter">{{ Number::currency($subtotal, 'NGN') }}</span>
                             </div>
+                            
+                            @if($discount > 0)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-green-600">Discount</span>
+                                    <span class="text-sm font-black italic tracking-tighter text-green-600">-{{ Number::currency($discount, 'NGN') }}</span>
+                                </div>
+                            @endif
+                            
                             <div class="flex justify-between items-center">
                                 <span class="text-[10px] font-black uppercase tracking-[0.3em] opacity-50">Logistics</span>
-                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Complimentary</span>
+                                @if($shipping == 0)
+                                    <span class="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Complimentary</span>
+                                @else
+                                    <span class="text-sm font-black italic tracking-tighter">{{ Number::currency($shipping, 'NGN') }}</span>
+                                @endif
                             </div>
-                            <div class="flex justify-between items-center pt-8 border-t border-border">
+                            
+                            @if($tax > 0)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-black uppercase tracking-[0.3em] opacity-50">Tax</span>
+                                    <span class="text-sm font-black italic tracking-tighter">{{ Number::currency($tax, 'NGN') }}</span>
+                                </div>
+                            @endif
+                            
+                            <div class="flex justify-between items-center pt-6 border-t border-border">
                                 <div>
-                                    <span class="text-[9px] font-black uppercase tracking-[0.5em] opacity-40 block mb-3">Total Investment</span>
-                                    <span class="text-5xl md:text-6xl font-black italic tracking-tighter text-foreground">{{ Number::currency($grand_total, 'NGN') }}</span>
+                                    <span class="text-[9px] font-black uppercase tracking-[0.5em] opacity-40 block mb-2">Total Investment</span>
+                                    <span class="text-4xl md:text-5xl font-black italic tracking-tighter text-foreground">{{ Number::currency($grand_total, 'NGN') }}</span>
                                 </div>
                             </div>
                         </div>

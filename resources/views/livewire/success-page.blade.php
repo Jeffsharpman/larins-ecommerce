@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-background text-foreground transition-colors duration-500 overflow-hidden relative">
-    {{-- Ambient Luxury Backgrounds - Using Theme Variables --}}
+    {{-- Ambient Luxury Backgrounds --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/5 blur-[120px] rounded-full -z-10 animate-pulse-slow"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-gold/5 blur-[100px] rounded-full -z-10 animate-float"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-primary/5 blur-[100px] rounded-full -z-10 animate-float"></div>
 
     <div class="max-w-4xl mx-auto px-4 py-24 relative z-10">
         
@@ -17,20 +17,23 @@
                 </div>
                 
                 {{-- Boutique Particles --}}
-                <x-lucide-sparkles class="absolute -top-4 -right-6 w-8 h-8 text-gold animate-pulse" />
-                <x-lucide-star class="absolute top-12 -left-10 w-6 h-6 text-gold/40 animate-spin-slow" />
+                <x-lucide-sparkles class="absolute -top-4 -right-6 w-8 h-8 text-primary animate-pulse" />
+                <x-lucide-star class="absolute top-12 -left-10 w-6 h-6 text-primary/40 animate-spin-slow" />
             </div>
 
             <div class="space-y-4">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gold/10 border border-gold/20 text-gold text-[10px] font-black uppercase tracking-[0.4em] mb-4">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-4">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     Order Received
                 </div>
                 <h1 class="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-none">
-                    Order <span class="text-transparent text-stroke-sm dark:text-stroke-white">Confirmed.</span>
+                    Order <span class="text-transparent bg-clip-text bg-gradient-to-r from-foreground to-primary">Confirmed.</span>
                 </h1>
-                <p class="text-muted-foreground text-sm font-medium max-w-lg mx-auto leading-relaxed italic opacity-80 pt-4">
-                    "Every masterpiece takes time. Thank you, {{ $order->first_name ?? 'Joshua' }}. Your selection is now being processed with artisanal precision."
-                </p>
+                @if($order && $order->address)
+                    <p class="text-muted-foreground text-sm font-medium max-w-lg mx-auto leading-relaxed italic opacity-80 pt-4">
+                        Thank you, {{ $order->address->first_name }}. Your selection is now being processed with artisanal precision.
+                    </p>
+                @endif
             </div>
 
             <div class="flex flex-wrap justify-center items-center gap-6 mt-12">
@@ -39,45 +42,118 @@
                     <span class="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/70">Email Receipt Sent</span>
                 </div>
                 <div class="flex items-center gap-3 px-6 py-3 bg-card/50 backdrop-blur-md rounded-2xl border border-border shadow-sm">
-                    <x-lucide-clock class="w-4 h-4 text-gold" />
-                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/70">Est. Arrival: 45 Mins</span>
+                    <x-lucide-clock class="w-4 h-4 text-primary" />
+                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-foreground/70">Processing Your Order</span>
                 </div>
             </div>
         </div>
 
         {{-- Order Details Card --}}
-        <div class="bg-card/40 backdrop-blur-2xl rounded-[3rem] border border-border shadow-2xl overflow-hidden mb-16 transition-all duration-700 hover:shadow-gold/5 group">
-            <div class="bg-muted/30 px-10 py-6 border-b border-border/60 flex justify-between items-center">
-                <div class="flex flex-col">
-                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-1">Transaction Ref</span>
-                    <span class="text-sm font-black text-foreground">#{{ $order->order_number ?? 'LRN-9920' }}</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-[9px] font-black uppercase tracking-[0.3em] text-gold mb-1 block">Status</span>
-                    <span class="text-[10px] font-black uppercase bg-gold/10 text-gold px-3 py-1 rounded-full">Preparing</span>
-                </div>
-            </div>
-            
-            <div class="p-10">
-                <div id="orderDetailsContainer" class="space-y-8">
-                    @if(isset($order))
-                        <x-card.summary-table :order="$order" />
-                    @else
-                        <div class="flex justify-between items-center group/item transition-colors">
-                             <span class="text-[11px] font-black uppercase tracking-widest text-muted-foreground">Payment Method</span>
-                             <span class="text-xs font-black italic uppercase text-foreground">Secure Card via Paystack</span>
+        @if($order)
+            <div class="bg-card/40 backdrop-blur-2xl rounded-[3rem] border border-border shadow-2xl overflow-hidden mb-16 transition-all duration-700 hover:shadow-primary/5 group">
+                <div class="bg-muted/30 px-10 py-6 border-b border-border/60 flex justify-between items-center">
+                    <div class="flex flex-col">
+                        <span class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-1">Transaction Ref</span>
+                        <span class="text-sm font-black text-foreground">#{{ $order->order_number }}</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right">
+                            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-1 block">Status</span>
+                            <span class="text-[10px] font-black uppercase bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full">
+                                {{ ucfirst($order->status) }}
+                            </span>
                         </div>
-                        <div class="pt-8 border-t border-dashed border-border flex justify-between items-end">
-                            <div>
-                                <span class="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground block mb-2">Total Amount Paid</span>
-                                <span class="text-5xl font-black italic tracking-tighter text-foreground">₦14,500.00</span>
+                        <div class="text-right">
+                            <span class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-1 block">Payment</span>
+                            <span class="text-[10px] font-black uppercase bg-primary/10 text-primary px-3 py-1 rounded-full">
+                                {{ ucfirst($order->payment_method) }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-10">
+                    {{-- Order Items --}}
+                    @if($order_items->count() > 0)
+                        <div class="space-y-4 mb-8 pb-8 border-b border-border/30">
+                            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4">Items Ordered</h4>
+                            @foreach($order_items as $item)
+                                <div class="flex items-center justify-between py-4 border-b border-border/10 last:border-0">
+                                    <div class="flex items-center gap-4">
+                                        @if(isset($item->product) && isset($item->product->images[0]))
+                                            <img src="{{ url('storage/' . $item->product->images[0]) }}" 
+                                                alt="{{ $item->name }}" 
+                                                class="w-16 h-16 rounded-2xl object-cover bg-muted">
+                                        @else
+                                            <div class="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center">
+                                                <x-lucide-package class="w-6 h-6 text-muted-foreground" />
+                                            </div>
+                                        @endif
+                                        <div>
+                                            <h5 class="font-black text-sm">{{ $item->name }}</h5>
+                                            <span class="text-[10px] text-muted-foreground uppercase tracking-wider">Qty: {{ $item->quantity }} × {{ Number::currency($item->unit_amount, 'NGN') }}</span>
+                                        </div>
+                                    </div>
+                                    <span class="text-sm font-black italic">{{ Number::currency($item->total_amount, 'NGN') }}</span>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    {{-- Order Summary --}}
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Subtotal</span>
+                            <span class="text-sm font-black italic">{{ Number::currency($order->grand_total - $order->shipping_amount, 'NGN') }}</span>
+                        </div>
+                        @if($order->shipping_amount > 0)
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Shipping ({{ $order->shipping_method }})</span>
+                                <span class="text-sm font-black italic">{{ Number::currency($order->shipping_amount, 'NGN') }}</span>
                             </div>
-                            <x-lucide-shield-check class="w-8 h-8 text-gold/30" />
+                        @else
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500">Shipping</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500">Complimentary</span>
+                            </div>
+                        @endif
+                        <div class="pt-6 border-t border-dashed border-border flex justify-between items-end">
+                            <div>
+                                <span class="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground block mb-2">Total Paid</span>
+                                <span class="text-5xl font-black italic tracking-tighter text-foreground">{{ Number::currency($order->grand_total, 'NGN') }}</span>
+                            </div>
+                            <x-lucide-shield-check class="w-8 h-8 text-primary/30" />
+                        </div>
+                    </div>
+
+                    {{-- Shipping Address --}}
+                    @if($order->address)
+                        <div class="mt-8 pt-8 border-t border-border/30">
+                            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-4">Shipping To</h4>
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+                                    <x-lucide-map-pin class="w-5 h-5 text-primary" />
+                                </div>
+                                <div>
+                                    <p class="font-black text-sm">{{ $order->address->first_name }} {{ $order->address->last_name }}</p>
+                                    <p class="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">
+                                        {{ $order->address->street_address }}, {{ $order->address->city }}, {{ $order->address->state }}
+                                    </p>
+                                    <p class="text-[10px] text-muted-foreground uppercase tracking-wider">
+                                        +234 {{ $order->address->phone }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     @endif
                 </div>
             </div>
-        </div>
+        @else
+            <div class="bg-card/40 backdrop-blur-2xl rounded-[3rem] border border-border shadow-2xl p-16 text-center mb-16">
+                <x-lucide-package class="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
+                <p class="text-muted-foreground font-medium">Order details unavailable</p>
+            </div>
+        @endif
 
         {{-- Actions --}}
         <div class="space-y-12">
@@ -98,15 +174,15 @@
             {{-- Trust Badges --}}
             <div class="pt-12 border-t border-border/40 flex flex-wrap justify-center items-center gap-x-16 gap-y-8 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-1000">
                 <div class="flex items-center gap-3">
-                    <x-lucide-truck class="w-5 h-5 text-gold" />
+                    <x-lucide-truck class="w-5 h-5 text-primary" />
                     <span class="text-[9px] font-black uppercase tracking-[0.3em] text-foreground">Artisanal Logistics</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <x-lucide-shield-check class="w-5 h-5 text-gold" />
+                    <x-lucide-shield-check class="w-5 h-5 text-primary" />
                     <span class="text-[9px] font-black uppercase tracking-[0.3em] text-foreground">Buyer Protection</span>
                 </div>
                 <div class="flex items-center gap-3">
-                    <x-lucide-headphones class="w-5 h-5 text-gold" />
+                    <x-lucide-headphones class="w-5 h-5 text-primary" />
                     <span class="text-[9px] font-black uppercase tracking-[0.3em] text-foreground">24/7 Concierge</span>
                 </div>
             </div>

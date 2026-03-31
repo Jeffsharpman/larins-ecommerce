@@ -63,28 +63,73 @@
                             <x-lucide-lock class="w-3 h-3 text-primary opacity-50" />
                         </h3>
 
-                        {{-- Promo Input --}}
-                        <div class="mb-10 p-2 bg-background/50 rounded-2xl border border-border flex gap-2 focus-within:border-primary/50 transition-colors">
-                            <input type="text" placeholder="PROMO CODE" 
-                                class="flex-1 px-4 py-3 bg-transparent text-[10px] font-black uppercase tracking-widest outline-none placeholder:text-muted-foreground/30" />
-                            <button class="px-6 py-3 bg-foreground text-background dark:bg-primary dark:text-primary-foreground rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:opacity-90">
-                                Apply
-                            </button>
-                        </div>
+                        {{-- Applied Coupon Display --}}
+                        @if($applied_coupon)
+                            <div class="mb-6 p-4 bg-primary/5 border border-primary/20 rounded-2xl flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                                        <x-lucide-tag class="w-5 h-5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] font-black uppercase tracking-widest text-primary block">{{ $applied_coupon->code }}</span>
+                                        <span class="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
+                                            @if($applied_coupon->discount_type === 'percentage')
+                                                {{ $applied_coupon->discount_value }}% off
+                                            @else
+                                                {{ Number::currency($applied_coupon->discount_value, 'NGN') }} off
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                                <button wire:click="removeCoupon" type="button" class="text-muted-foreground hover:text-red-500 transition-colors">
+                                    <x-lucide-x class="w-5 h-5" />
+                                </button>
+                            </div>
+                        @else
+                            {{-- Coupon Input --}}
+                            <div class="mb-10 p-2 bg-background/50 rounded-2xl border border-border flex gap-2 focus-within:border-primary/50 transition-colors">
+                                <input wire:model="coupon_code" type="text" placeholder="PROMO CODE" 
+                                    class="flex-1 px-4 py-3 bg-transparent text-[10px] font-black uppercase tracking-widest outline-none placeholder:text-muted-foreground/30" />
+                                <button wire:click="applyCoupon" type="button"
+                                    class="px-6 py-3 bg-foreground text-background dark:bg-primary dark:text-primary-foreground rounded-xl text-[10px] font-black uppercase tracking-widest transition-all hover:opacity-90">
+                                    Apply
+                                </button>
+                            </div>
+                        @endif
 
-                        <div class="space-y-6 mb-10">
+                        <div class="space-y-5 mb-10">
                             <div class="flex justify-between items-center">
-                                <span class="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Subtotal</span>
-                                <span class="text-sm font-black text-foreground">{{ Number::currency($grand_total, 'NGN') }}</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Subtotal</span>
+                                <span class="text-sm font-black text-foreground">{{ Number::currency($subtotal, 'NGN') }}</span>
                             </div>
+                            
+                            @if($discount > 0)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-green-600">Discount</span>
+                                    <span class="text-sm font-black text-green-600">-{{ Number::currency($discount, 'NGN') }}</span>
+                                </div>
+                            @endif
+                            
                             <div class="flex justify-between items-center">
-                                <span class="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Shipping</span>
-                                <span class="text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500">Complimentary</span>
+                                <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Shipping</span>
+                                @if($shipping == 0)
+                                    <span class="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500">Complimentary</span>
+                                @else
+                                    <span class="text-sm font-black text-foreground">{{ Number::currency($shipping, 'NGN') }}</span>
+                                @endif
                             </div>
+                            
+                            @if($tax > 0)
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Tax</span>
+                                    <span class="text-sm font-black text-foreground">{{ Number::currency($tax, 'NGN') }}</span>
+                                </div>
+                            @endif
+                            
                             <div class="pt-6 border-t border-border/60 flex justify-between items-end">
                                 <div>
                                     <span class="text-[8px] font-black uppercase tracking-[0.4em] text-muted-foreground block mb-2">Grand Total</span>
-                                    <span class="text-4xl font-black italic tracking-tighter text-foreground">{{ Number::currency($grand_total, 'NGN') }}</span>
+                                    <span class="text-4xl font-black italic tracking-tighter text-foreground">{{ Number::currency($total, 'NGN') }}</span>
                                 </div>
                             </div>
                         </div>

@@ -126,6 +126,43 @@
         </div>
     </section>
 
+    {{-- Featured Products Section --}}
+    @if($featuredProducts->count() > 0)
+        <section class="py-32 bg-background relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -z-10"></div>
+            
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-end justify-between mb-16">
+                    <div>
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-[1px] bg-primary"></div>
+                            <span class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Featured Collection</span>
+                        </div>
+                        <h2 class="text-5xl md:text-6xl font-black italic tracking-tighter uppercase leading-[0.9] text-foreground">
+                            Editor's <span class="text-primary">Picks</span>
+                        </h2>
+                    </div>
+                    <a wire:navigate href="/products" 
+                        class="hidden md:flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary transition-colors group">
+                        View All
+                        <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    @foreach($featuredProducts as $product)
+                        <x-card.product-card :product="$product" :key="'featured-' . $product->id" />
+                    @endforeach
+                </div>
+
+                <a wire:navigate href="/products" class="md:hidden flex items-center justify-center gap-4 mt-12 py-6 bg-primary text-primary-foreground rounded-3xl font-black uppercase tracking-[0.3em] text-[10px]">
+                    View All Products
+                    <x-lucide-arrow-right class="w-4 h-4" />
+                </a>
+            </div>
+        </section>
+    @endif
+
     {{-- Reviews Section --}}
     <section class="py-24 bg-background">
         <div class="max-w-7xl mx-auto px-4">
@@ -142,9 +179,10 @@
                     <p class="text-muted-foreground font-medium mb-8">
                         Join the thousands who have transformed their routine with {{ $site->site_name }}.
                     </p>
-                    <button class="w-full py-4 rounded-xl border-2 border-border font-bold hover:bg-muted text-foreground transition-all">
-                        Write a Review
-                    </button>
+                    <a wire:navigate href="/reviews"
+                        class="w-full py-4 rounded-xl border-2 border-border font-bold hover:bg-muted text-foreground transition-all text-center block">
+                        View All Reviews
+                    </a>
                 </div>
 
                 <div class="lg:col-span-2 space-y-6">
@@ -152,32 +190,40 @@
                         <div class="bg-card border border-border/40 p-8 rounded-[2rem] hover:border-primary/40 transition-all shadow-soft group">
                             <div class="flex items-center justify-between mb-6">
                                 <div class="flex items-center gap-4">
-                                    <img src="{{ $review['user']['avatar'] ?? 'https://i.pravatar.cc/100' }}"
+                                    <img src="{{ $review['user']['avatar'] }}"
                                         class="w-14 h-14 rounded-2xl object-cover ring-4 ring-muted group-hover:ring-primary/20 transition-all">
                                     <div>
                                         <h4 class="font-bold text-foreground">{{ $review['user']['name'] }}</h4>
-                                        <p class="text-xs text-muted-foreground uppercase tracking-widest">
-                                            {{ $review['user']['role'] ?? 'Verified Buyer' }}
-                                        </p>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-muted-foreground uppercase tracking-widest">
+                                                {{ $review['user']['role'] }}
+                                            </span>
+                                            @if($review['product'])
+                                                <span class="text-[8px] text-primary">|</span>
+                                                <a wire:navigate href="/product/{{ $review['product']['slug'] }}" class="text-[10px] text-primary hover:underline">
+                                                    {{ $review['product']['name'] }}
+                                                </a>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-                                <span class="text-[10px] font-black uppercase text-muted-foreground bg-muted px-3 py-1 rounded-full">
-                                    {{ $review['created_at']->diffForHumans() }}
-                                </span>
+                                <div class="flex flex-col items-end gap-2">
+                                    <div class="flex items-center gap-1">
+                                        @for ($i = 1; $i <= 5; $i++)
+                                            <x-lucide-star class="w-3 h-3 {{ $i <= $review['rating'] ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/30' }}" />
+                                        @endfor
+                                    </div>
+                                    <span class="text-[10px] font-black uppercase text-muted-foreground bg-muted px-3 py-1 rounded-full">
+                                        {{ $review['created_at']->diffForHumans() }}
+                                    </span>
+                                </div>
                             </div>
-                            <p class="text-lg text-foreground/80 italic leading-relaxed">
-                                "{{ $review['comment'] }}"
+                            @if($review['title'])
+                                <h5 class="font-black italic uppercase tracking-tight text-sm mb-3">{{ $review['title'] }}</h5>
+                            @endif
+                            <p class="text-sm text-foreground/80 leading-relaxed">
+                                {{ $review['comment'] }}
                             </p>
-                            <div class="flex items-center gap-6 mt-8 pt-6 border-t border-border/30">
-                                <button class="flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors">
-                                    <x-lucide-thumbs-up class="w-4 h-4" /> 
-                                    Helpful ({{ $review['likes_count'] ?? 0 }})
-                                </button>
-                                <button class="flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-primary transition-colors">
-                                    <x-lucide-message-circle class="w-4 h-4" /> 
-                                    Reply
-                                </button>
-                            </div>
                         </div>
                     @empty
                         <p class="text-center py-20 text-muted-foreground border border-dashed border-border rounded-3xl">

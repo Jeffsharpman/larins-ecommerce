@@ -32,6 +32,16 @@ class Product extends Model implements HasMedia
         return $this->hasMany(OrderItem::class);
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function approvedReviews()
+    {
+        return $this->reviews()->where('is_approved', true);
+    }
+
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
