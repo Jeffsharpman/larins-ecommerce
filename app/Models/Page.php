@@ -10,6 +10,8 @@ class Page extends Model
 {
     use HasFactory;
 
+    protected $table = 'cms_pages';
+
     protected $fillable = [
         'title',
         'slug',
