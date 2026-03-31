@@ -19,7 +19,7 @@ class ProductVariantObserver
     protected function updateParentStock(ProductVariant $variant): void
     {
         $product = $variant->product;
-        
+
         // Sum the stock of all variants belonging to this product
         $totalStock = $product->variants()->sum('stock');
 

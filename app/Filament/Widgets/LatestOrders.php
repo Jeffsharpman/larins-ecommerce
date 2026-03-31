@@ -9,8 +9,6 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -20,10 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LatestOrders extends TableWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
-    protected Static ?int $sort = 2;
-    
+    protected static ?int $sort = 2;
+
     public function table(Table $table): Table
     {
         return $table
@@ -133,10 +131,10 @@ class LatestOrders extends TableWidget
                     // 3. Delete Action
                     DeleteAction::make(),
                 ])
-                ->icon('heroicon-m-ellipsis-vertical') // The "Three Dots" trigger
-                ->tooltip('Actions')
-                ->color('gray')
-                ->button(), // Optional: makes the trigger look like a button
+                    ->icon('heroicon-m-ellipsis-vertical') // The "Three Dots" trigger
+                    ->tooltip('Actions')
+                    ->color('gray')
+                    ->button(), // Optional: makes the trigger look like a button
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -29,18 +29,18 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-{
-    Product::observe(ProductObserver::class);
-    Brand::observe(BrandObserver::class);
-    Category::observe(CategoryObserver::class);
-    ProductVariant::observe(ProductVariantObserver::class);
-    Gate::before(function ($user, $ability) {
-        return $user->hasRole('super_admin') ? true : null;
-    });
+    {
+        Product::observe(ProductObserver::class);
+        Brand::observe(BrandObserver::class);
+        Category::observe(CategoryObserver::class);
+        ProductVariant::observe(ProductVariantObserver::class);
+        Gate::before(function ($user, $ability) {
+            return $user->hasRole('super_admin') ? true : null;
+        });
 
-    View::composer('*', function ($view) {
-        $view->with('site', app(GeneralSettings::class));
-    });
-    
-}
+        View::composer('*', function ($view) {
+            $view->with('site', app(GeneralSettings::class));
+        });
+
+    }
 }

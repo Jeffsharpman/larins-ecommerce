@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
 class ProductVariant extends Model
 {
+    use LogsActivity;
+
     protected $fillable = ['product_id', 'sku', 'name', 'price', 'stock', 'attributes'];
 
     protected $casts = ['attributes' => 'array'];
@@ -14,7 +17,7 @@ class ProductVariant extends Model
     {
         return $this->belongsTo(Product::class);
     }
-    
+
     public static function getLowStockReport()
     {
         return static::where('stock', '<=', 5)

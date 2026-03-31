@@ -36,12 +36,12 @@ class ProductObserver
     public function deleted(Product $product): void
     {
         // Single image
-        if (!empty($product->image)) {
+        if (! empty($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
 
         // Multiple images (JSON array)
-        if (!empty($product->images)) {
+        if (! empty($product->images)) {
             foreach ($product->images as $image) {
                 Storage::disk('public')->delete($image);
             }

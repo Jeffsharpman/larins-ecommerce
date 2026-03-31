@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Categories\Schemas; 
+namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Models\Category;
 use Filament\Forms\Components\FileUpload;
@@ -13,7 +13,6 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
-
 class CategoryForm
 {
     public static function configure(Schema $schema): Schema
@@ -25,7 +24,7 @@ class CategoryForm
                         ->label('Category Name')
                         ->required()
                         ->maxLength(255)
-                        ->live(onBlur: true) 
+                        ->live(onBlur: true)
                         ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                             $set('slug', Str::slug($state));
                         }),
@@ -42,7 +41,7 @@ class CategoryForm
                         ->alphaDash()
                         ->dehydrated(),
                 ])->columnSpan(1)->columns(2),
-                
+
                 Section::make('status')->schema([
                     Toggle::make('is_active')
                         ->required(),
@@ -51,23 +50,21 @@ class CategoryForm
                 Section::make('Image')->schema([
                     FileUpload::make('image')
                         ->image()
-                        ->directory('categories') 
-                        ->visibility('public') 
-                        ->imageEditor() 
-                        ->maxFiles(5) 
+                        ->directory('categories')
+                        ->visibility('public')
+                        ->imageEditor()
+                        ->maxFiles(5)
                         ->downloadable()
                         ->disk('public')
                         ->visibility('public')
-                        ->preserveFilenames()         
+                        ->preserveFilenames()
                         ->maxSize(5120),
                 ])->columnSpanFull(),
-                
-                
+
                 MarkdownEditor::make('description')
                     ->columnSpanfull()
                     ->fileAttachmentsDirectory('categories'),
-                
-                
+
             ])->columns(2);
     }
 }

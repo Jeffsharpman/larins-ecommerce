@@ -70,14 +70,14 @@ class UsersTable
                     ->falseLabel('Unverified Users'),
             ])
             ->recordActions(
-                    ActionGroup::make([
-                        ViewAction::make(),
-                        EditAction::make(),
-                        DeleteAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
                 ]))
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
                 ]),
             ]);
     }

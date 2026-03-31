@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
@@ -54,6 +53,6 @@ class LowStockAlert extends Mailable
     public function build()
     {
         return $this->subject('⚠️ Larins Inventory Alert: Low Stock Items')
-                    ->markdown('emails.products.low-stock');
+            ->markdown('emails.products.low-stock');
     }
 }

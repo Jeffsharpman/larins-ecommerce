@@ -13,9 +13,9 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -51,7 +51,7 @@ class AddressRelationManager extends RelationManager
                     ->columnSpanFull() // Makes the section fill the entire modal width
                     ->columns(2)      // Internal grid for the fields below
                     ->schema([
-                        
+
                         // 1. Recipient Row (Split into 2 columns)
                         TextEntry::make('fullname')
                             ->label('Recipient')
@@ -71,10 +71,10 @@ class AddressRelationManager extends RelationManager
                         TextEntry::make('street_address')
                             ->label('Delivery Address')
                             ->icon('heroicon-m-map-pin')
-                            ->columnSpanFull() 
+                            ->columnSpanFull()
                             ->copyable()
                             ->color('gray')
-                            ->url(fn ($record) => "https://www.google.com/maps/search/?api=1&query=" . urlencode("{$record->street_address}, {$record->city}, {$record->state}"), true)
+                            ->url(fn ($record) => 'https://www.google.com/maps/search/?api=1&query='.urlencode("{$record->street_address}, {$record->city}, {$record->state}"), true)
                             ->prose(),
 
                         // 3. Location Details Row
@@ -88,14 +88,14 @@ class AddressRelationManager extends RelationManager
                                 ->label('State')
                                 ->badge()
                                 ->color('info'),
-                                
+
                             TextEntry::make('zip_code')
                                 ->label('Zip Code')
                                 ->fontFamily('mono')
                                 ->weight('bold'),
                         ])
-                        ->columns(2) 
-                        ->columnSpan(1),
+                            ->columns(2)
+                            ->columnSpan(1),
 
                         // 4. Subtle Footer for Metadata
                         Group::make([
@@ -108,12 +108,12 @@ class AddressRelationManager extends RelationManager
                                 ->since()
                                 ->size('xs'),
                         ])
-                        ->columns(2)
-                        ->columnSpanFull()
+                            ->columns(2)
+                            ->columnSpanFull()
                         // This adds a thin line to separate the metadata from the main content
-                        ->extraAttributes(['class' => 'mt-4 pt-4 border-t border-gray-100']),
-                ])
-        ]);
+                            ->extraAttributes(['class' => 'mt-4 pt-4 border-t border-gray-100']),
+                    ]),
+            ]);
     }
 
     public function table(Table $table): Table
@@ -153,18 +153,15 @@ class AddressRelationManager extends RelationManager
                 CreateAction::make(),
             ])
             ->recordActions(
-                    ActionGroup::make([
-                        ViewAction::make(),
-                        EditAction::make(),
-                        DeleteAction::make(),
-            ]))
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]))
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
                 ]),
             ]);
     }
 }
-
-
-

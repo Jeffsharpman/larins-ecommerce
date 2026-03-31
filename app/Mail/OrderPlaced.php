@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
@@ -42,7 +41,7 @@ class OrderPlaced extends Mailable
         return new Content(
             markdown: 'mail.orders.placed',
             with: [
-                'url' => route('my-orders.show', $this->order->id)
+                'url' => route('my-orders.show', $this->order->id),
             ]
         );
     }

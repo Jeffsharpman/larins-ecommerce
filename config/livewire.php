@@ -16,8 +16,8 @@ return [
     |---------------------------------------------------------------------------
     */
 
-    'asset_url'  => null,
-    'app_url'    => null,
+    'asset_url' => null,
+    'app_url' => null,
     'middleware_group' => 'web',
 
     /*

@@ -25,6 +25,7 @@ use App\Livewire\ReviewsPage;
 use App\Livewire\SuccessPage;
 use App\Livewire\TermsPage;
 use App\Livewire\WishlistPage;
+use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class)->name('index');
@@ -44,17 +45,17 @@ Route::get('/reviews', ReviewsPage::class)->name('reviews');
 Route::get('/terms', TermsPage::class)->name('terms');
 Route::get('/wishlist', WishlistPage::class)->name('wishlist');
 
-
-Route::middleware('guest')->group(function (){
+Route::middleware('guest')->group(function () {
     Route::get('/login', LoginPage::class)->name('login');
     Route::get('/register', RegisterPage::class);
     Route::get('/forgot', ForgetPage::class)->name('password.request');
     Route::get('/reset/{token}', ResetPage::class)->name('password.reset');
 });
 
-Route::middleware('auth')->group(function (){
-    Route::get('/logout', function (){
+Route::middleware('auth')->group(function () {
+    Route::get('/logout', function () {
         auth()->logout();
+
         return redirect()->to('/');
     });
     Route::get('/checkout', CheckoutPage::class);
@@ -64,8 +65,7 @@ Route::middleware('auth')->group(function (){
     Route::get('/success/{order_id}', SuccessPage::class)->name('success');
 });
 
-
-if (app(App\Settings\GeneralSettings::class)->maintenance_mode && !request()->is('admin*')) {
+if (app(GeneralSettings::class)->maintenance_mode && ! request()->is('admin*')) {
     Route::get('/', function () {
         return view('errors.maintenance'); // Create a simple "Coming Soon" blade
     });

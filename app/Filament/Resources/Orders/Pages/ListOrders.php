@@ -27,7 +27,8 @@ class ListOrders extends ListRecords
         ];
     }
 
-    public function getTabs(): Array {
+    public function getTabs(): array
+    {
         return [
             null => Tab::make('ALL'),
             'New' => Tab::make()->query(fn ($query) => $query->where('status', 'new')),

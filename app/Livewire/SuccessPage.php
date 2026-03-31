@@ -25,14 +25,15 @@ class SuccessPage extends Component
 
         if ($this->session_id) {
             Stripe::setApiKey(env('STRIPE_SECRET'));
-            
+
             // FIX: Corrected spelling to 'retrieve'
             $session_info = Session::retrieve($this->session_id);
 
             if ($session_info->payment_status != 'paid') {
                 // FIX: Corrected spelling to 'failed'
-                $latest_order->payment_status = 'failed'; 
+                $latest_order->payment_status = 'failed';
                 $latest_order->save();
+
                 return redirect()->route('cancel');
             } else {
                 // Update order to paid
@@ -42,7 +43,7 @@ class SuccessPage extends Component
         }
 
         return view('livewire.success-page', [
-            'order' => $latest_order 
+            'order' => $latest_order,
         ])->layout('components.layouts.app');
     }
 }

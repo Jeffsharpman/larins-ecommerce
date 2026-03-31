@@ -65,7 +65,7 @@ class BrandsTable
                     ->trueLabel('Active Brands Only')
                     ->falseLabel('Inactive Brands Only'),
             ])
-             ->recordActions([
+            ->recordActions([
                 ActionGroup::make([
                     ViewAction::make()
                         ->color('info'),
@@ -73,10 +73,10 @@ class BrandsTable
                         ->color('warning'),
                     DeleteAction::make(),
                 ])
-                ->icon('heroicon-m-ellipsis-vertical') 
-                ->tooltip('Actions')
-                ->color('gray')
-                ->button(), 
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('Actions')
+                    ->color('gray')
+                    ->button(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

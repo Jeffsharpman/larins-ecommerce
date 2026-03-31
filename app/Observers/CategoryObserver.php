@@ -22,7 +22,7 @@ class CategoryObserver
      */
     public function deleted(Category $category): void
     {
-        if (!empty($category->image)) {
+        if (! empty($category->image)) {
             Storage::disk('public')->delete($category->image);
         }
     }

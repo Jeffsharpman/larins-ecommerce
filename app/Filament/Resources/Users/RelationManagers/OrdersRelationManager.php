@@ -3,13 +3,9 @@
 namespace App\Filament\Resources\Users\RelationManagers;
 
 use Filament\Actions\ActionGroup;
-use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\DissociateAction;
-use Filament\Actions\DissociateBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Textarea;
@@ -54,7 +50,7 @@ class OrdersRelationManager extends RelationManager
     public function infolist(Schema $schema): Schema
     {
         return $schema
-             ->components([
+            ->components([
                 // 1. Top Header: Identity & Status
                 Section::make('Order Overview')
                     ->icon('heroicon-m-shopping-bag')
@@ -81,7 +77,7 @@ class OrdersRelationManager extends RelationManager
                                 'cancelled' => 'danger',
                                 default => 'gray',
                             }),
-                ]),
+                    ]),
 
                 // 2. Timeline
                 Section::make('Timeline')
@@ -94,7 +90,7 @@ class OrdersRelationManager extends RelationManager
                         TextEntry::make('updated_at')
                             ->label('Last Activity')
                             ->since(),
-                ]),
+                    ]),
 
                 // 3. Financials & Logistics
                 Section::make()
@@ -123,7 +119,7 @@ class OrdersRelationManager extends RelationManager
                                         'pending' => 'warning',
                                         default => 'danger',
                                     }),
-                        ]),
+                            ]),
 
                         Section::make('Shipping Details')
                             ->columnSpan(1)
@@ -138,9 +134,9 @@ class OrdersRelationManager extends RelationManager
 
                                 TextEntry::make('notes')
                                     ->placeholder('No customer notes.'),
-                                    // ->italic(),
+                                // ->italic(),
                             ]),
-                ]),
+                    ]),
 
                 // 4. THE ORDER ITEMS SECTION (The dynamic list of products)
                 Section::make('Items Ordered')
@@ -149,14 +145,14 @@ class OrdersRelationManager extends RelationManager
                         RepeatableEntry::make('items')
                             ->label('')
                             // We use 6 columns now for better distribution
-                            ->columns(6) 
+                            ->columns(6)
                             ->schema([
                                 // Restyled Image: Smaller and aligned to the left
                                 ImageEntry::make('product.images')
                                     ->label('') // Remove label to save vertical space
                                     ->circular()
                                     // DECREASED SIZE: 60x60 is standard for list thumbnails
-                                    ->imageHeight(60) 
+                                    ->imageHeight(60)
                                     ->imageWidth(60)
                                     // ->ring(1) // Optional subtle ring
                                     ->disk('public')
@@ -168,6 +164,7 @@ class OrdersRelationManager extends RelationManager
                                         if (is_array($images) && count($images) > 0) {
                                             return $images[0];
                                         }
+
                                         return is_string($images) ? $images : null;
                                     }),
 
@@ -177,7 +174,7 @@ class OrdersRelationManager extends RelationManager
                                     ->weight('bold')
                                     ->color('gray')
                                     // Give name 2 columns so it doesn't wrap immediately
-                                    ->columnSpan(2), 
+                                    ->columnSpan(2),
 
                                 TextEntry::make('quantity')
                                     ->label('Qty')
@@ -197,11 +194,9 @@ class OrdersRelationManager extends RelationManager
                                     ->weight('black')
                                     ->color('primary')
                                     ->columnSpan(1),
-                        ]),
-                ]),
-                
+                            ]),
+                    ]),
 
-                
             ]);
     }
 
@@ -296,14 +291,14 @@ class OrdersRelationManager extends RelationManager
                     ]),
             ])
             ->recordActions(
-                    ActionGroup::make([
+                ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make(),
                     DeleteAction::make(),
-            ]))
+                ]))
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
                 ]),
             ]);
     }

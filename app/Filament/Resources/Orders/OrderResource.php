@@ -10,14 +10,12 @@ use App\Filament\Resources\Orders\RelationManagers\AddressRelationManager;
 use App\Filament\Resources\Orders\Schemas\OrderForm;
 use App\Filament\Resources\Orders\Schemas\OrderInfolist;
 use App\Filament\Resources\Orders\Tables\OrdersTable;
-use App\Filament\Resources\Orders\Widgets\OrderStats;
 use App\Models\Order;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class OrderResource extends Resource
 {
@@ -26,7 +24,7 @@ class OrderResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingBag;
 
     protected static ?string $recordTitleAttribute = 'order_number';
-    
+
     protected static ?int $navigationSort = 5;
 
     public static function form(Schema $schema): Schema
@@ -47,7 +45,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            AddressRelationManager::class
+            AddressRelationManager::class,
         ];
     }
 

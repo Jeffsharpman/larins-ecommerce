@@ -13,7 +13,6 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 
-
 class BrandForm
 {
     public static function configure(Schema $schema): Schema
@@ -25,7 +24,7 @@ class BrandForm
                         ->label('Brand Name')
                         ->required()
                         ->maxLength(255)
-                        ->live(onBlur: true) 
+                        ->live(onBlur: true)
                         ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
                             $set('slug', Str::slug($state));
                         }),
@@ -42,7 +41,7 @@ class BrandForm
                         ->alphaDash()
                         ->dehydrated(),
                 ])->columnSpan(1)->columns(2),
-                
+
                 Section::make('status')->schema([
                     Toggle::make('is_active')
                         ->required(),
@@ -51,22 +50,21 @@ class BrandForm
                 Section::make('Image')->schema([
                     FileUpload::make('image')
                         ->image()
-                        ->directory('brands') 
-                        ->visibility('public') 
-                        ->imageEditor() 
-                        ->maxFiles(5) 
+                        ->directory('brands')
+                        ->visibility('public')
+                        ->imageEditor()
+                        ->maxFiles(5)
                         ->downloadable()
                         ->disk('public')
                         ->visibility('public')
-                        ->preserveFilenames()         
+                        ->preserveFilenames()
                         ->maxSize(5120),        // Optional: keeps the original name
                 ])->columnSpanFull(),
 
                 MarkdownEditor::make('description')
                     ->columnSpanfull()
                     ->fileAttachmentsDirectory('brands'),
-                
-                
+
             ])->columns(2);
     }
 }

@@ -24,7 +24,7 @@ class CategoryFactory extends Factory
             'name' => $current['name'],
             'slug' => Str::slug($current['name']),
             'image' => $current['image'],
-            'description' => 'A curated selection from the ' . $current['name'] . ' series.',
+            'description' => 'A curated selection from the '.$current['name'].' series.',
             'is_active' => true,
         ];
     }

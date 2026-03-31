@@ -47,15 +47,16 @@ class ResetPage extends Component
                 $user->forceFill([
                     'password' => Hash::make($password), // Removed the semicolon from inside here
                 ])->setRememberToken(Str::random(60));
-                
+
                 $user->save();
-                
+
                 event(new PasswordReset($user)); // Added the semicolon here
             }
         );
 
         if ($status === Password::PASSWORD_RESET) {
             session()->flash('success', 'Password reset successfully.');
+
             return redirect('/login');
         }
 

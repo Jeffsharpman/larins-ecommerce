@@ -6,8 +6,6 @@ use App\Helpers\CartManagement;
 use App\Mail\OrderPlaced;
 use App\Models\Address;
 use App\Models\Order;
-use App\Models\OrderItem;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
@@ -20,6 +18,7 @@ use Stripe\Stripe;
 class CheckoutPage extends Component
 {
     public $cart_items = [];
+
     public $grand_total;
 
     #[Rule('required|string|min:2|max:50')]
@@ -44,14 +43,15 @@ class CheckoutPage extends Component
     #[Rule('required|string|in:cod,stripe,paystack')]
     public $payment_method = 'cod';
 
-    #[Rule('required|numeric|digits:6')] 
+    #[Rule('required|numeric|digits:6')]
     public $zip_code;
 
-    public function mount(){
+    public function mount()
+    {
         $this->cart_items = CartManagement::getCartItemsFromCookie();
         $this->grand_total = CartManagement::calculateGrandTotal($this->cart_items);
 
-        if(count($this->cart_items) == 0){
+        if (count($this->cart_items) == 0) {
             return redirect('/products');
         }
     }
@@ -71,16 +71,16 @@ class CheckoutPage extends Component
                     'unit_amount' => $item['unit_amount'] * 100, // Stripe uses kobo/cents
                     'product_data' => [
                         'name' => $item['name'],
-                    ]
+                    ],
                 ],
                 'quantity' => $item['quantity'],
             ];
         }
 
         // 2. Initialize the Order (Don't save yet, we need the total)
-        $order = new Order();
+        $order = new Order;
         $order->user_id = auth()->id();
-        $order->order_number = 'ORD-' . strtoupper(Str::random(10));
+        $order->order_number = 'ORD-'.strtoupper(Str::random(10));
         $order->grand_total = CartManagement::calculateGrandTotal($cart_items);
         $order->payment_method = $this->payment_method;
         $order->payment_status = 'pending';
@@ -88,7 +88,7 @@ class CheckoutPage extends Component
         // $order->currency = 'NGN';
         $order->shipping_amount = 0;
         $order->shipping_method = 'none';
-        $order->notes = 'Order placed by ' . auth()->user()->name;
+        $order->notes = 'Order placed by '.auth()->user()->name;
 
         // 3. Save to Database (In order: Order -> Address -> Items)
         $order->save();
@@ -98,22 +98,22 @@ class CheckoutPage extends Component
         // 4. Handle Stripe Logic
         if ($this->payment_method == 'stripe') {
             Stripe::setApiKey(env('STRIPE_SECRET'));
-            
-            $sessionCheckout = \Stripe\Checkout\Session::create([
+
+            $sessionCheckout = Session::create([
                 'payment_method_types' => ['card'],
                 'customer_email' => auth()->user()->email,
                 'line_items' => $line_items, // <--- Added the items
                 'mode' => 'payment',         // <--- Added the mode
-                'success_url' => route('success', ['order_id' => $order->id]) . '?session_id={CHECKOUT_SESSION_ID}',
+                'success_url' => route('success', ['order_id' => $order->id]).'?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('cancel'),
             ]);
-            
+
             $redirect_url = $sessionCheckout->url;
         } else {
             $redirect_url = route('success', ['order_id' => $order->id]);
         }
 
-        $address = new Address();
+        $address = new Address;
         $address->order_id = $order->id; // Now the ID exists!
         $address->first_name = $this->first_name;
         $address->last_name = $this->last_name;
@@ -130,9 +130,10 @@ class CheckoutPage extends Component
         CartManagement::clearCartItems();
 
         Mail::to(request()->user())->send(new OrderPlaced($order));
+
         return redirect($redirect_url);
     }
-    
+
     public function render()
     {
         return view('livewire.checkout-page')->layout('components.layouts.app');

@@ -24,7 +24,7 @@ class BrandFactory extends Factory
             'name' => $current['name'],
             'slug' => Str::slug($current['name']),
             'image' => $current['image'],
-            'description' => 'Crafted by ' . $current['name'] . ' for the modern connoisseur.',
+            'description' => 'Crafted by '.$current['name'].' for the modern connoisseur.',
             'is_active' => true,
         ];
     }

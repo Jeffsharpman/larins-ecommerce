@@ -13,12 +13,15 @@ class RegisterPage extends Component
 {
     #[Rule('required|min:5|max:255')]
     public $name;
+
     #[Rule('required|email|unique:users')]
     public $email;
+
     #[Rule('required|min:5|max:255')]
     public $password;
 
-    public function save(){
+    public function save()
+    {
         $this->validate();
 
         $user = User::create([
@@ -28,6 +31,7 @@ class RegisterPage extends Component
         ]);
 
         auth()->login($user);
+
         return redirect()->intended();
     }
 

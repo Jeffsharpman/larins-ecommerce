@@ -22,7 +22,7 @@ class BrandObserver
      */
     public function deleted(Brand $brand): void
     {
-        if (!empty($brand->image)) {
+        if (! empty($brand->image)) {
             Storage::disk('public')->delete($brand->image);
         }
     }

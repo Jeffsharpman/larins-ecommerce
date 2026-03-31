@@ -11,8 +11,7 @@ use Filament\Schemas\Schema;
 
 class ProductInfolist
 {
-
-protected function getHeaderWidgets(): array
+    protected function getHeaderWidgets(): array
     {
         return [
             StockAlertWidget::class,
@@ -46,8 +45,8 @@ protected function getHeaderWidgets(): array
                 Section::make('Metadata & Status')
                     ->columns([
                         'default' => 1,
-                        'md'      => 2,     // 2 columns on medium+
-                        'lg'      => 3,     // 3 on large+
+                        'md' => 2,     // 2 columns on medium+
+                        'lg' => 3,     // 3 on large+
                     ])
                     ->schema([
                         TextEntry::make('category.name')
@@ -75,7 +74,7 @@ protected function getHeaderWidgets(): array
                         IconEntry::make('on_sale')
                             ->label('On Sale')
                             ->boolean(),
-                ]),
+                    ]),
 
                 Section::make('Visuals & Description')
                     ->columnSpanFull()
@@ -97,7 +96,7 @@ protected function getHeaderWidgets(): array
                             ->markdown()
                             ->placeholder('No description provided')
                             ->columnSpanFull(),
-                ]),
+                    ]),
 
                 // Pricing & timestamps – compact row
                 Section::make('Pricing & Timestamps')

@@ -2,10 +2,9 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
-use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\RepeatableEntry; // New Import
-use Filament\Infolists\Components\ImageEntry;      // New Import
+use Filament\Infolists\Components\TextEntry;      // New Import
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
@@ -41,7 +40,7 @@ class OrderInfolist
                                 'cancelled' => 'danger',
                                 default => 'gray',
                             }),
-                ]),
+                    ]),
 
                 // 2. Timeline
                 Section::make('Timeline')
@@ -54,7 +53,7 @@ class OrderInfolist
                         TextEntry::make('updated_at')
                             ->label('Last Activity')
                             ->since(),
-                ]),
+                    ]),
 
                 // 3. Financials & Logistics
                 Section::make()
@@ -83,7 +82,7 @@ class OrderInfolist
                                         'pending' => 'warning',
                                         default => 'danger',
                                     }),
-                        ]),
+                            ]),
 
                         Section::make('Shipping Details')
                             ->columnSpan(1)
@@ -98,9 +97,9 @@ class OrderInfolist
 
                                 TextEntry::make('notes')
                                     ->placeholder('No customer notes.'),
-                                    // ->italic(),
+                                // ->italic(),
                             ]),
-                ]),
+                    ]),
 
                 // 4. THE ORDER ITEMS SECTION (The dynamic list of products)
                 Section::make('Items Ordered')
@@ -109,14 +108,14 @@ class OrderInfolist
                         RepeatableEntry::make('items')
                             ->label('')
                             // We use 6 columns now for better distribution
-                            ->columns(6) 
+                            ->columns(6)
                             ->schema([
                                 // Restyled Image: Smaller and aligned to the left
                                 ImageEntry::make('product.images')
                                     ->label('') // Remove label to save vertical space
                                     ->circular()
                                     // DECREASED SIZE: 60x60 is standard for list thumbnails
-                                    ->imageHeight(60) 
+                                    ->imageHeight(60)
                                     ->imageWidth(60)
                                     // ->ring(1) // Optional subtle ring
                                     ->disk('public')
@@ -128,6 +127,7 @@ class OrderInfolist
                                         if (is_array($images) && count($images) > 0) {
                                             return $images[0];
                                         }
+
                                         return is_string($images) ? $images : null;
                                     }),
 
@@ -137,7 +137,7 @@ class OrderInfolist
                                     ->weight('bold')
                                     ->color('gray')
                                     // Give name 2 columns so it doesn't wrap immediately
-                                    ->columnSpan(2), 
+                                    ->columnSpan(2),
 
                                 TextEntry::make('quantity')
                                     ->label('Qty')
@@ -157,11 +157,9 @@ class OrderInfolist
                                     ->weight('black')
                                     ->color('primary')
                                     ->columnSpan(1),
-                        ]),
-                ]),
-                
+                            ]),
+                    ]),
 
-                
             ]);
     }
 }

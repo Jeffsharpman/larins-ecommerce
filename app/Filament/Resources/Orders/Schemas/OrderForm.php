@@ -18,7 +18,6 @@ use Filament\Schemas\Schema;
 use Illuminate\Support\Number;
 use Illuminate\Support\Str;
 
-
 class OrderForm
 {
     public static function configure(Schema $schema): Schema
@@ -29,7 +28,7 @@ class OrderForm
                     Section::make('Order Information')->schema([
                         TextInput::make('order_number')
                             ->label('Order Reference')
-                            ->default('ORD-' . strtoupper(Str::random(10)))
+                            ->default('ORD-'.strtoupper(Str::random(10)))
                             ->readonly() // Prevents manual editing
                             ->columnSpan(1)
                             ->prefix('ID') // Adds a nice visual prefix
@@ -42,13 +41,13 @@ class OrderForm
                             ->searchable()
                             ->preload()
                             ->required(),
-                        
+
                         Select::make('payment_method')
                             ->options([
                                 'stripe' => 'Stripe',
                                 'cod' => 'Cash On Delivery',
                             ]),
-                        
+
                         Select::make('payment_status')
                             ->options([
                                 'pending' => 'Pending',
@@ -102,7 +101,7 @@ class OrderForm
                             ]),
 
                         Textarea::make('notes')
-                            ->columnSpanFull()
+                            ->columnSpanFull(),
                     ])->columns(2),
 
                     // Section::make('Order Items')->schema([
@@ -195,8 +194,7 @@ class OrderForm
                                     ->columnSpan(2)
                                     ->reactive()
                                     // Update the row total when quantity changes
-                                    ->afterStateUpdated(fn ($state, Set $set, Get $get) => 
-                                        $set('total_amount', (float)$state * (float)$get('unit_amount'))
+                                    ->afterStateUpdated(fn ($state, Set $set, Get $get) => $set('total_amount', (float) $state * (float) $get('unit_amount'))
                                     ),
 
                                 TextInput::make('unit_amount')
@@ -224,13 +222,13 @@ class OrderForm
                                 }
 
                                 $set('grand_total', $total);
-                        }),
+                            }),
 
                         Placeholder::make('grand_total_placeholder')
                             ->label('Grand Total')
                             ->content(function (Get $get, Set $set) {
                                 $total = 0;
-                                if (!$repeaters = $get('items')) {
+                                if (! $repeaters = $get('items')) {
                                     return Number::currency(0, 'NGN');
                                 }
 
@@ -242,16 +240,15 @@ class OrderForm
                                 $set('grand_total', $total);
 
                                 return Number::currency($total, 'NGN');
-                        }),
+                            }),
 
                         Hidden::make('grand_total')
                             ->default(0)
                             ->dehydrated()
                             ->required(),
-                    ])
-                
+                    ]),
 
-                ])->columnSpanFull()
+                ])->columnSpanFull(),
             ]);
     }
 }

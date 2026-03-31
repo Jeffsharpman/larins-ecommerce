@@ -24,7 +24,7 @@ class CategoriesTable
                 ImageColumn::make('image')
                     ->label('Logo')
                     ->circular() // Round logos look much more modern
-                    ->disk('public') 
+                    ->disk('public')
                     ->defaultImageUrl(url('/images/placeholder.png')) // Fallback for missing images
                     ->toggleable(),
 
@@ -71,14 +71,14 @@ class CategoriesTable
                     ->native(false), // Makes it a nice dropdown instead of a radio list
             ])
             ->recordActions(
-                    ActionGroup::make([
-                        ViewAction::make(),
-                        EditAction::make(),
-                        DeleteAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
                 ]))
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
                 ]),
             ]);
     }

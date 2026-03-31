@@ -4,9 +4,9 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use App\Models\Product;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Title;
 
 #[Title('Category Details')]
 class CategoryDetailsPage extends Component
@@ -23,7 +23,7 @@ class CategoryDetailsPage extends Component
     public function render()
     {
         $category = Category::where('slug', $this->slug)->where('is_active', true)->firstOrFail();
-        
+
         $products = Product::where('category_id', $category->id)
             ->where('is_active', true)
             ->paginate(12);

@@ -54,7 +54,7 @@ class UserInfolist
                                     ->badge()
                                     ->color('info')
                                     ->icon('heroicon-m-check-badge'),
-                        ])->columnSpan(3),
+                            ])->columnSpan(3),
 
                         // Profile Picture Section (Right 1/3)
                         Section::make('Profile Picture')
@@ -68,27 +68,27 @@ class UserInfolist
                                     ->label('')
                                     ->circular()
                                     ->extraAttributes([
-                                        'class' => 'mx-auto ring-4 ring-primary-500/10 shadow-xl', 
+                                        'class' => 'mx-auto ring-4 ring-primary-500/10 shadow-xl',
                                     ])
                                     // ->defaultImageUrl(url('public/images/default-avatar.png'))
-                                    ->imageHeight(200)         
-                                    ->stacked()                
+                                    ->imageHeight(200)
+                                    ->stacked()
                                     ->circular()
                                     ->ring(2)
                                     ->disk('public')
                                     ->visibility('public')
                                     ->placeholder('No images uploaded')
                                     ->columnSpanFull(),
-                                
+
                                 // Add a centered label below the picture
                                 TextEntry::make('fullname_sub')
                                     ->label('')
-                                    ->state(fn ($record) => "Verified User")
+                                    ->state(fn ($record) => 'Verified User')
                                     ->alignCenter()
                                     ->size('xs')
                                     ->color('gray'),
-                        ])->columns(1),
-                    ])->columns(4)
+                            ])->columns(1),
+                    ])->columns(4),
             ])->columns(1);
     }
 }

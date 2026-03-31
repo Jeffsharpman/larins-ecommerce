@@ -16,7 +16,7 @@ class MyOrdersPage extends Component
             ->paginate(10);
 
         return view('livewire.my-orders-page', [
-            'orders' => $orders
+            'orders' => $orders,
         ])->layout('components.layouts.app');
     }
 }

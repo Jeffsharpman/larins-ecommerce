@@ -3,9 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Brand;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Title;
 
 #[Title('Brand Details')]
 class BrandDetailsPage extends Component
@@ -22,7 +22,7 @@ class BrandDetailsPage extends Component
     public function render()
     {
         $brand = Brand::where('slug', $this->slug)->firstOrFail();
-        
+
         $products = $brand->products()
             ->where('is_active', true)
             ->paginate(12);

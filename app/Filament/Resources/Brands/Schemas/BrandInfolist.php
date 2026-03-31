@@ -79,16 +79,16 @@ class BrandInfolist
                                     ->since() // Attractive "3 days ago" format
                                     ->color('primary'),
                             ])->columnSpan(2),
-                ]),
+                    ]),
 
                 Section::make('Operational Status & History')
                     ->schema([
-                    TextEntry::make('description')
-                        ->label('Description')
-                        ->prose()
-                        ->markdown()
-                        ->placeholder('No description provided'),
-                ])->columnSpanFull(),
+                        TextEntry::make('description')
+                            ->label('Description')
+                            ->prose()
+                            ->markdown()
+                            ->placeholder('No description provided'),
+                    ])->columnSpanFull(),
             ]);
     }
-}   
+}

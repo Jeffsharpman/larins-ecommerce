@@ -32,8 +32,8 @@ class ProductForm
                             ->maxLength(255)
                             ->live(onBlur: true)
                             // ->afterStateUpdated(fn (Set $set, ?string $state) => $set('slug', Str::slug($state))),
-                            ->afterStateUpdated(function (string $operation, $state, Set $set){
-                                if($operation !== 'create'){
+                            ->afterStateUpdated(function (string $operation, $state, Set $set) {
+                                if ($operation !== 'create') {
                                     return;
                                 }
                                 $set('slug', Str::slug($state));
@@ -53,18 +53,18 @@ class ProductForm
 
                     Section::make('images')->schema([
                         SpatieMediaLibraryFileUpload::make('images')
-                            ->image()  
-                            ->multiple() 
-                            ->directory('products') 
+                            ->image()
+                            ->multiple()
+                            ->directory('products')
                             ->reorderable()
-                            ->imageEditor() 
+                            ->imageEditor()
                             ->panelLayout('grid')
-                            ->maxFiles(5) 
+                            ->maxFiles(5)
                             ->downloadable()
                             ->disk('public')
                             ->visibility('public')
                             ->fetchFileInformation(false)
-                            ->preserveFilenames()         
+                            ->preserveFilenames()
                             ->maxSize(5120),
                     ]),
 
@@ -107,7 +107,7 @@ class ProductForm
                                 Toggle::make('is_active')
                                     ->label('Is Active')
                                     ->default(true),
-                        ]),
+                            ]),
 
                         Select::make('brand_id')
                             ->label('Brand')
@@ -137,8 +137,8 @@ class ProductForm
                                 Toggle::make('is_active')
                                     ->label('Is Active')
                                     ->default(true),
-                        ]),
-                    ]),  
+                            ]),
+                    ]),
 
                     Section::make('Status')->schema([
                         Toggle::make('is_active')
@@ -164,7 +164,7 @@ class ProductForm
                                         ->placeholder('e.g. Blue / Large')
                                         ->required()
                                         ->columnSpan(2),
-                                    
+
                                     TextInput::make('sku')
                                         ->label('SKU')
                                         ->required()
@@ -172,7 +172,7 @@ class ProductForm
 
                                     TextInput::make('price')
                                         ->numeric()
-                                        ->prefix(fn() => config('app.currency_symbol', '₦')) // Dynamic from your settings!
+                                        ->prefix(fn () => config('app.currency_symbol', '₦')) // Dynamic from your settings!
                                         ->placeholder('Leave empty to use base price'),
 
                                     TextInput::make('stock')
@@ -184,7 +184,7 @@ class ProductForm
                                 ->grid(1) // Stack them nicely
                                 ->collapsible() // Keeps the UI clean when you have 10+ variants
                                 ->itemLabel(fn (array $state): ?string => $state['name'] ?? null),
-                        ])
+                        ]),
                 ])->columnSpanFull(),
             ])->columns(3);
     }

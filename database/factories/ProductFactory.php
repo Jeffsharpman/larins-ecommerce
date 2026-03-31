@@ -43,7 +43,7 @@ class ProductFactory extends Factory
             'brand_id' => Brand::inRandomOrder()->first()->id ?? 1,
             'name' => $current['name'],
             'slug' => Str::slug($current['name']),
-            'images' => ['products/placeholder.jpg', 'products/placeholder1.jpg', 'products/placeholder2.jpg', 'products/placeholder3.jpg', 'products/placeholder4.jpg' ], // JSON array format
+            'images' => ['products/placeholder.jpg', 'products/placeholder1.jpg', 'products/placeholder2.jpg', 'products/placeholder3.jpg', 'products/placeholder4.jpg'], // JSON array format
             'description' => 'An exquisite piece representing the pinnacle of Larins craftsmanship.',
             'price' => $current['price'],
             'is_active' => true,

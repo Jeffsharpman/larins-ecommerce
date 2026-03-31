@@ -20,7 +20,7 @@ class ProductsTable
     public static function configure(Table $table): Table
     {
         return $table
-           ->columns([
+            ->columns([
                 // 1. Primary Info: Name + Slug + Image
                 // If you have a 'images' field, consider adding an ImageColumn here!
                 TextColumn::make('name')
@@ -44,9 +44,9 @@ class ProductsTable
                     ->sortable(),
 
                 SpatieMediaLibraryImageColumn::make('main_image')
-    ->collection('main_image')
-    ->conversion('thumb') // Uses the 200x200 version for speed
-    ->circular(),
+                    ->collection('main_image')
+                    ->conversion('thumb') // Uses the 200x200 version for speed
+                    ->circular(),
 
                 // In ProductResource.php
                 TextColumn::make('variants_sum_stock')
@@ -113,19 +113,19 @@ class ProductsTable
 
                 TernaryFilter::make('in_stock')
                     ->label('Stock Status'),
-                    
+
                 TernaryFilter::make('on_sale')
                     ->label('Discounted Items'),
             ])
             ->recordActions(
-                    ActionGroup::make([
-                        ViewAction::make(),
-                        EditAction::make(),
-                        DeleteAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
                 ]))
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
                 ]),
             ]);
     }

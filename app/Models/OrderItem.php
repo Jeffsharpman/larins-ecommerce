@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
 class OrderItem extends Model
 {
+    use LogsActivity;
+
     protected $fillable = ['order_id', 'product_id', 'quantity', 'unit_amount', 'total_amount'];
 
     public function order()
@@ -16,5 +19,5 @@ class OrderItem extends Model
     public function Product()
     {
         return $this->belongsTo(Product::class);
-    } 
+    }
 }
