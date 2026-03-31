@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Brands\Schemas;
 
 use App\Models\Brand;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -48,17 +47,16 @@ class BrandForm
                 ])->columns(1),
 
                 Section::make('Image')->schema([
-                    FileUpload::make('image')
+                    SpatieMediaLibraryFileUpload::make('image')
                         ->image()
+                        ->collection('image')
                         ->directory('brands')
                         ->visibility('public')
                         ->imageEditor()
-                        ->maxFiles(5)
                         ->downloadable()
                         ->disk('public')
-                        ->visibility('public')
                         ->preserveFilenames()
-                        ->maxSize(5120),        // Optional: keeps the original name
+                        ->maxSize(5120),
                 ])->columnSpanFull(),
 
                 MarkdownEditor::make('description')

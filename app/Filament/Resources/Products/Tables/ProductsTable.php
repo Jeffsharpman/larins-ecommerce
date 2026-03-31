@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Filament\Exports\ProductExporter;
+use App\Filament\Imports\ProductImporter;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
@@ -43,9 +47,9 @@ class ProductsTable
                     ->color('primary')
                     ->sortable(),
 
-                SpatieMediaLibraryImageColumn::make('main_image')
-                    ->collection('main_image')
-                    ->conversion('thumb') // Uses the 200x200 version for speed
+                SpatieMediaLibraryImageColumn::make('images')
+                    ->collection('images')
+                    ->conversion('thumb')
                     ->circular(),
 
                 // In ProductResource.php
@@ -124,8 +128,14 @@ class ProductsTable
                     DeleteAction::make(),
                 ]))
             ->toolbarActions([
+                ActionGroup::make([
+                    ExportAction::make()
+                        ->exporter(ProductExporter::class),
+                    ImportAction::make()
+                        ->importer(ProductImporter::class),
+                ]),
                 BulkActionGroup::make([
-                DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

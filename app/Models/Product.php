@@ -71,6 +71,11 @@ class Product extends Model implements HasMedia
         return $this->total_stock > 0;
     }
 
+    public function registerMediaCollections(?Media $media = null): void
+    {
+        $this->addMediaCollection('images');
+    }
+
     public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -81,6 +86,6 @@ class Product extends Model implements HasMedia
         $this->addMediaConversion('optimized')
             ->width(800)
             ->height(800)
-            ->withResponsiveImages(); // Creates srcsets for mobile/desktop automatically
+            ->withResponsiveImages();
     }
 }

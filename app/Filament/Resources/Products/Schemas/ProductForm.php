@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Products\Schemas;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -55,6 +54,7 @@ class ProductForm
                         SpatieMediaLibraryFileUpload::make('images')
                             ->image()
                             ->multiple()
+                            ->collection('images')
                             ->directory('products')
                             ->reorderable()
                             ->imageEditor()
@@ -63,7 +63,6 @@ class ProductForm
                             ->downloadable()
                             ->disk('public')
                             ->visibility('public')
-                            ->fetchFileInformation(false)
                             ->preserveFilenames()
                             ->maxSize(5120),
                     ]),
@@ -100,8 +99,9 @@ class ProductForm
                                     ->unique(Category::class, 'slug', ignoreRecord: true)
                                     ->alphaDash(),
 
-                                FileUpload::make('image')
+                                SpatieMediaLibraryFileUpload::make('image')
                                     ->image()
+                                    ->collection('image')
                                     ->directory('categories'),
 
                                 Toggle::make('is_active')
@@ -130,8 +130,9 @@ class ProductForm
                                     ->unique(Brand::class, 'slug', ignoreRecord: true)
                                     ->alphaDash(),
 
-                                FileUpload::make('image')
+                                SpatieMediaLibraryFileUpload::make('image')
                                     ->image()
+                                    ->collection('image')
                                     ->directory('brands'),
 
                                 Toggle::make('is_active')

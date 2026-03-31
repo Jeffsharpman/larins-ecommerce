@@ -20,7 +20,6 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Notification;
 
 class ManageGeneral extends SettingsPage
@@ -78,48 +77,12 @@ class ManageGeneral extends SettingsPage
                                     ->disk('public')
                                     ->visibility('public')
                                     ->directory('site')
-                                    ->columnSpanFull()
-                                    ->dehydrateStateUsing(function ($state) {
-                                        if (! is_array($state)) {
-                                            return $state;
-                                        }
-
-                                        if (empty($state)) {
-                                            return null;
-                                        }
-
-                                        $firstValue = Arr::first($state);
-                                        $firstKey = array_key_first($state);
-
-                                        if (is_string($firstValue)) {
-                                            return $firstValue;
-                                        }
-
-                                        return is_string($firstKey) ? $firstKey : null;
-                                    }),
+                                    ->columnSpanFull(),
                                 FileUpload::make('favicon')
                                     ->image()
                                     ->disk('public')
                                     ->visibility('public')
-                                    ->directory('site')
-                                    ->dehydrateStateUsing(function ($state) {
-                                        if (! is_array($state)) {
-                                            return $state;
-                                        }
-
-                                        if (empty($state)) {
-                                            return null;
-                                        }
-
-                                        $firstValue = Arr::first($state);
-                                        $firstKey = array_key_first($state);
-
-                                        if (is_string($firstValue)) {
-                                            return $firstValue;
-                                        }
-
-                                        return is_string($firstKey) ? $firstKey : null;
-                                    }),
+                                    ->directory('site'),
                                 ColorPicker::make('primary_color'),
                                 ColorPicker::make('secondary_color'),
                             ])->columns(2),

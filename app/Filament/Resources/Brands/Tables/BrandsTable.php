@@ -2,14 +2,18 @@
 
 namespace App\Filament\Resources\Brands\Tables;
 
+use App\Filament\Exports\ProductExporter;
+use App\Filament\Imports\ProductImporter;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -21,11 +25,12 @@ class BrandsTable
         return $table
             ->columns([
                 // Brand Logo: High visibility
-                ImageColumn::make('image')
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('image')
                     ->label('Logo')
                     ->circular()
-                    ->disk('public')
-                    ->defaultImageUrl(url('/images/placeholder-brand.png')),
+                    ->conversion('thumb')
+                    ->toggleable(),
 
                 // Brand Name & Slug: Grouped for clean UI
                 TextColumn::make('name')
@@ -79,6 +84,12 @@ class BrandsTable
                     ->button(),
             ])
             ->toolbarActions([
+                ActionGroup::make([
+                    ExportAction::make()
+                        ->exporter(ProductExporter::class),
+                    ImportAction::make()
+                        ->importer(ProductImporter::class),
+                ]),
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

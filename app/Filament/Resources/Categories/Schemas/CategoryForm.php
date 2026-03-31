@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Categories\Schemas;
 
 use App\Models\Category;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -48,15 +47,14 @@ class CategoryForm
                 ])->columns(1),
 
                 Section::make('Image')->schema([
-                    FileUpload::make('image')
+                    SpatieMediaLibraryFileUpload::make('image')
                         ->image()
+                        ->collection('image')
                         ->directory('categories')
                         ->visibility('public')
                         ->imageEditor()
-                        ->maxFiles(5)
                         ->downloadable()
                         ->disk('public')
-                        ->visibility('public')
                         ->preserveFilenames()
                         ->maxSize(5120),
                 ])->columnSpanFull(),

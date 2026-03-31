@@ -2,14 +2,18 @@
 
 namespace App\Filament\Resources\Categories\Tables;
 
+use App\Filament\Exports\ProductExporter;
+use App\Filament\Imports\ProductImporter;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ExportAction;
+use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -20,12 +24,12 @@ class CategoriesTable
     {
         return $table
             ->columns([
-                // 1. Visual Lead: The Brand Logo
-                ImageColumn::make('image')
-                    ->label('Logo')
-                    ->circular() // Round logos look much more modern
-                    ->disk('public')
-                    ->defaultImageUrl(url('/images/placeholder.png')) // Fallback for missing images
+                // 1. Visual Lead: The Category Image
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->collection('image')
+                    ->label('Image')
+                    ->circular()
+                    ->conversion('thumb')
                     ->toggleable(),
 
                 // 2. Primary Data: Name with Slug as a subtitle
@@ -77,8 +81,14 @@ class CategoriesTable
                     DeleteAction::make(),
                 ]))
             ->toolbarActions([
+                ActionGroup::make([
+                    ExportAction::make()
+                        ->exporter(ProductExporter::class),
+                    ImportAction::make()
+                        ->importer(ProductImporter::class),
+                ]),
                 BulkActionGroup::make([
-                DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
