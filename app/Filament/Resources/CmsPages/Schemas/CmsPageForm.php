@@ -4,10 +4,11 @@ namespace App\Filament\Resources\CmsPages\Schemas;
 
 use App\Models\Page;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Schemas\Components\Section;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class CmsPageForm
@@ -45,10 +46,10 @@ class CmsPageForm
                             ->maxLength(70)
                             ->helperText('Recommended: 50-60 characters'),
 
-                        TextInput::make('meta_description')
+                        Textarea::make('meta_description')
                             ->label('Meta Description')
-                            ->maxLength(160)
                             ->rows(3)
+                            ->maxLength(160)
                             ->helperText('Recommended: 150-160 characters'),
                     ])->columns(1),
 

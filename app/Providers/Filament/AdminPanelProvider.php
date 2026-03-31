@@ -3,8 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\Orders\Widgets\OrderStats;
+use App\Filament\Widgets\OrdersByStatusWidget;
 use App\Filament\Widgets\RecentCustomersWidget;
 use App\Filament\Widgets\RevenueChartWidget;
+use App\Filament\Widgets\SalesByMonthWidget;
 use App\Filament\Widgets\TopProductsWidget;
 use App\Http\Middleware\RedirectNonAdmins;
 use App\Settings\GeneralSettings;
@@ -49,6 +51,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 OrderStats::class,
                 RevenueChartWidget::class,
+                SalesByMonthWidget::class,
+                OrdersByStatusWidget::class,
                 TopProductsWidget::class,
                 RecentCustomersWidget::class,
             ])

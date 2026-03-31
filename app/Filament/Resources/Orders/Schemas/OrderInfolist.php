@@ -2,10 +2,15 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
+use App\Models\Order;
+use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\RepeatableEntry; // New Import
-use Filament\Infolists\Components\TextEntry;      // New Import
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Split;
+use Filament\Schemas\Components\Stack;
 use Filament\Schemas\Schema;
 
 class OrderInfolist
@@ -14,113 +19,108 @@ class OrderInfolist
     {
         return $schema
             ->components([
-                // 1. Top Header: Identity & Status
-                Section::make('Order Overview')
-                    ->icon('heroicon-m-shopping-bag')
-                    ->columns(3)
-                    ->schema([
-                        TextEntry::make('order_number')
-                            ->label('Order Reference')
-                            ->weight('black')
-                            ->size('lg')
-                            ->color('primary')
-                            ->icon('heroicon-m-hashtag'),
-
-                        TextEntry::make('user.name')
-                            ->label('Customer')
-                            ->icon('heroicon-m-user')
-                            ->weight('bold'),
-
-                        TextEntry::make('status')
-                            ->badge()
-                            ->color(fn (string $state): string => match ($state) {
-                                'new' => 'info',
-                                'processing' => 'warning',
-                                'shipped', 'delivered' => 'success',
-                                'cancelled' => 'danger',
-                                default => 'gray',
-                            }),
-                    ]),
-
-                // 2. Timeline
-                Section::make('Timeline')
-                    ->compact()
-                    ->columns(2)
-                    ->schema([
-                        TextEntry::make('created_at')
-                            ->label('Placed At')
-                            ->dateTime(),
-                        TextEntry::make('updated_at')
-                            ->label('Last Activity')
-                            ->since(),
-                    ]),
-
-                // 3. Financials & Logistics
-                Section::make()
-                    ->columns(2)
-                    ->schema([
-                        Section::make('Payment Details')
-                            ->columnSpan(1)
-                            ->icon('heroicon-m-credit-card')
+                Split::make([
+                    Stack::make([
+                        Section::make('Order Overview')
+                            ->icon('heroicon-m-shopping-bag')
                             ->schema([
-                                TextEntry::make('grand_total')
-                                    ->label('Total Amount')
-                                    ->money('NGN')
+                                TextEntry::make('order_number')
+                                    ->label('Order Reference')
                                     ->weight('black')
-                                    ->size('xl')
-                                    ->color('success'),
+                                    ->size('lg')
+                                    ->color('primary')
+                                    ->icon('heroicon-m-hashtag'),
 
-                                TextEntry::make('payment_method')
-                                    ->label('Method')
-                                    ->badge(),
+                                TextEntry::make('user.name')
+                                    ->label('Customer')
+                                    ->icon('heroicon-m-user')
+                                    ->weight('bold'),
 
-                                TextEntry::make('payment_status')
-                                    ->label('Payment Status')
+                                TextEntry::make('status')
                                     ->badge()
                                     ->color(fn (string $state): string => match ($state) {
-                                        'paid' => 'success',
-                                        'pending' => 'warning',
-                                        default => 'danger',
+                                        'new' => 'info',
+                                        'processing' => 'warning',
+                                        'shipped', 'delivered' => 'success',
+                                        'cancelled' => 'danger',
+                                        default => 'gray',
                                     }),
-                            ]),
-
-                        Section::make('Shipping Details')
-                            ->columnSpan(1)
-                            ->icon('heroicon-m-truck')
-                            ->schema([
-                                TextEntry::make('shipping_method')
-                                    ->icon('heroicon-m-map-pin'),
-
-                                TextEntry::make('shipping_amount')
-                                    ->label('Shipping Cost')
-                                    ->money('NGN'),
-
-                                TextEntry::make('notes')
-                                    ->placeholder('No customer notes.'),
-                                // ->italic(),
-                            ]),
+                            ])->columns(3),
                     ]),
 
-                // 4. THE ORDER ITEMS SECTION (The dynamic list of products)
+                    Section::make('Status Timeline')
+                        ->headerActions([
+                            TextEntry::make('updated_at')
+                                ->label('Last Update')
+                                ->since()
+                                ->color('gray'),
+                        ])
+                        ->schema([
+                            Grid::make(5)->schema([
+                                self::statusStep('new', 'Order Placed', 'heroicon-m-shopping-cart'),
+                                self::statusStep('processing', 'Processing', 'heroicon-m-cog-6-tooth'),
+                                self::statusStep('shipped', 'Shipped', 'heroicon-m-truck'),
+                                self::statusStep('delivered', 'Delivered', 'heroicon-m-check-circle'),
+                                self::statusStep('cancelled', 'Cancelled', 'heroicon-m-x-circle'),
+                            ]),
+                        ]),
+                ])->columnSpanFull(),
+
+                Split::make([
+                    Section::make('Payment Details')
+                        ->icon('heroicon-m-credit-card')
+                        ->schema([
+                            TextEntry::make('grand_total')
+                                ->label('Total Amount')
+                                ->money('NGN')
+                                ->weight('black')
+                                ->size('xl')
+                                ->color('success'),
+
+                            TextEntry::make('payment_method')
+                                ->label('Method')
+                                ->badge(),
+
+                            TextEntry::make('payment_status')
+                                ->label('Payment Status')
+                                ->badge()
+                                ->color(fn (string $state): string => match ($state) {
+                                    'paid' => 'success',
+                                    'pending' => 'warning',
+                                    default => 'danger',
+                                }),
+                        ]),
+
+                    Section::make('Shipping Details')
+                        ->icon('heroicon-m-truck')
+                        ->schema([
+                            TextEntry::make('shipping_method')
+                                ->icon('heroicon-m-map-pin'),
+
+                            TextEntry::make('shipping_amount')
+                                ->label('Shipping Cost')
+                                ->money('NGN'),
+
+                            TextEntry::make('notes')
+                                ->placeholder('No customer notes.'),
+                        ]),
+                ])->columnSpanFull(),
+
                 Section::make('Items Ordered')
                     ->icon('heroicon-m-list-bullet')
                     ->schema([
                         RepeatableEntry::make('items')
                             ->label('')
-                            // We use 6 columns now for better distribution
                             ->columns(6)
                             ->schema([
-                                // Restyled Image: Smaller and aligned to the left
                                 ImageEntry::make('product.images')
-                                    ->label('') // Remove label to save vertical space
+                                    ->label('')
                                     ->circular()
-                                    // DECREASED SIZE: 60x60 is standard for list thumbnails
                                     ->imageHeight(60)
                                     ->imageWidth(60)
-                                    // ->ring(1) // Optional subtle ring
                                     ->disk('public')
                                     ->placeholder('No Photo')
-                                    ->columnSpan(1) // Takes up 1 of 6 columns
+                                    ->columnSpan(1)
                                     ->alignLeft()
                                     ->state(function ($record) {
                                         $images = $record->product?->images;
@@ -131,12 +131,10 @@ class OrderInfolist
                                         return is_string($images) ? $images : null;
                                     }),
 
-                                // Product Name: Given more space to breathe
                                 TextEntry::make('product.name')
                                     ->label('Product Description')
                                     ->weight('bold')
                                     ->color('gray')
-                                    // Give name 2 columns so it doesn't wrap immediately
                                     ->columnSpan(2),
 
                                 TextEntry::make('quantity')
@@ -161,5 +159,61 @@ class OrderInfolist
                     ]),
 
             ]);
+    }
+
+    protected static function statusStep(string $status, string $label, string $icon): array
+    {
+        return [
+            IconEntry::make($status.'_icon')
+                ->icon(fn (Order $record) => $record->status === $status ? $icon : 'heroicon-m-minus-circle')
+                ->color(fn (Order $record) => self::getStatusColor($record->status, $status))
+                ->label(fn (Order $record) => self::getStatusLabel($record->status, $label)),
+        ];
+    }
+
+    protected static function getStatusColor(string $currentStatus, string $step): string
+    {
+        $statusOrder = ['new', 'processing', 'shipped', 'delivered'];
+        $currentIndex = array_search($currentStatus, $statusOrder);
+        $stepIndex = array_search($step, $statusOrder);
+
+        if ($currentStatus === 'cancelled') {
+            return 'danger';
+        }
+
+        if ($step === 'cancelled') {
+            return $currentStatus === 'cancelled' ? 'danger' : 'gray';
+        }
+
+        if ($currentIndex === false || $stepIndex === false) {
+            return 'gray';
+        }
+
+        if ($stepIndex <= $currentIndex) {
+            return 'success';
+        }
+
+        if ($stepIndex === $currentIndex + 1) {
+            return 'warning';
+        }
+
+        return 'gray';
+    }
+
+    protected static function getStatusLabel(string $currentStatus, string $label): string
+    {
+        $statusOrder = ['new', 'processing', 'shipped', 'delivered'];
+        $currentIndex = array_search($currentStatus, $statusOrder);
+        $stepIndex = array_search(explode('_', $label)[0] === 'Order' ? 'new' : $label, $statusOrder);
+
+        if ($currentStatus === 'cancelled') {
+            return $label;
+        }
+
+        if ($currentIndex !== false && $stepIndex !== false && $stepIndex <= $currentIndex) {
+            return $label.' ✓';
+        }
+
+        return $label;
     }
 }
