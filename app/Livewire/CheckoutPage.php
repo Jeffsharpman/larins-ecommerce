@@ -8,6 +8,7 @@ use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\ShippingMethod;
 use App\Services\PaystackService;
+use App\Services\StripeService;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
@@ -51,7 +52,7 @@ class CheckoutPage extends Component
     #[Rule('required|string|min:2|max:100')]
     public $state;
 
-    #[Rule('required|string|in:paystack')]
+    #[Rule('required|string|in:paystack,stripe')]
     public $payment_method = 'paystack';
 
     #[Rule('required|numeric|digits:6')]
@@ -206,34 +207,13 @@ class CheckoutPage extends Component
                 $this->applied_coupon->increment('used_count');
             }
 
-            $paystack = new PaystackService;
-
-            $result = $paystack->initializeTransaction([
-                'email' => auth()->user()->email,
-                'amount' => $this->grand_total,
-                'order_id' => $order->id,
-                'user_id' => auth()->id(),
-                'first_name' => $this->first_name,
-                'last_name' => $this->last_name,
-                'phone' => $this->phone,
-                'callback_url' => route('paystack.callback'),
-                'currency' => 'NGN',
-            ]);
-
-            if ($result['success']) {
-                return redirect()->away($result['authorization_url']);
+            if ($this->payment_method === 'paystack') {
+                return $this->processPaystackPayment($order);
             }
 
-            $order->update(['payment_status' => 'failed']);
-
-            $this->dispatch('swal:alert',
-                icon: 'error',
-                title: 'Payment Error',
-                html: '<p class="text-[9px] font-medium uppercase tracking-widest">'.$result['message'].'</p>',
-                position: 'bottom-end',
-                timer: 5000,
-                toast: true,
-            );
+            if ($this->payment_method === 'stripe') {
+                return $this->processStripePayment($order, $cart_items);
+            }
 
         } catch (\Exception $e) {
             $this->dispatch('swal:alert',
@@ -247,6 +227,82 @@ class CheckoutPage extends Component
         } finally {
             $this->processing_payment = false;
         }
+    }
+
+    protected function processPaystackPayment(Order $order)
+    {
+        $paystack = new PaystackService;
+
+        $result = $paystack->initializeTransaction([
+            'email' => auth()->user()->email,
+            'amount' => $this->grand_total,
+            'order_id' => $order->id,
+            'user_id' => auth()->id(),
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'phone' => $this->phone,
+            'callback_url' => route('paystack.callback'),
+            'currency' => 'NGN',
+        ]);
+
+        if ($result['success']) {
+            return redirect()->away($result['authorization_url']);
+        }
+
+        $order->update(['payment_status' => 'failed']);
+
+        $this->dispatch('swal:alert',
+            icon: 'error',
+            title: 'Payment Error',
+            html: '<p class="text-[9px] font-medium uppercase tracking-widest">'.$result['message'].'</p>',
+            position: 'bottom-end',
+            timer: 5000,
+            toast: true,
+        );
+
+        return null;
+    }
+
+    protected function processStripePayment(Order $order, array $cart_items)
+    {
+        $stripe = new StripeService;
+
+        $items = array_map(function ($item) {
+            return [
+                'name' => $item['name'],
+                'description' => 'Product purchase',
+                'unit_amount' => $item['unit_amount'],
+                'quantity' => $item['quantity'],
+            ];
+        }, $cart_items);
+
+        $result = $stripe->createCheckoutSession([
+            'items' => $items,
+            'email' => auth()->user()->email,
+            'order_id' => $order->id,
+            'user_id' => auth()->id(),
+            'shipping_amount' => $this->shipping,
+            'shipping_method' => $order->shipping_method,
+            'success_url' => route('stripe.success', ['order_id' => $order->id]).'?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => route('cancel'),
+        ]);
+
+        if ($result['success']) {
+            return redirect()->away($result['url']);
+        }
+
+        $order->update(['payment_status' => 'failed']);
+
+        $this->dispatch('swal:alert',
+            icon: 'error',
+            title: 'Payment Error',
+            html: '<p class="text-[9px] font-medium uppercase tracking-widest">'.$result['message'].'</p>',
+            position: 'bottom-end',
+            timer: 5000,
+            toast: true,
+        );
+
+        return null;
     }
 
     public function render()

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Payment\PaystackController;
 use App\Livewire\AboutPage;
 use App\Livewire\AccountPage;
 use App\Livewire\Auth\ForgetPage;
@@ -76,3 +77,9 @@ Route::prefix('checkout/paystack')->group(function () {
 });
 
 Route::post('/webhook/paystack', [PaystackController::class, 'webhook'])->name('paystack.webhook')->withoutMiddleware(['csrf']);
+
+Route::prefix('checkout/stripe')->group(function () {
+    Route::get('/success', [StripeController::class, 'success'])->name('stripe.success');
+});
+
+Route::post('/webhook/stripe', [StripeController::class, 'webhook'])->name('stripe.webhook')->withoutMiddleware(['csrf']);

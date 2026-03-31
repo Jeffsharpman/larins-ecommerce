@@ -145,41 +145,69 @@
                             </div>
                             <div>
                                 <h2 class="font-black italic uppercase text-xl tracking-tighter">Payment</h2>
-                                <p class="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-black">Secure Transaction</p>
+                                <p class="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-black">Select Payment Method</p>
                             </div>
                         </div>
 
-                        <div class="bg-primary/5 border border-primary/20 rounded-[2rem] p-8 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
-                            
-                            <div class="flex items-center gap-6 mb-6">
-                                <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
-                                    <svg class="w-8 h-8 text-background" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                                    </svg>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {{-- Paystack Option --}}
+                            <label class="relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                                <input wire:model="payment_method" type="radio" value="paystack" class="sr-only peer">
+                                <div class="flex justify-between items-start mb-6">
+                                    <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                        <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary transition-all duration-500">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-background opacity-0 peer-checked:opacity-100"></div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="font-black italic uppercase text-2xl tracking-tighter">Paystack</h3>
-                                    <p class="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Secure Payment Gateway</p>
+                                <span class="font-black italic uppercase tracking-tighter text-xl mb-2">Paystack</span>
+                                <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">Nigerian Banks</span>
+                                <div class="mt-4 pt-4 border-t border-border/50">
+                                    <div class="flex items-center gap-2 text-[9px] text-emerald-500 font-black uppercase tracking-wider">
+                                        <x-lucide-check-circle class="w-3 h-3" />
+                                        <span>Local Support</span>
+                                    </div>
                                 </div>
-                            </div>
+                            </label>
 
-                            <div class="space-y-3">
-                                <div class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                                    <x-lucide-check-circle class="w-4 h-4 text-emerald-500" />
-                                    <span>256-bit SSL Encryption</span>
+                            {{-- Stripe Option --}}
+                            <label class="relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                                <input wire:model="payment_method" type="radio" value="stripe" class="sr-only peer">
+                                <div class="flex justify-between items-start mb-6">
+                                    <div class="w-16 h-16 bg-[#635BFF]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#635BFF]/20 transition-colors">
+                                        <svg class="w-8 h-8 text-[#635BFF]" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center peer-checked:border-[#635BFF] peer-checked:bg-[#635BFF] transition-all duration-500">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-background opacity-0 peer-checked:opacity-100"></div>
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                                    <x-lucide-check-circle class="w-4 h-4 text-emerald-500" />
-                                    <span>Secure Card Processing</span>
+                                <span class="font-black italic uppercase tracking-tighter text-xl mb-2">Stripe</span>
+                                <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">International Cards</span>
+                                <div class="mt-4 pt-4 border-t border-border/50">
+                                    <div class="flex items-center gap-2 text-[9px] text-[#635BFF] font-black uppercase tracking-wider">
+                                        <x-lucide-check-circle class="w-3 h-3" />
+                                        <span>Global Cards</span>
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                                    <x-lucide-check-circle class="w-4 h-4 text-emerald-500" />
-                                    <span>All Nigerian Banks Supported</span>
-                                </div>
-                            </div>
+                            </label>
+                        </div>
 
-                            <input type="hidden" wire:model="payment_method" value="paystack">
+                        {{-- Security Badges --}}
+                        <div class="mt-8 pt-8 border-t border-border flex items-center justify-center gap-6 opacity-50">
+                            <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                                <x-lucide-lock class="w-4 h-4" />
+                                <span>256-bit SSL</span>
+                            </div>
+                            <div class="h-4 w-[1px] bg-border"></div>
+                            <div class="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                                <x-lucide-shield-check class="w-4 h-4" />
+                                <span>PCI Compliant</span>
+                            </div>
                         </div>
                     </div>
                 </div>
