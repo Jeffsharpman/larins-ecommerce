@@ -15,7 +15,7 @@
             <p class="text-muted-foreground text-xs font-bold uppercase tracking-[0.4em] mt-6 opacity-60 italic">Finalize your curated selection</p>
         </div>
 
-        <form wire:submit.prevent="placeOrder">
+        <form wire:submit.prevent="processPayment">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
                 
                 {{-- Left Column: Forms --}}
@@ -136,47 +136,50 @@
                     </div>
 
                     {{-- Payment Method Card --}}
-                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card">
-                        <div class="flex items-center gap-5 mb-12 pb-8 border-b border-border">
-                            <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden">
+                        <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl"></div>
+                        
+                        <div class="flex items-center gap-5 mb-8 pb-6 border-b border-border">
+                            <div class="w-14 h-14 rounded-2xl bg-primary text-background flex items-center justify-center shadow-lg shadow-primary/20">
                                 <x-lucide-credit-card class="w-7 h-7" />
                             </div>
                             <div>
                                 <h2 class="font-black italic uppercase text-xl tracking-tighter">Payment</h2>
-                                <p class="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-black">Transaction Method</p>
+                                <p class="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-black">Secure Transaction</p>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {{-- Option: COD --}}
-                            <label class="relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                                <input wire:model="payment_method" type="radio" value="cod" class="sr-only peer">
-                                <div class="flex justify-between items-start mb-8">
-                                    <div class="w-14 h-14 bg-muted rounded-2xl flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-500">
-                                        <x-lucide-banknote class="w-7 h-7" />
-                                    </div>
-                                    <div class="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary transition-all duration-500">
-                                        <div class="w-2.5 h-2.5 rounded-full bg-background opacity-0 peer-checked:opacity-100"></div>
-                                    </div>
+                        <div class="bg-primary/5 border border-primary/20 rounded-[2rem] p-8 relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
+                            
+                            <div class="flex items-center gap-6 mb-6">
+                                <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg">
+                                    <svg class="w-8 h-8 text-background" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                    </svg>
                                 </div>
-                                <span class="font-black italic uppercase tracking-tighter text-xl mb-1">Cash on Delivery</span>
-                                <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">Physical settlement</span>
-                            </label>
+                                <div>
+                                    <h3 class="font-black italic uppercase text-2xl tracking-tighter">Paystack</h3>
+                                    <p class="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Secure Payment Gateway</p>
+                                </div>
+                            </div>
 
-                            {{-- Option: Online --}}
-                            <label class="relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                                <input wire:model="payment_method" type="radio" value="stripe" class="sr-only peer">
-                                <div class="flex justify-between items-start mb-8">
-                                    <div class="w-14 h-14 bg-muted rounded-2xl flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-500">
-                                        <x-lucide-shield-check class="w-7 h-7" />
-                                    </div>
-                                    <div class="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary transition-all duration-500">
-                                        <div class="w-2.5 h-2.5 rounded-full bg-background opacity-0 peer-checked:opacity-100"></div>
-                                    </div>
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                    <x-lucide-check-circle class="w-4 h-4 text-emerald-500" />
+                                    <span>256-bit SSL Encryption</span>
                                 </div>
-                                <span class="font-black italic uppercase tracking-tighter text-xl mb-1">Digital Wire</span>
-                                <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">Encrypted checkout</span>
-                            </label>
+                                <div class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                    <x-lucide-check-circle class="w-4 h-4 text-emerald-500" />
+                                    <span>Secure Card Processing</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                                    <x-lucide-check-circle class="w-4 h-4 text-emerald-500" />
+                                    <span>All Nigerian Banks Supported</span>
+                                </div>
+                            </div>
+
+                            <input type="hidden" wire:model="payment_method" value="paystack">
                         </div>
                     </div>
                 </div>
@@ -261,20 +264,21 @@
                             </div>
                         </div>
 
-                        <button type="submit" wire:loading.attr="disabled"
-                            class="w-full py-7 bg-primary text-background rounded-[2rem] font-black uppercase tracking-[0.4em] text-[11px] shadow-2xl shadow-primary/30 transition-all duration-700 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-4 group">
+                        <button type="submit" wire:loading.attr="disabled" wire:target="processPayment"
+                            class="w-full py-7 bg-primary text-background rounded-[2rem] font-black uppercase tracking-[0.4em] text-[11px] shadow-2xl shadow-primary/30 transition-all duration-700 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-4 group disabled:opacity-70">
                             
-                            <span wire:loading.remove wire:target="placeOrder" class="flex items-center gap-4">
-                                Confirm Acquisition
+                            <span wire:loading.remove wire:target="processPayment" class="flex items-center gap-4">
+                                <x-lucide-lock class="w-4 h-4" />
+                                Proceed to Paystack
                                 <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-2 transition-transform duration-500" />
                             </span>
 
-                            <div wire:loading.flex wire:target="placeOrder" class="items-center gap-3">
+                            <div wire:loading.flex wire:target="processPayment" class="items-center gap-3">
                                 <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                <span class="italic tracking-tighter">Processing...</span>
+                                <span class="italic tracking-tighter">Initializing Payment...</span>
                             </div>
                         </button>
                     </div>

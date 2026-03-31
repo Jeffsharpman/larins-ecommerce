@@ -70,3 +70,9 @@ if (app(GeneralSettings::class)->maintenance_mode && ! request()->is('admin*')) 
         return view('errors.maintenance'); // Create a simple "Coming Soon" blade
     });
 }
+
+Route::prefix('checkout/paystack')->group(function () {
+    Route::get('/callback', [PaystackController::class, 'callback'])->name('paystack.callback');
+});
+
+Route::post('/webhook/paystack', [PaystackController::class, 'webhook'])->name('paystack.webhook')->withoutMiddleware(['csrf']);

@@ -3,18 +3,16 @@
 namespace App\Livewire;
 
 use App\Helpers\CartManagement;
-use App\Mail\OrderPlaced;
 use App\Models\Address;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\ShippingMethod;
-use Illuminate\Support\Facades\Mail;
+use App\Services\PaystackService;
+use Illuminate\Support\Collection;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Pest\Support\Str;
-use Stripe\Checkout\Session;
-use Stripe\Stripe;
 
 #[Title('Checkout')]
 class CheckoutPage extends Component
@@ -53,15 +51,18 @@ class CheckoutPage extends Component
     #[Rule('required|string|min:2|max:100')]
     public $state;
 
-    #[Rule('required|string|in:cod,stripe,paystack')]
-    public $payment_method = 'cod';
+    #[Rule('required|string|in:paystack')]
+    public $payment_method = 'paystack';
 
     #[Rule('required|numeric|digits:6')]
     public $zip_code;
 
     public $selected_shipping_method_id;
 
-    public $shipping_methods = [];
+    /** @var Collection<int, ShippingMethod> */
+    public $shipping_methods;
+
+    public $processing_payment = false;
 
     public function mount()
     {
@@ -91,7 +92,7 @@ class CheckoutPage extends Component
         $this->tax = $totals['tax'];
 
         if ($this->selected_shipping_method_id) {
-            $shippingMethod = $this->shipping_methods->find($this->selected_shipping_method_id);
+            $shippingMethod = $this->shipping_methods->firstWhere('id', $this->selected_shipping_method_id);
             if ($shippingMethod) {
                 $this->shipping = $this->calculateShippingCost($shippingMethod);
             }
@@ -166,82 +167,86 @@ class CheckoutPage extends Component
         $this->calculateTotals();
     }
 
-    public function placeOrder()
+    public function processPayment()
     {
         $this->validate();
 
-        $cart_items = CartManagement::getCartItemsFromCookie();
-        $line_items = [];
+        $this->processing_payment = true;
 
-        foreach ($cart_items as $item) {
-            $line_items[] = [
-                'price_data' => [
-                    'currency' => 'ngn',
-                    'unit_amount' => $item['unit_amount'] * 100,
-                    'product_data' => [
-                        'name' => $item['name'],
-                    ],
-                ],
-                'quantity' => $item['quantity'],
-            ];
-        }
+        try {
+            $cart_items = CartManagement::getCartItemsFromCookie();
+            $shippingMethod = $this->shipping_methods->firstWhere('id', $this->selected_shipping_method_id);
 
-        $order = new Order;
-        $order->user_id = auth()->id();
-        $order->order_number = 'ORD-'.strtoupper(Str::random(10));
-        $order->grand_total = $this->grand_total;
-        $order->payment_method = $this->payment_method;
-        $order->payment_status = 'pending';
-        $order->status = 'new';
+            $order = new Order;
+            $order->user_id = auth()->id();
+            $order->order_number = 'ORD-'.strtoupper(Str::random(10));
+            $order->grand_total = $this->grand_total;
+            $order->payment_method = $this->payment_method;
+            $order->payment_status = 'pending';
+            $order->status = 'new';
+            $order->shipping_amount = $this->shipping;
+            $order->shipping_method = $shippingMethod?->name ?? 'Standard';
+            $order->notes = 'Order placed by '.auth()->user()->name;
+            $order->save();
 
-        $shippingMethod = $this->shipping_methods->find($this->selected_shipping_method_id);
-        $order->shipping_amount = $this->shipping;
-        $order->shipping_method = $shippingMethod?->name ?? 'Standard';
-        $order->notes = 'Order placed by '.auth()->user()->name;
+            $address = new Address;
+            $address->order_id = $order->id;
+            $address->first_name = $this->first_name;
+            $address->last_name = $this->last_name;
+            $address->phone = $this->phone;
+            $address->street_address = $this->address;
+            $address->city = $this->city;
+            $address->state = $this->state;
+            $address->zip_code = $this->zip_code;
+            $address->save();
 
-        $order->save();
+            $order->items()->createMany($cart_items);
 
-        $redirect_url = '';
+            if ($this->applied_coupon) {
+                $this->applied_coupon->increment('used_count');
+            }
 
-        if ($this->payment_method == 'stripe') {
-            Stripe::setApiKey(env('STRIPE_SECRET'));
+            $paystack = new PaystackService;
 
-            $sessionCheckout = Session::create([
-                'payment_method_types' => ['card'],
-                'customer_email' => auth()->user()->email,
-                'line_items' => $line_items,
-                'mode' => 'payment',
-                'success_url' => route('success', ['order_id' => $order->id]).'?session_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('cancel'),
+            $result = $paystack->initializeTransaction([
+                'email' => auth()->user()->email,
+                'amount' => $this->grand_total,
+                'order_id' => $order->id,
+                'user_id' => auth()->id(),
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'phone' => $this->phone,
+                'callback_url' => route('paystack.callback'),
+                'currency' => 'NGN',
             ]);
 
-            $redirect_url = $sessionCheckout->url;
-        } else {
-            $redirect_url = route('success', ['order_id' => $order->id]);
+            if ($result['success']) {
+                return redirect()->away($result['authorization_url']);
+            }
+
+            $order->update(['payment_status' => 'failed']);
+
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Payment Error',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">'.$result['message'].'</p>',
+                position: 'bottom-end',
+                timer: 5000,
+                toast: true,
+            );
+
+        } catch (\Exception $e) {
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Error',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">An error occurred. Please try again.</p>',
+                position: 'bottom-end',
+                timer: 5000,
+                toast: true,
+            );
+        } finally {
+            $this->processing_payment = false;
         }
-
-        $address = new Address;
-        $address->order_id = $order->id;
-        $address->first_name = $this->first_name;
-        $address->last_name = $this->last_name;
-        $address->phone = $this->phone;
-        $address->street_address = $this->address;
-        $address->city = $this->city;
-        $address->state = $this->state;
-        $address->zip_code = $this->zip_code;
-        $address->save();
-
-        $order->items()->createMany($cart_items);
-
-        if ($this->applied_coupon) {
-            $this->applied_coupon->increment('used_count');
-        }
-
-        CartManagement::clearCartItems();
-
-        Mail::to(request()->user())->send(new OrderPlaced($order));
-
-        return redirect($redirect_url);
     }
 
     public function render()
