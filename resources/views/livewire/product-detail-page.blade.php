@@ -1,20 +1,20 @@
-<div class="min-h-screen bg-white dark:bg-[#050505] text-foreground transition-colors duration-700">
+<div class="min-h-screen bg-white dark:bg-[#050505] text-foreground transition-colors duration-700" x-data="{ headerHeight: 0 }" x-init="setTimeout(() => { const header = document.querySelector('header.fixed'); if (header) { headerHeight = header.offsetHeight; } else { headerHeight = 80; } }, 50)">
     {{-- Ambient Light Leak --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
 
-    {{-- Minimalist Navigation --}}
-    <div class="border-b border-border/40 py-6 backdrop-blur-md sticky top-0 z-50 bg-white/80 dark:bg-[#050505]/80">
+    {{-- Minimalist Navigation (directly below header) --}}
+    <div class="border-b border-border/40 py-3 backdrop-blur-md sticky z-20 bg-white/80 dark:bg-[#050505]/80" :style="`top: ${headerHeight}px`">
         <div class="max-w-7xl mx-auto px-8 flex justify-between items-center">
-            <nav class="flex items-center gap-4 text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground">
-                <a href="/" wire:navigate class="hover:text-primary transition-colors">Maison</a>
-                <span class="opacity-20 text-[14px] leading-none">/</span>
-                <a href="/categories" wire:navigate class="hover:text-primary transition-colors">Archive</a>
-                <span class="opacity-20 text-[14px] leading-none">/</span>
-                <span class="text-foreground tracking-[0.2em] italic">{{ $product->name }}</span>
+            <nav class="flex items-center gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground overflow-x-auto no-scrollbar">
+                <a href="/" wire:navigate class="hover:text-primary transition-colors shrink-0">Maison</a>
+                <span class="opacity-20 text-[14px] leading-none shrink-0">/</span>
+                <a href="/categories" wire:navigate class="hover:text-primary transition-colors shrink-0">Archive</a>
+                <span class="opacity-20 text-[14px] leading-none shrink-0">/</span>
+                <span class="text-foreground tracking-[0.2em] italic truncate max-w-[200px] shrink-0">{{ $product->name }}</span>
             </nav>
             
-            <div class="hidden md:flex items-center gap-6">
-                <span class="text-[10px] font-black uppercase tracking-widest text-primary italic">Status: Verified Inventory</span>
+            <div class="hidden md:flex items-center gap-6 shrink-0">
+                <span class="text-[10px] font-black uppercase tracking-widest text-primary italic whitespace-nowrap">Status: Verified</span>
             </div>
         </div>
     </div>

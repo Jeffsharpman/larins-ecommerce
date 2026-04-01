@@ -12,39 +12,43 @@ document.addEventListener('livewire:navigated', initPreline);
 document.addEventListener('livewire:updated', initPreline);
 document.addEventListener('DOMContentLoaded', initPreline);
 
-document.addEventListener('livewire:navigated', () => {
+function initTheme() {
     const themeButtons = document.querySelectorAll('#themeToggle, #themeToggleMobile');
     const html = document.documentElement;
 
-    // 1. RE-APPLY THEME FROM STORAGE (The Missing Piece)
+    // Apply saved theme or system preference
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
         html.classList.add('dark');
     } else {
         html.classList.remove('dark');
     }
 
-    // 2. Initial Icon State Sync
+    // Update icons based on current theme
     const updateIcons = () => {
         const isDark = html.classList.contains('dark');
         themeButtons.forEach(btn => {
             const sun = btn.querySelector('.sun-icon');
             const moon = btn.querySelector('.moon-icon');
             
-            if (isDark) {
-                sun?.classList.add('hidden');
-                moon?.classList.remove('hidden');
-            } else {
-                sun?.classList.remove('hidden');
-                moon?.classList.add('hidden');
+            if (sun && moon) {
+                if (isDark) {
+                    sun.classList.add('hidden');
+                    moon.classList.remove('hidden');
+                } else {
+                    sun.classList.remove('hidden');
+                    moon.classList.add('hidden');
+                }
             }
         });
     };
 
-    // 3. Click Logic
+    updateIcons();
+
+    // Toggle theme on button click
     themeButtons.forEach(btn => {
-        // Use { once: true } or clear previous listeners to avoid clones if needed, 
-        // but Livewire usually handles this cleanup on navigated.
         btn.addEventListener('click', () => {
             html.classList.toggle('dark');
             const theme = html.classList.contains('dark') ? 'dark' : 'light';
@@ -52,7 +56,9 @@ document.addEventListener('livewire:navigated', () => {
             updateIcons();
         });
     });
+}
 
-    // Run once on every navigation
-    updateIcons();
-});
+// Initialize theme on first load and on Livewire navigation
+initTheme();
+
+document.addEventListener('livewire:navigated', initTheme);

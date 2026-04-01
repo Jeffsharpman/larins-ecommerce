@@ -291,7 +291,7 @@ class CheckoutPage extends Component
             'shipping_amount' => $this->shipping,
             'tax_amount' => $this->tax,
             'shipping_method' => $order->shipping_method,
-            'success_url' => route('stripe.success', ['order_id' => $order->id]).'?session_id={CHECKOUT_SESSION_ID}',
+            'success_url' => route('stripe.success', ['order_id' => $order->id]).'&session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('cancel'),
         ]);
 

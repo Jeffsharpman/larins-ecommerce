@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Payment;
 
+use App\Helpers\CartManagement;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\StripeService;
@@ -21,40 +22,86 @@ class StripeController extends Controller
         $orderId = $request->query('order_id');
         $sessionId = $request->query('session_id');
 
+        Log::info('=== STRIPE SUCCESS CALLBACK ===', [
+            'full_url' => $request->fullUrl(),
+            'order_id' => $orderId,
+            'session_id' => $sessionId,
+            'all_params' => $request->query(),
+        ]);
+
         if (! $orderId) {
+            Log::error('Stripe success: No order_id provided', $request->query());
+
             return redirect()->route('cancel')->with('error', 'Order not found');
         }
 
         $order = Order::find($orderId);
 
         if (! $order) {
+            Log::error('Stripe success: Order not found', ['order_id' => $orderId]);
+
             return redirect()->route('cancel')->with('error', 'Order not found');
         }
 
-        if ($sessionId) {
-            $result = $this->stripe->verifySession($sessionId);
+        if (! $sessionId) {
+            Log::warning('Stripe success: No session_id provided', [
+                'order_id' => $orderId,
+                'query_params' => $request->query(),
+            ]);
 
-            if ($result['success'] && $result['status'] === 'paid') {
-                $order->update([
-                    'payment_status' => 'paid',
-                ]);
+            return redirect()->route('cancel')->with('error', 'Session not found');
+        }
 
-                CartManagement::clearCartItems();
+        $result = $this->stripe->verifySession($sessionId);
 
-                Log::info('Stripe payment successful', [
-                    'order_id' => $order->id,
-                    'session_id' => $sessionId,
-                    'amount' => $result['amount_total'],
-                ]);
+        Log::info('Stripe session verification result', [
+            'session_id' => $sessionId,
+            'result' => $result,
+        ]);
 
-                return redirect()->route('success', [
-                    'order_id' => $order->id,
-                    'stripe_session' => $sessionId,
-                ])->with('success', 'Payment successful');
+        $paymentSuccess = false;
+
+        if ($result['success']) {
+            $status = strtolower($result['status'] ?? '');
+            $sessionStatus = strtolower($result['session_status'] ?? '');
+
+            Log::info('=== CHECKING PAYMENT STATUS ===', [
+                'status' => $status,
+                'session_status' => $sessionStatus,
+            ]);
+
+            // Accept multiple successful statuses
+            if (in_array($status, ['paid', 'complete']) || in_array($sessionStatus, ['complete', 'paid'])) {
+                $paymentSuccess = true;
             }
         }
 
-        return redirect()->route('cancel')->with('error', 'Payment was not successful');
+        if ($paymentSuccess) {
+            $order->update([
+                'payment_status' => 'paid',
+            ]);
+
+            CartManagement::clearCartItems();
+
+            Log::info('=== STRIPE PAYMENT SUCCESS ===', [
+                'order_id' => $order->id,
+                'session_id' => $sessionId,
+                'amount' => $result['amount_total'] ?? 0,
+            ]);
+
+            return redirect()->route('success', [
+                'order_id' => $order->id,
+                'stripe_session' => $sessionId,
+            ]);
+        }
+
+        Log::warning('=== STRIPE PAYMENT FAILED ===', [
+            'order_id' => $order->id,
+            'session_id' => $sessionId,
+            'result' => $result,
+        ]);
+
+        return redirect()->route('cancel');
     }
 
     public function webhook(Request $request): JsonResponse

@@ -82,6 +82,10 @@ class Navbar extends Component
 
     public function render()
     {
-        return view('livewire.partials.navbar');
+        return view('livewire.partials.navbar')
+            ->layout('components.layouts.app', [
+                'announcements' => $this->announcements,
+                'dismissedAnnouncements' => $this->dismissedAnnouncements,
+            ]);
     }
 }

@@ -52,6 +52,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/reset/{token}', ResetPage::class)->name('password.reset');
 });
 
+Route::get('/cancel', CancelPage::class)->name('cancel');
+Route::get('/success/{order_id}', SuccessPage::class)->name('success');
+
 Route::middleware('auth')->group(function () {
     Route::get('/logout', function () {
         auth()->logout();
@@ -61,8 +64,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', CheckoutPage::class)->middleware('verified');
     Route::get('/my-orders', MyOrdersPage::class)->name('my-orders')->middleware('verified');
     Route::get('/my-orders/{order_id}', MyOrdersDetailPage::class)->name('my-orders.show')->middleware('verified');
-    Route::get('/cancel', CancelPage::class)->name('cancel');
-    Route::get('/success/{order_id}', SuccessPage::class)->name('success');
 });
 
 Route::middleware('verified')->group(function () {

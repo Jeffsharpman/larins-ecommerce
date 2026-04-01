@@ -1,43 +1,8 @@
 <header
   class="fixed top-0 left-0 w-full z-50 backdrop-blur-xl bg-background/80 border-b border-border/40 transition-all duration-500"
   role="banner">
-  
-  {{-- Announcements Banner --}}
-  @if(!empty($announcements))
-    <div class="border-b border-border/20" x-data="{ visible: true }" x-show="visible" x-transition>
-      @foreach($announcements as $announcement)
-        @php
-          $styles = $this->getTypeStyles($announcement['type'] ?? 'info');
-        @endphp
-        <div class="relative {{ $styles[0] }} py-2.5 px-4 text-center text-[10px] font-black uppercase tracking-[0.2em]" x-data="{ show: true }" x-show="show" x-transition>
-          <div class="max-w-7xl mx-auto flex items-center justify-center gap-4">
-            @if(!empty($announcement['link']))
-              <a href="{{ $announcement['link'] }}" class="hover:underline flex items-center gap-3">
-                <span>{{ $announcement['title'] }}</span>
-                @if(!empty($announcement['content']))
-                  <span class="opacity-70">- {{ $announcement['content'] }}</span>
-                @endif
-              </a>
-            @else
-              <span>{{ $announcement['title'] }}</span>
-              @if(!empty($announcement['content']))
-                <span class="opacity-70">- {{ $announcement['content'] }}</span>
-              @endif
-            @endif
-            
-            @if($announcement['dismissible'] ?? true)
-              <button @click="show = false; $wire.dismissAnnouncement({{ $announcement['id'] }})" 
-                class="ml-4 opacity-60 hover:opacity-100 transition-opacity">
-                <x-lucide-x class="w-4 h-4" />
-              </button>
-            @endif
-          </div>
-        </div>
-      @endforeach
-    </div>
-  @endif
 
-  <div class="max-w-7xl mx-auto px-6 {{ !empty($announcements) ? 'pt-4' : '' }}">
+  <div class="max-w-7xl mx-auto px-6 pt-4">
     <div class="flex items-center justify-between h-20">
 
       {{-- Mobile Menu Toggle --}}

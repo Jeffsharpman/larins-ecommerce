@@ -103,17 +103,31 @@ class StripeService
         try {
             $session = Session::retrieve($sessionId);
 
+            $logData = [
+                'session_id' => $sessionId,
+                'payment_status' => $session->payment_status,
+                'status' => $session->status,
+                'payment_intent' => $session->payment_intent,
+                'customer_email' => $session->customer_email,
+                'amount_total' => $session->amount_total,
+                'currency' => $session->currency,
+            ];
+
+            Log::info('=== STRIPE SESSION FULL DATA ===', $logData);
+
             return [
                 'success' => true,
                 'status' => $session->payment_status,
+                'session_status' => $session->status,
                 'customer_email' => $session->customer_email,
                 'amount_total' => $session->amount_total / 100,
                 'metadata' => $session->metadata,
             ];
         } catch (\Exception $e) {
-            Log::error('Stripe session verification failed', [
+            Log::error('=== STRIPE VERIFICATION ERROR ===', [
                 'session_id' => $sessionId,
                 'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return [
