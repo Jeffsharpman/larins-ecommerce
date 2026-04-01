@@ -4,6 +4,7 @@ namespace App\Livewire\Auth;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -11,28 +12,43 @@ use Livewire\Component;
 #[Title('Register')]
 class RegisterPage extends Component
 {
-    #[Rule('required|min:5|max:255')]
+    #[Rule('required|min:2|max:255')]
     public $name;
 
-    #[Rule('required|email|unique:users')]
+    #[Rule('required|email|unique:users|email:rfc,dns')]
     public $email;
 
-    #[Rule('required|min:5|max:255')]
+    #[Rule('required|min:8|max:255|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/')]
     public $password;
 
     public function save()
     {
         $this->validate();
 
+        $key = 'register:'.$this->email;
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            session()->flash('error', 'Too many registration attempts. Please try again later.');
+
+            return;
+        }
+
+        RateLimiter::hit($key, 60);
+
         $user = User::create([
-            'name' => $this->name,
-            'email' => $this->email,
+            'name' => strip_tags($this->name),
+            'email' => strtolower(trim($this->email)),
             'password' => Hash::make($this->password),
         ]);
 
+        $user->sendEmailVerificationNotification();
+
+        RateLimiter::clear($key);
+
+        session()->flash('success', 'Registration successful! Please check your email to verify your account.');
+
         auth()->login($user);
 
-        return redirect()->intended();
+        return redirect()->intended('/');
     }
 
     public function render()

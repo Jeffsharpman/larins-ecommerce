@@ -16,6 +16,7 @@ use App\Filament\Widgets\RevenueChartWidget;
 use App\Filament\Widgets\SalesByMonthWidget;
 use App\Filament\Widgets\TopProductsWidget;
 use App\Http\Middleware\RedirectNonAdmins;
+use App\Http\Middleware\SecurityHeaders;
 use App\Settings\GeneralSettings;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -82,6 +83,7 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
                 RedirectNonAdmins::class,
+                SecurityHeaders::class,
             ])
             ->plugins([
                 FilamentShieldPlugin::make(),

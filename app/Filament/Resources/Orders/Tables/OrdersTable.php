@@ -8,6 +8,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
@@ -67,7 +68,16 @@ class OrdersTable
                         'delivered' => 'Delivered',
                         'cancelled' => 'Cancelled',
                     ])
-                    ->selectablePlaceholder(false),
+                    ->selectablePlaceholder(false)
+                    ->afterStateUpdated(function ($record, $state) {
+                        $record->update(['status' => $state]);
+
+                        Notification::make()
+                            ->title('Status Updated')
+                            ->body('Order status updated to '.ucfirst($state))
+                            ->success()
+                            ->send();
+                    }),
 
                 TextColumn::make('shipping_method')
                     ->label('Shipping')
