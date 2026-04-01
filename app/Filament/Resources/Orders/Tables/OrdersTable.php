@@ -8,6 +8,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -57,16 +58,16 @@ class OrdersTable
                     }),
 
                 // Interactive Status Column (Change status directly from the table)
-                TextColumn::make('status')
-                    ->badge()
-                    ->icon(fn (string $state): string => match ($state) {
-                        'new' => 'heroicon-m-sparkles',
-                        'processing' => 'heroicon-m-arrow-path',
-                        'shipped' => 'heroicon-m-truck',
-                        'delivered' => 'heroicon-m-check-badge',
-                        'cancelled' => 'heroicon-m-x-circle',
-                        default => 'heroicon-m-question-mark-circle',
-                    })
+                SelectColumn::make('status')
+                    ->label('Status')
+                    ->options([
+                        'new' => 'New',
+                        'processing' => 'Processing',
+                        'shipped' => 'Shipped',
+                        'delivered' => 'Delivered',
+                        'cancelled' => 'Cancelled',
+                    ])
+                    ->selectablePlaceholder(false)
                     ->color(fn (string $state): string => match ($state) {
                         'new' => 'info',
                         'processing' => 'warning',
@@ -112,7 +113,7 @@ class OrdersTable
                 ]))
             ->toolbarActions([
                 BulkActionGroup::make([
-                DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

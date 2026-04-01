@@ -105,7 +105,6 @@ class PaystackController extends Controller
         if ($result['status'] === 'success') {
             $order->update([
                 'payment_status' => 'paid',
-                'status' => 'processing',
             ]);
 
             Log::info('Paystack payment successful', [
@@ -185,7 +184,6 @@ class PaystackController extends Controller
         if ($order && $order->payment_status !== 'paid') {
             $order->update([
                 'payment_status' => 'paid',
-                'status' => 'processing',
             ]);
 
             Log::info('Paystack webhook: Payment marked as paid', [

@@ -20,13 +20,13 @@ class AddressesTable
                 TextColumn::make('full_name')
                     ->label('Name')
                     ->searchable()
-                    ->sortable()
-                    ->fontWeight('bold'),
+                    ->sortable(),
+                // ->fontWeight('bold'),
 
                 TextColumn::make('phone')
                     ->label('Phone')
-                    ->searchable()
-                    ->tel(),
+                    ->searchable(),
+                // ->tel(),
 
                 TextColumn::make('street_address')
                     ->label('Address')

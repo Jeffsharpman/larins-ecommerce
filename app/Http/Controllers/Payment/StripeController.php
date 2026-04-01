@@ -37,7 +37,6 @@ class StripeController extends Controller
             if ($result['success'] && $result['status'] === 'paid') {
                 $order->update([
                     'payment_status' => 'paid',
-                    'status' => 'processing',
                 ]);
 
                 Log::info('Stripe payment successful', [
@@ -115,7 +114,6 @@ class StripeController extends Controller
         if ($order && $order->payment_status !== 'paid') {
             $order->update([
                 'payment_status' => 'paid',
-                'status' => 'processing',
             ]);
 
             Log::info('Stripe webhook: Order marked as paid via checkout.session.completed', [
@@ -137,7 +135,6 @@ class StripeController extends Controller
         if ($order && $order->payment_status !== 'paid') {
             $order->update([
                 'payment_status' => 'paid',
-                'status' => 'processing',
             ]);
 
             Log::info('Stripe webhook: Payment intent succeeded', [
