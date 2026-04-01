@@ -107,6 +107,8 @@ class PaystackController extends Controller
                 'payment_status' => 'paid',
             ]);
 
+            CartManagement::clearCartItems();
+
             Log::info('Paystack payment successful', [
                 'order_id' => $order->id,
                 'reference' => $reference,
@@ -185,6 +187,8 @@ class PaystackController extends Controller
             $order->update([
                 'payment_status' => 'paid',
             ]);
+
+            CartManagement::clearCartItems();
 
             Log::info('Paystack webhook: Payment marked as paid', [
                 'order_id' => $order->id,

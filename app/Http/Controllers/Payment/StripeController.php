@@ -39,6 +39,8 @@ class StripeController extends Controller
                     'payment_status' => 'paid',
                 ]);
 
+                CartManagement::clearCartItems();
+
                 Log::info('Stripe payment successful', [
                     'order_id' => $order->id,
                     'session_id' => $sessionId,
@@ -115,6 +117,8 @@ class StripeController extends Controller
             $order->update([
                 'payment_status' => 'paid',
             ]);
+
+            CartManagement::clearCartItems();
 
             Log::info('Stripe webhook: Order marked as paid via checkout.session.completed', [
                 'order_id' => $order->id,

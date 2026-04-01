@@ -67,15 +67,7 @@ class OrdersTable
                         'delivered' => 'Delivered',
                         'cancelled' => 'Cancelled',
                     ])
-                    ->selectablePlaceholder(false)
-                    ->color(fn (string $state): string => match ($state) {
-                        'new' => 'info',
-                        'processing' => 'warning',
-                        'shipped' => 'success',
-                        'delivered' => 'success',
-                        'cancelled' => 'danger',
-                        default => 'gray',
-                    }),
+                    ->selectablePlaceholder(false),
 
                 TextColumn::make('shipping_method')
                     ->label('Shipping')

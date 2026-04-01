@@ -23,7 +23,6 @@ use App\Livewire\MyOrdersDetailPage;
 use App\Livewire\MyOrdersPage;
 use App\Livewire\ProductDetailPage;
 use App\Livewire\ProductsPage;
-use App\Livewire\ReviewsPage;
 use App\Livewire\SuccessPage;
 use App\Livewire\TermsPage;
 use App\Livewire\WishlistPage;
@@ -43,7 +42,6 @@ Route::get('/about', AboutPage::class)->name('about');
 Route::get('/account', AccountPage::class)->name('account');
 Route::get('/contact', ContactPage::class)->name('contact');
 Route::get('/faq', FaqPage::class)->name('faq');
-Route::get('/reviews', ReviewsPage::class)->name('reviews');
 Route::get('/terms', TermsPage::class)->name('terms');
 Route::get('/wishlist', WishlistPage::class)->name('wishlist');
 
@@ -60,11 +58,15 @@ Route::middleware('auth')->group(function () {
 
         return redirect()->to('/');
     });
-    Route::get('/checkout', CheckoutPage::class);
-    Route::get('/my-orders', MyOrdersPage::class)->name('my-orders');
-    Route::get('/my-orders/{order_id}', MyOrdersDetailPage::class)->name('my-orders.show');
+    Route::get('/checkout', CheckoutPage::class)->middleware('verified');
+    Route::get('/my-orders', MyOrdersPage::class)->name('my-orders')->middleware('verified');
+    Route::get('/my-orders/{order_id}', MyOrdersDetailPage::class)->name('my-orders.show')->middleware('verified');
     Route::get('/cancel', CancelPage::class)->name('cancel');
     Route::get('/success/{order_id}', SuccessPage::class)->name('success');
+});
+
+Route::middleware('verified')->group(function () {
+    Route::get('/account', AccountPage::class)->name('account');
 });
 
 if (app(GeneralSettings::class)->maintenance_mode && ! request()->is('admin*')) {

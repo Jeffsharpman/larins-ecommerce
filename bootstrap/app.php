@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\CheckMaintenanceMode;
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
 use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => Authenticate::class,
             'guest' => RedirectIfAuthenticated::class,
+            'verified' => EnsureEmailIsVerified::class,
         ]);
         $middleware->append(CheckMaintenanceMode::class);
     })
