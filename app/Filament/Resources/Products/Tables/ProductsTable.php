@@ -53,12 +53,12 @@ class ProductsTable
                     ->circular(),
 
                 // In ProductResource.php
-                TextColumn::make('variants_sum_stock')
+                TextColumn::make('total_inventory')
                     ->label('Total Stock')
                     ->numeric()
                     ->sortable() // Now you can sort products by their total variant stock!
                     ->badge()
-                    ->color(fn ($state) => $state > 0 ? 'success' : 'danger')
+                    ->color(fn ($state) => $state > 5 ? 'success' : ($state > 0 ? 'warning' : 'danger'))
                     ->suffix(' units'),
 
                 // 3. Pricing: Colored and formatted

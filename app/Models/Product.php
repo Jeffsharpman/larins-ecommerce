@@ -13,7 +13,7 @@ class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, LogsActivity;
 
-    protected $fillable = ['category_id', 'brand_id', 'name', 'slug', 'images', 'description', 'price', 'is_active', 'is_featured', 'in_stock', 'on_sale'];
+    protected $fillable = ['category_id', 'brand_id', 'name', 'slug', 'images', 'description', 'price', 'is_active', 'is_featured', 'in_stock', 'on_sale', 'stock'];
 
     protected $casts = ['images' => 'array'];
 
@@ -61,7 +61,10 @@ class Product extends Model implements HasMedia
     // In Product.php
     public function scopeLowStock($query, $threshold = 5)
     {
-        return $query->where('stock', '<=', $threshold);
+        return $query->where(function ($q) use ($threshold) {
+            $q->where('stock', '<=', $threshold)
+                ->orWhereRaw('id IN (SELECT product_id FROM product_variants WHERE stock <= ?)', [$threshold]);
+        });
     }
 
     /**
@@ -69,8 +72,11 @@ class Product extends Model implements HasMedia
      */
     public function getTotalStockAttribute(): int
     {
-        // Use sum() directly on the relationship
-        return (int) $this->variants()->sum('stock');
+        if ($this->variants()->exists()) {
+            return (int) $this->variants()->sum('stock');
+        }
+
+        return (int) $this->stock;
     }
 
     /**
@@ -79,6 +85,22 @@ class Product extends Model implements HasMedia
     public function getIsInStockAttribute(): bool
     {
         return $this->total_stock > 0;
+    }
+
+    /**
+     * Determine if the product is low on stock.
+     */
+    public function getIsLowStockAttribute(): bool
+    {
+        return $this->total_stock > 0 && $this->total_stock <= 5;
+    }
+
+    /**
+     * Determine if the product is out of stock.
+     */
+    public function getIsOutOfStockAttribute(): bool
+    {
+        return $this->total_stock <= 0;
     }
 
     public function registerMediaCollections(?Media $media = null): void

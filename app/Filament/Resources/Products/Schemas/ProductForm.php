@@ -75,6 +75,13 @@ class ProductForm
                             ->required()
                             ->numeric()
                             ->prefix('NGN'),
+
+                        TextInput::make('stock')
+                            ->label('Stock (for products without variants)')
+                            ->numeric()
+                            ->default(0)
+                            ->helperText('Leave at 0 if product has variants. Stock will be calculated from variants.')
+                            ->hidden(fn (string $operation): bool => $operation === 'view'),
                     ]),
 
                     Section::make('Associations')->schema([
