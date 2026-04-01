@@ -73,7 +73,7 @@
     @livewireStyles
 </head>
 
-<body class="antialiased bg-[#fcfcfc] dark:bg-[#080808] text-slate-900 dark:text-slate-100 font-body selection:bg-primary/20 selection:text-primary transition-colors duration-500 overflow-x-hidden">
+<body class="antialiased bg-background dark:bg-background text-foreground font-body selection:bg-primary/20 selection:text-primary transition-colors duration-500 overflow-x-hidden">
 
     {{-- High-End Grain Overlay --}}
     <div class="fixed inset-0 pointer-events-none opacity-[0.02] dark:opacity-[0.04] z-[9999] bg-[url('/images/noise.svg')]"></div>

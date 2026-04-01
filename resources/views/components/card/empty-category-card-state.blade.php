@@ -1,5 +1,5 @@
 <div
-  class="col-span-full relative overflow-hidden flex flex-col items-center justify-center py-32 px-10 bg-white dark:bg-[#0a0a0a] border border-dashed border-slate-200 dark:border-white/10 rounded-[4rem] transition-all duration-1000">
+  class="col-span-full relative overflow-hidden flex flex-col items-center justify-center py-32 px-10 bg-card dark:bg-card border border-dashed border-border dark:border-border rounded-[4rem] transition-all duration-1000">
 
   {{-- Ambient Background Glow --}}
   <div
@@ -11,9 +11,9 @@
     <div
       class="absolute inset-0 bg-primary/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000">
     </div>
-    <div class="relative p-12 bg-[#fcfcfc] dark:bg-white/5 rounded-full border border-slate-100 dark:border-white/10 transition-all duration-700 group-hover:scale-110 shadow-xl shadow-black/[0.02]">
+    <div class="relative p-12 bg-muted dark:bg-muted rounded-full border border-border dark:border-border transition-all duration-700 group-hover:scale-110 shadow-xl shadow-primary/5">
       <x-lucide-layout-grid
-        class="w-16 h-16 text-slate-300 dark:text-slate-700 stroke-[0.5] transition-all duration-700 group-hover:rotate-45 group-hover:text-primary" />
+        class="w-16 h-16 text-muted-foreground stroke-[0.5] transition-all duration-700 group-hover:rotate-45 group-hover:text-primary" />
     </div>
   </div>
 
@@ -22,10 +22,10 @@
     <span class="text-[11px] font-black uppercase tracking-[0.6em] text-primary block">
       Maison {{ $site->site_name }} Archive
     </span>
-    <h3 class="text-4xl md:text-5xl font-black italic tracking-tighter text-slate-900 dark:text-slate-100 leading-none uppercase">
+    <h3 class="text-4xl md:text-5xl font-black italic tracking-tighter text-foreground leading-none uppercase">
       Cataloging in Progress
     </h3>
-    <p class="text-[12px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.25em] leading-relaxed pt-4 px-6 opacity-80">
+    <p class="text-[12px] font-bold text-muted-foreground uppercase tracking-[0.25em] leading-relaxed pt-4 px-6 opacity-80">
       Our curators are currently organizing the next collection. Please re-sync to view the updated gallery.
     </p>
   </div>
@@ -33,7 +33,7 @@
   {{-- Refresh Action --}}
   <div class="mt-16 flex flex-col items-center gap-8">
     <button wire:click="$refresh"
-      class="group relative inline-flex items-center gap-x-6 px-14 py-6 text-[11px] font-black uppercase tracking-[0.4em] rounded-full bg-slate-950 dark:bg-white text-white dark:text-black hover:bg-primary dark:hover:bg-primary hover:text-white transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)]">
+      class="group relative inline-flex items-center gap-x-6 px-14 py-6 text-[11px] font-black uppercase tracking-[0.4em] rounded-full bg-foreground dark:bg-background text-card dark:text-foreground hover:bg-primary dark:hover:bg-primary hover:text-white transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)]">
       <span>Re-Sync Gallery</span>
       <x-lucide-refresh-cw wire:loading.class="animate-spin"
         class="w-5 h-5 transition-transform duration-700 group-hover:rotate-180" />
@@ -49,6 +49,6 @@
 
   {{-- Bottom Branding Detail --}}
   <div class="mt-20 opacity-20 dark:opacity-5">
-      <x-lucide-sparkles class="w-8 h-8 text-slate-400" />
+      <x-lucide-sparkles class="w-8 h-8 text-muted-foreground" />
   </div>
 </div>

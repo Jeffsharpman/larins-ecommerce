@@ -1,9 +1,9 @@
-<div class="min-h-screen bg-white dark:bg-[#050505] text-foreground transition-colors duration-700" x-data="{ headerHeight: 0 }" x-init="setTimeout(() => { const header = document.querySelector('header.fixed'); if (header) { headerHeight = header.offsetHeight; } else { headerHeight = 80; } }, 50)">
+<div class="min-h-screen bg-background text-foreground transition-colors duration-700" x-data="{ headerHeight: 0 }" x-init="setTimeout(() => { const header = document.querySelector('header.fixed'); if (header) { headerHeight = header.offsetHeight; } else { headerHeight = 80; } }, 50)">
     {{-- Ambient Light Leak --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
 
     {{-- Minimalist Navigation (directly below header) --}}
-    <div class="border-b border-border/40 py-3 backdrop-blur-md sticky z-20 bg-white/80 dark:bg-[#050505]/80" :style="`top: ${headerHeight}px`">
+    <div class="border-b border-border/40 py-3 backdrop-blur-md sticky z-20 bg-background/80 dark:bg-background/80" :style="`top: ${headerHeight}px`">
         <div class="max-w-7xl mx-auto px-8 flex justify-between items-center">
             <nav class="flex items-center gap-4 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground overflow-x-auto no-scrollbar">
                 <a href="/" wire:navigate class="hover:text-primary transition-colors shrink-0">Maison</a>

@@ -3,11 +3,11 @@
     <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none"></div>
 
     {{-- VIP Newsletter Section --}}
-    <div class="bg-muted/10 border-b border-border/40 relative">
+    <div class="bg-card/50 border-b border-border/40 relative">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col lg:flex-row lg:justify-between items-center gap-12 py-20">
                 <div class="text-center lg:text-left space-y-4 max-w-xl">
-                    {{-- Using your restyled badge logic --}}
+                    {{-- Badge --}}
                     <div class="badge-premium mb-2">
                         <div class="badge-premium-dot">
                             <span class="dot-pulse"></span>
@@ -18,24 +18,24 @@
                     </div>
                     
                     <h3 class="text-4xl md:text-6xl font-black tracking-tighter uppercase italic leading-[0.9]">
-                        Join the <span class="text-primary">{{ $site->site_name }}</span> <span class="text-stroke-sm dark:text-stroke-white text-transparent">Family.</span>
+                        Join the <span class="text-primary">{{ $site->site_name }}</span> Family.
                     </h3>
                     <p class="text-[10px] text-muted-foreground font-black uppercase tracking-[0.3em] opacity-70">
                         {{ $site->tagline ?? 'Experience the Essence of Elegance with Us' }}
                     </p>
                 </div>
 
-                {{-- Newsletter Form with improved focus states --}}
+                {{-- Newsletter Form --}}
                 <form class="flex w-full md:w-auto gap-0 max-w-md group relative shadow-2xl shadow-primary/5">
                     <input 
                         type="email" 
                         placeholder="SIGNATURE@EMAIL.COM"
-                        class="flex-1 py-5 px-8 bg-card border border-border rounded-l-[2rem] text-foreground text-[10px] font-black tracking-widest uppercase placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all"
+                        class="flex-1 py-5 px-8 bg-background border border-border rounded-l-[2rem] text-foreground text-[10px] font-black tracking-widest uppercase placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all"
                         required
                     />
                     <button 
                         type="submit"
-                        class="px-10 bg-primary text-primary-foreground font-black uppercase tracking-[0.2em] text-[10px] rounded-r-[2rem] hover:bg-gold-dark transition-all duration-500 active:scale-95 shadow-xl shadow-primary/20">
+                        class="px-10 bg-primary text-primary-foreground font-black uppercase tracking-[0.2em] text-[10px] rounded-r-[2rem] hover:opacity-90 transition-all duration-500 active:scale-95 shadow-xl shadow-primary/20">
                         Subscribe
                     </button>
                 </form>
@@ -45,7 +45,7 @@
 
     {{-- Main Footer Links --}}
     <div class="max-w-7xl mx-auto px-6 relative">
-        <div class="grid grid-cols-2 md:grid-cols-12 gap-16 py-24">
+        <div class="grid grid-cols-2 md:grid-cols-12 gap-12 lg:gap-16 py-24">
 
             {{-- Brand & Social --}}
             <div class="col-span-2 md:col-span-4 space-y-10">
@@ -59,15 +59,19 @@
                     {{ $site->footer_about ?? 'Curating the Finest in Beauty & Grooming for the Discerning Nigerian Gentleman.' }}
                 </p>
                 
-                {{-- Social Icons using the Social Links from $site --}}
+                {{-- Social Icons --}}
                 <div class="flex gap-4">
-                    @foreach($site->social_links as $social)
+                    @forelse($site->social_links as $social)
                     <a href="{{ $social['url'] }}" 
                        target="_blank"
                        class="w-12 h-12 rounded-2xl border border-border flex items-center justify-center text-muted-foreground hover:bg-card hover:text-primary hover:border-primary/50 transition-all duration-500 group shadow-sm">
                         <x-dynamic-component :component="'lucide-' . ($social['platform'] ?? 'link')" class="w-4 h-4 transition-transform group-hover:scale-110" />
                     </a>
-                    @endforeach
+                    @empty
+                    <a href="#" class="w-12 h-12 rounded-2xl border border-border flex items-center justify-center text-muted-foreground hover:bg-card hover:text-primary transition-all duration-500 group shadow-sm">
+                        <x-lucide-instagram class="w-4 h-4" />
+                    </a>
+                    @endforelse
                 </div>
             </div>
 
@@ -75,30 +79,56 @@
             <div class="col-span-1 md:col-span-2 space-y-8">
                 <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Curation</h4>
                 <ul class="space-y-5">
-                    @foreach(['Hair Artistry' => '/hair', 'Fragrance' => '/fragrance', 'Skincare' => '/skincare'] as $label => $url)
-                    <li>
-                        <a wire:navigate href="{{ $url }}" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
-                            <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
-                            {{ $label }}
-                        </a>
-                    </li>
-                    @endforeach
+                    <li><a wire:navigate href="/categories" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        All Categories
+                    </a></li>
+                    <li><a wire:navigate href="/brands" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        Brands
+                    </a></li>
+                    <li><a wire:navigate href="/products" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        Products
+                    </a></li>
                 </ul>
             </div>
 
-            {{-- Column: Concierge (Dynamic Links) --}}
-            <div class="col-span-1 md:col-span-3 space-y-8">
+            {{-- Column: Concierge --}}
+            <div class="col-span-1 md:col-span-2 space-y-8">
                 <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Concierge</h4>
                 <ul class="space-y-5">
-                    @forelse ( $site->footer_links as $link )
-                        <li><a wire:navigate href="{{ $link['url'] }}" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
-                            <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
-                            {{ $link['label'] }}
-                        </a></li>
-                    @empty
-                        <li><a wire:navigate href="/orders" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-block transition-all">Track Order</a></li>
-                        <li><a wire:navigate href="/shipping" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-block transition-all">Nationwide Waybill</a></li>
-                    @endforelse
+                    <li><a wire:navigate href="/my-orders" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        Track Order
+                    </a></li>
+                    <li><a wire:navigate href="/shipping" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        Shipping Policy
+                    </a></li>
+                    <li><a wire:navigate href="/faq" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        FAQ
+                    </a></li>
+                    <li><a wire:navigate href="/contact" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        Contact Us
+                    </a></li>
+                </ul>
+            </div>
+
+            {{-- Column: Legal --}}
+            <div class="col-span-1 md:col-span-2 space-y-8">
+                <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Legal</h4>
+                <ul class="space-y-5">
+                    <li><a wire:navigate href="/terms" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        Terms & Conditions
+                    </a></li>
+                    <li><a wire:navigate href="/privacy" class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary hover:translate-x-2 inline-flex items-center gap-2 transition-all group">
+                        <span class="w-0 h-[1px] bg-primary group-hover:w-3 transition-all"></span>
+                        Privacy Policy
+                    </a></li>
                 </ul>
             </div>
 
@@ -120,7 +150,7 @@
     </div>
 
     {{-- Bottom Bar --}}
-    <div class="border-t border-border/40 bg-muted/5 backdrop-blur-sm">
+    <div class="border-t border-border/40 bg-background/50 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col md:flex-row md:justify-between items-center gap-8 py-12">
 

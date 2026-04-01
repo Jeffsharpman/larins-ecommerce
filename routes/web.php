@@ -21,8 +21,10 @@ use App\Livewire\FaqPage;
 use App\Livewire\HomePage;
 use App\Livewire\MyOrdersDetailPage;
 use App\Livewire\MyOrdersPage;
+use App\Livewire\PrivacyPage;
 use App\Livewire\ProductDetailPage;
 use App\Livewire\ProductsPage;
+use App\Livewire\ShippingPage;
 use App\Livewire\SuccessPage;
 use App\Livewire\TermsPage;
 use App\Livewire\WishlistPage;
@@ -43,6 +45,8 @@ Route::get('/account', AccountPage::class)->name('account');
 Route::get('/contact', ContactPage::class)->name('contact');
 Route::get('/faq', FaqPage::class)->name('faq');
 Route::get('/terms', TermsPage::class)->name('terms');
+Route::get('/privacy', PrivacyPage::class)->name('privacy');
+Route::get('/shipping', ShippingPage::class)->name('shipping');
 Route::get('/wishlist', WishlistPage::class)->name('wishlist');
 
 Route::middleware('guest')->group(function () {

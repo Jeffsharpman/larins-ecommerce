@@ -1,5 +1,34 @@
-<div class="max-w-7xl mx-auto px-6 py-16 selection:bg-primary/20 selection:text-primary bg-background">
+<div class="max-w-7xl mx-auto px-6 py-16 selection:bg-primary/20 selection:text-primary bg-background" x-data="{ activeTab: 'profile' }">
     
+    {{-- Error Display --}}
+    @if($error)
+    <div class="mb-16">
+        <div class="bg-card border border-destructive/30 rounded-[3rem] p-10 text-center">
+            <x-lucide-alert-circle class="w-16 h-16 text-destructive mx-auto mb-6" />
+            <h2 class="text-2xl font-black uppercase tracking-tighter italic text-foreground mb-4">Error Loading Account</h2>
+            <p class="text-[10px] text-muted-foreground uppercase tracking-widest mb-8">{{ $error }}</p>
+            <button wire:click="loadUserData" class="group flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:shadow-card transition-all duration-500">
+                <x-lucide-refresh-cw class="w-4 h-4 group-hover:rotate-180 transition-transform duration-700" />
+                Try Again
+            </button>
+        </div>
+    </div>
+    @else
+    {{-- Loading State --}}
+    @if($isLoading)
+    <div class="mb-16">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
+            <div class="flex items-center gap-8">
+                <div class="w-28 h-28 bg-muted rounded-full animate-pulse"></div>
+                <div class="space-y-3">
+                    <div class="h-10 w-48 bg-muted rounded animate-pulse"></div>
+                    <div class="h-3 w-32 bg-muted rounded animate-pulse"></div>
+                </div>
+            </div>
+        </div>
+        <div class="h-12 bg-muted rounded animate-pulse mb-4"></div>
+    </div>
+    @else
     {{-- Header Section: Client Identity --}}
     <div class="mb-16">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
@@ -8,32 +37,33 @@
                     {{-- Animated Aura follows primary --}}
                     <div class="absolute -inset-2 bg-gradient-to-tr from-primary via-primary/30 to-primary rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-700"></div>
                     <div class="relative w-28 h-28 bg-card border border-border rounded-full flex items-center justify-center overflow-hidden shadow-card">
-                        <x-lucide-user class="w-12 h-12 text-primary/40 group-hover:text-primary transition-colors duration-500" />
-                    </div>
-                    <div class="absolute bottom-1 right-1 w-7 h-7 bg-primary rounded-full border-4 border-background flex items-center justify-center">
-                        <x-lucide-camera class="w-3 h-3 text-primary-foreground" />
+                        @if($user && $user->avatar)
+                            <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                        @else
+                            <x-lucide-user class="w-12 h-12 text-primary/40 group-hover:text-primary transition-colors duration-500" />
+                        @endif
                     </div>
                 </div>
                 <div class="space-y-1">
                     <h1 class="text-5xl font-black tracking-tighter uppercase italic text-foreground leading-none">
-                        Maison <span class="text-primary not-italic">Joshua</span>
+                        Maison <span class="text-primary not-italic">{{ $first_name }}</span>
                     </h1>
                     <p class="text-[10px] text-muted-foreground font-black uppercase tracking-[0.4em]">
-                        Client ID: LRNS-2026-0042
+                        Client ID: {{ $user ? strtoupper(substr($user->id, 0, 8)) : 'N/A' }}
                     </p>
                 </div>
             </div>
             
             <div class="flex items-center gap-4">
-                <button class="group px-8 py-3 bg-muted text-foreground text-[10px] font-black uppercase tracking-[0.3em] rounded-full border border-border hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-500 flex items-center gap-2">
+                <a href="/logout" class="group px-8 py-3 bg-muted text-foreground text-[10px] font-black uppercase tracking-[0.3em] rounded-full border border-border hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-500 flex items-center gap-2">
                     <x-lucide-log-out class="w-3 h-3 transition-transform group-hover:-translate-x-1" />
                     Sign Out
-                </button>
+                </a>
             </div>
         </div>
 
-        {{-- Luxury Navigation Tabs --}}
-        <div class="relative">
+        {{-- Luxury Navigation Tabs (Preline) --}}
+        <div id="account-tabs" class="relative" x-data="{ activeTab: 'profile' }" data-hs-tabs="#account-tabs">
             <nav class="flex gap-12 overflow-x-auto no-scrollbar border-b border-border" role="tablist">
                 @php
                     $tabs = [
@@ -44,23 +74,22 @@
                     ];
                 @endphp
 
-                @foreach($tabs as $tab)
+                @foreach($tabs as $index => $tab)
                 <button 
-                    class="tab-button group flex items-center gap-3 pb-6 text-[11px] font-black uppercase tracking-[0.3em] transition-all relative {{ $loop->first ? 'text-primary' : 'text-muted-foreground hover:text-foreground' }}" 
-                    data-tab="{{ $tab['id'] }}">
-                    <x-dynamic-component :component="'lucide-' . $tab['icon']" class="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
+                    class="hs-tab-active:text-primary hs-tab-active:border-primary hs-tab-active:border-b-2 flex items-center gap-3 pb-6 text-[11px] font-black uppercase tracking-[0.3em] transition-all relative -mb-px text-muted-foreground hover:text-foreground" 
+                    data-hs-tab="#{{ $tab['id'] }}-tab"
+                    role="tab"
+                    :class="activeTab === '{{ $tab['id'] }}' ? 'text-primary' : ''"
+                    @click="activeTab = '{{ $tab['id'] }}'; $dispatch('hs-tab:change', '{{ $tab['id'] }}')">
+                    <x-dynamic-component :component="'lucide-' . $tab['icon']" class="w-4 h-4" />
                     {{ $tab['label'] }}
-                    @if($loop->first)
-                        <div class="absolute bottom-0 left-0 w-full h-[3px] bg-primary rounded-t-full"></div>
-                    @endif
                 </button>
                 @endforeach
             </nav>
-        </div>
-    </div>
-
-    <div id="profile-tab" class="tab-content animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <div class="grid gap-12 lg:grid-cols-3">
+            <div class="mt-10">
+                {{-- Profile Tab --}}
+                <div id="profile-tab" role="tabpanel" class="hs-tab-active:block hidden" x-show="activeTab === 'profile'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+                    <div class="grid gap-12 lg:grid-cols-3">
             
             {{-- Main Profile Form --}}
             <div class="lg:col-span-2 space-y-10">
@@ -75,37 +104,34 @@
                         </div>
                     </div>
 
-                    <form id="profileForm" class="grid gap-y-10 gap-x-8 md:grid-cols-2">
+                    <form wire:submit="updateProfile" class="grid gap-y-10 gap-x-8 md:grid-cols-2">
                         <div class="space-y-3">
                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">First Name</label>
-                            <input type="text" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none" value="Joshua">
+                            <input type="text" wire:model="first_name" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
                         </div>
                         <div class="space-y-3">
                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Last Name</label>
-                            <input type="text" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                            <input type="text" wire:model="last_name" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
                         </div>
                         <div class="md:col-span-2 space-y-3">
                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Email Address</label>
-                            <input type="email" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                            <input type="email" value="{{ $user->email }}" disabled class="w-full bg-muted border border-border rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-muted-foreground transition-all outline-none cursor-not-allowed">
                         </div>
                         <div class="space-y-3">
                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Phone (NGN)</label>
                             <div class="relative">
                                 <span class="absolute left-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-muted-foreground border-r border-border pr-3">+234</span>
-                                <input type="tel" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl pl-20 pr-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                                <input type="tel" wire:model="phone" placeholder="8012345678" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl pl-20 pr-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
                             </div>
                         </div>
                         <div class="space-y-3">
                             <label class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Birthday</label>
-                            <input type="date" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                            <input type="date" wire:model="birthday" class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
                         </div>
 
                         <div class="md:col-span-2 pt-6 flex flex-col sm:flex-row items-center gap-6">
                             <button type="submit" class="w-full sm:w-auto px-12 py-5 bg-foreground text-background text-[10px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-500 shadow-card active:scale-95">
                                 Save Credentials
-                            </button>
-                            <button type="button" class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors py-2">
-                                Discard Changes
                             </button>
                         </div>
                     </form>
@@ -116,7 +142,6 @@
             <div class="space-y-8">
                 {{-- Member Card --}}
                 <div class="bg-foreground text-background rounded-[3rem] p-10 relative overflow-hidden group shadow-card">
-                    {{-- Glow uses primary token --}}
                     <div class="absolute top-0 right-0 w-40 h-40 bg-primary/20 blur-[60px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/40 transition-colors duration-1000"></div>
                     
                     <div class="relative z-10 space-y-12">
@@ -130,7 +155,7 @@
 
                         <div>
                             <p class="text-[9px] font-black uppercase tracking-[0.4em] opacity-40 mb-2">Member Since</p>
-                            <p class="text-2xl font-black italic tracking-tighter uppercase">January 2026</p>
+                            <p class="text-2xl font-black italic tracking-tighter uppercase">{{ $user->created_at->format('F Y') }}</p>
                         </div>
 
                         <div class="pt-6 border-t border-background/10 flex justify-between items-center">
@@ -147,11 +172,11 @@
                 {{-- Quick Stats --}}
                 <div class="grid grid-cols-2 gap-6">
                     <div class="bg-card border border-border p-8 rounded-[2rem] text-center hover:border-primary/40 transition-all group">
-                        <p class="text-3xl font-black italic text-primary group-hover:scale-110 transition-transform duration-500">12</p>
+                        <p class="text-3xl font-black italic text-primary group-hover:scale-110 transition-transform duration-500">{{ $totalOrders }}</p>
                         <p class="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground mt-2">Archives</p>
                     </div>
                     <div class="bg-card border border-border p-8 rounded-[2rem] text-center hover:border-primary/40 transition-all group">
-                        <p class="text-3xl font-black italic text-primary group-hover:scale-110 transition-transform duration-500">05</p>
+                        <p class="text-3xl font-black italic text-primary group-hover:scale-110 transition-transform duration-500">{{ $totalWishlist }}</p>
                         <p class="text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground mt-2">Favorites</p>
                     </div>
                 </div>
@@ -175,5 +200,145 @@
                 </div>
             </div>
         </div>
+            </div>
+        </div>
     </div>
+
+    {{-- Addresses Tab --}}
+    <div id="addresses-tab" role="tabpanel" class="hs-tab-active:block hidden" x-show="activeTab === 'addresses'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+        <div class="bg-card border border-border rounded-[3rem] p-10 md:p-14">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                    <x-lucide-map-pin class="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black uppercase tracking-tighter italic text-foreground">Boutique Shipping</h2>
+                    <p class="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Your delivery destinations</p>
+                </div>
+            </div>
+
+            @if(!empty($addresses))
+                <div class="grid gap-6 md:grid-cols-2">
+                    @foreach($addresses as $address)
+                    <div class="bg-background border border-border rounded-2xl p-6 hover:border-primary/40 transition-all group">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Default Address</span>
+                            <x-lucide-home class="w-4 h-4 text-muted-foreground" />
+                        </div>
+                        <p class="text-lg font-black italic text-foreground mb-2">{{ $address['first_name'] ?? '' }} {{ $address['last_name'] ?? '' }}</p>
+                        <p class="text-[10px] text-muted-foreground uppercase tracking-wider leading-relaxed">
+                            {{ $address['street_address'] ?? '' }}<br>
+                            {{ $address['city'] ?? '' }}, {{ $address['state'] ?? '' }} {{ $address['zip_code'] ?? '' }}
+                        </p>
+                    </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-16">
+                    <x-lucide-map-pin class="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">No shipping addresses yet</p>
+                    <p class="text-[9px] text-muted-foreground/60 mt-2">Addresses from your orders will appear here</p>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- Orders Tab --}}
+    <div id="orders-tab" role="tabpanel" class="hs-tab-active:block hidden" x-show="activeTab === 'orders'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+        <div class="bg-card border border-border rounded-[3rem] p-10 md:p-14">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                    <x-lucide-shopping-bag class="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black uppercase tracking-tighter italic text-foreground">Archive Ledger</h2>
+                    <p class="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Your acquisition history</p>
+                </div>
+            </div>
+
+            @if($orders->count() > 0)
+                <div class="space-y-6">
+                    @foreach($orders as $order)
+                    <div class="bg-background border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                            <div class="flex items-center gap-6">
+                                <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
+                                    <x-lucide-package class="w-6 h-6 text-primary" />
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-1">Order #{{ substr($order->id, 0, 8) }}</p>
+                                    <p class="text-lg font-black italic text-foreground">{{ $order->items->count() }} Items</p>
+                                    <p class="text-[9px] text-muted-foreground uppercase tracking-wider mt-1">{{ $order->created_at->format('d M, Y') }}</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-black italic text-foreground">₦{{ number_format($order->grand_total ?? $order->total, 2) }}</p>
+                                <span class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full mt-2 inline-block
+                                    @if($order->status === 'delivered') bg-emerald-500/10 text-emerald-500
+                                    @elseif($order->status === 'shipped') bg-blue-500/10 text-blue-500
+                                    @else bg-primary/10 text-primary @endif">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-16">
+                    <x-lucide-shopping-bag class="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">No orders yet</p>
+                    <p class="text-[9px] text-muted-foreground/60 mt-2">Your acquisition history will appear here</p>
+                    <a href="/products" wire:navigate class="mt-6 inline-block px-8 py-3 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
+                        Explore Collection
+                    </a>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- Wishlist Tab --}}
+    <div id="wishlist-tab" role="tabpanel" class="hs-tab-active:block hidden" x-show="activeTab === 'wishlist'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+        <div class="bg-card border border-border rounded-[3rem] p-10 md:p-14">
+            <div class="flex items-center gap-4 mb-12">
+                <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
+                    <x-lucide-heart class="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black uppercase tracking-tighter italic text-foreground">Favorites</h2>
+                    <p class="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Your wishlist curation</p>
+                </div>
+            </div>
+
+            @if(count($wishlistItems) > 0)
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    @foreach($wishlistItems as $item)
+                    <div class="bg-background border border-border rounded-[2rem] overflow-hidden hover:border-primary/30 transition-all group">
+                        <div class="aspect-[4/5] bg-muted relative">
+                            <img src="{{ url('storage', $item['image'] ?? 'images/placeholder.jpg') }}" alt="{{ $item['name'] }}" class="w-full h-full object-cover">
+                            <button class="absolute top-4 right-4 w-10 h-10 bg-card/80 backdrop-blur rounded-full flex items-center justify-center text-red-500">
+                                <x-lucide-heart class="w-4 h-4 fill-current" />
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-sm font-black italic text-foreground truncate">{{ $item['name'] }}</p>
+                            <p class="text-lg font-black italic text-primary mt-2">₦{{ number_format($item['price'] ?? 0, 2) }}</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-16">
+                    <x-lucide-heart class="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">No favorites yet</p>
+                    <p class="text-[9px] text-muted-foreground/60 mt-2">Items you love will appear here</p>
+                    <a href="/products" wire:navigate class="mt-6 inline-block px-8 py-3 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
+                        Explore Collection
+                    </a>
+                </div>
+            @endif
+        </div>
+    </div>
+    @endif
+    @endif
 </div>
