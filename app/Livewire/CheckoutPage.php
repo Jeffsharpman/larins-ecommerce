@@ -120,6 +120,13 @@ class CheckoutPage extends Component
         $this->calculateTotals();
     }
 
+    public function updated($property)
+    {
+        if (str_contains($property, 'shipping')) {
+            $this->calculateTotals();
+        }
+    }
+
     public function applyCoupon()
     {
         if (empty($this->coupon_code)) {
@@ -282,6 +289,7 @@ class CheckoutPage extends Component
             'order_id' => $order->id,
             'user_id' => auth()->id(),
             'shipping_amount' => $this->shipping,
+            'tax_amount' => $this->tax,
             'shipping_method' => $order->shipping_method,
             'success_url' => route('stripe.success', ['order_id' => $order->id]).'?session_id={CHECKOUT_SESSION_ID}',
             'cancel_url' => route('cancel'),

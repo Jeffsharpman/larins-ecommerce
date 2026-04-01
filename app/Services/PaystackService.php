@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -15,8 +16,10 @@ class PaystackService
 
     public function __construct()
     {
-        $this->secretKey = config('paystack.secret_key');
-        $this->publicKey = config('paystack.public_key');
+        $settings = app(GeneralSettings::class);
+
+        $this->secretKey = $settings->paystack_secret_key ?? config('paystack.secret_key');
+        $this->publicKey = $settings->paystack_public_key ?? config('paystack.public_key');
         $this->baseUrl = 'https://api.paystack.co';
     }
 
@@ -48,7 +51,7 @@ class PaystackService
 
         try {
             $response = Http::withToken($this->secretKey)
-                ->post("{$this->baseUrl}/transaction.initialize", $payload);
+                ->post("{$this->baseUrl}/transaction/initialize", $payload);
 
             $result = $response->json();
 
@@ -78,7 +81,7 @@ class PaystackService
 
             return [
                 'success' => false,
-                'message' => 'Payment service temporarily unavailable',
+                'message' => 'Payment service temporarily unavailable: '.$e->getMessage(),
             ];
         }
     }
@@ -119,47 +122,7 @@ class PaystackService
 
             return [
                 'success' => false,
-                'message' => 'Unable to verify transaction',
-            ];
-        }
-    }
-
-    public function chargeAuthorization(array $data): array
-    {
-        $payload = [
-            'email' => $data['email'],
-            'amount' => (int) ($data['amount'] * 100),
-            'authorization_code' => $data['authorization_code'],
-            'reference' => $this->generateReference(),
-            'currency' => $data['currency'] ?? 'NGN',
-        ];
-
-        try {
-            $response = Http::withToken($this->secretKey)
-                ->post("{$this->baseUrl}/transaction/charge_authorization", $payload);
-
-            $result = $response->json();
-
-            if ($response->successful() && ($result['status'] ?? false)) {
-                return [
-                    'success' => true,
-                    'status' => $result['data']['status'],
-                    'reference' => $result['data']['reference'],
-                ];
-            }
-
-            return [
-                'success' => false,
-                'message' => $result['message'] ?? 'Charge failed',
-            ];
-        } catch (\Exception $e) {
-            Log::error('Paystack charge error', [
-                'error' => $e->getMessage(),
-            ]);
-
-            return [
-                'success' => false,
-                'message' => 'Charge failed',
+                'message' => 'Unable to verify transaction: '.$e->getMessage(),
             ];
         }
     }
@@ -194,34 +157,7 @@ class PaystackService
 
             return [
                 'success' => false,
-                'message' => 'Refund failed',
-            ];
-        }
-    }
-
-    public function getTransactionTimeline(string $reference): array
-    {
-        try {
-            $response = Http::withToken($this->secretKey)
-                ->get("{$this->baseUrl}/timeline/{$reference}");
-
-            $result = $response->json();
-
-            if ($response->successful()) {
-                return [
-                    'success' => true,
-                    'timeline' => $result['data'] ?? [],
-                ];
-            }
-
-            return [
-                'success' => false,
-                'message' => 'Unable to fetch timeline',
-            ];
-        } catch (\Exception $e) {
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Refund failed: '.$e->getMessage(),
             ];
         }
     }

@@ -105,7 +105,7 @@
                         <div class="space-y-4">
                             @foreach($shipping_methods as $method)
                                 <label class="relative flex items-start gap-6 p-6 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5 @error('selected_shipping_method_id') border-red-500 @enderror">
-                                    <input wire:model="selected_shipping_method_id" type="radio" value="{{ $method->id }}" class="sr-only peer">
+                                    <input wire:model.live="selected_shipping_method_id" type="radio" value="{{ $method->id }}" class="sr-only peer">
                                     <div class="flex justify-between items-start flex-1">
                                         <div class="flex items-start gap-4">
                                             <div class="w-12 h-12 bg-muted rounded-2xl flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-500 @if($method->is_default) ring-2 ring-primary ring-offset-4 ring-offset-background @endif">
@@ -152,7 +152,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {{-- Paystack Option --}}
                             <label class="relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                                <input wire:model="payment_method" type="radio" value="paystack" class="sr-only peer">
+                                <input wire:model.live="payment_method" type="radio" value="paystack" class="sr-only peer">
                                 <div class="flex justify-between items-start mb-6">
                                     <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                                         <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
@@ -175,7 +175,7 @@
 
                             {{-- Stripe Option --}}
                             <label class="relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                                <input wire:model="payment_method" type="radio" value="stripe" class="sr-only peer">
+                                <input wire:model.live="payment_method" type="radio" value="stripe" class="sr-only peer">
                                 <div class="flex justify-between items-start mb-6">
                                     <div class="w-16 h-16 bg-[#635BFF]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#635BFF]/20 transition-colors">
                                         <svg class="w-8 h-8 text-[#635BFF]" viewBox="0 0 24 24" fill="currentColor">
@@ -297,7 +297,11 @@
                             
                             <span wire:loading.remove wire:target="processPayment" class="flex items-center gap-4">
                                 <x-lucide-lock class="w-4 h-4" />
-                                Proceed to Paystack
+                                @if($payment_method === 'stripe')
+                                    Proceed to Stripe
+                                @else
+                                    Proceed to Paystack
+                                @endif
                                 <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-2 transition-transform duration-500" />
                             </span>
 

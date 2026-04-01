@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Payment\PaystackController;
+use App\Http\Controllers\Payment\StripeController;
 use App\Livewire\AboutPage;
 use App\Livewire\AccountPage;
 use App\Livewire\Auth\ForgetPage;

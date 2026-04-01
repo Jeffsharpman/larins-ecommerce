@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\Log;
 use Stripe\Checkout\Session;
-use Stripe\Refund;
 use Stripe\Stripe;
 use Stripe\StripeClient;
 use Stripe\Webhook;
@@ -15,8 +15,12 @@ class StripeService
 
     public function __construct()
     {
-        Stripe::setApiKey(config('stripe.secret_key'));
-        $this->client = new StripeClient(config('stripe.secret_key'));
+        $settings = app(GeneralSettings::class);
+
+        $secretKey = $settings->stripe_secret_key ?? config('stripe.secret_key');
+
+        Stripe::setApiKey($secretKey);
+        $this->client = new StripeClient($secretKey);
     }
 
     public function createCheckoutSession(array $data): array
@@ -37,8 +41,22 @@ class StripeService
                 ];
             }
 
+            if (! empty($data['tax_amount']) && $data['tax_amount'] > 0) {
+                $lineItems[] = [
+                    'price_data' => [
+                        'currency' => 'ngn',
+                        'unit_amount' => (int) ($data['tax_amount'] * 100),
+                        'product_data' => [
+                            'name' => 'Tax',
+                            'description' => 'Taxes and duties',
+                        ],
+                    ],
+                    'quantity' => 1,
+                ];
+            }
+
             $session = Session::create([
-                'payment_method_types' => ['card', 'bank_transfer'],
+                'payment_method_types' => ['card'],
                 'customer_email' => $data['email'],
                 'line_items' => $lineItems,
                 'mode' => 'payment',
@@ -139,39 +157,10 @@ class StripeService
         }
     }
 
-    public function createRefund(string $paymentIntentId, ?int $amount = null): array
-    {
-        try {
-            $params = [
-                'payment_intent' => $paymentIntentId,
-            ];
-
-            if ($amount) {
-                $params['amount'] = $amount * 100;
-            }
-
-            $refund = Refund::create($params);
-
-            return [
-                'success' => true,
-                'refund_id' => $refund->id,
-                'status' => $refund->status,
-            ];
-        } catch (\Exception $e) {
-            Log::error('Stripe refund failed', [
-                'payment_intent_id' => $paymentIntentId,
-                'error' => $e->getMessage(),
-            ]);
-
-            return [
-                'success' => false,
-                'message' => $e->getMessage(),
-            ];
-        }
-    }
-
     public function getPublicKey(): string
     {
-        return config('stripe.public_key');
+        $settings = app(GeneralSettings::class);
+
+        return $settings->stripe_public_key ?? config('stripe.public_key');
     }
 }
