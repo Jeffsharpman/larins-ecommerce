@@ -2,11 +2,11 @@
 
 namespace App\Filament\Resources\Addresses\Schemas;
 
-use App\Models\Address;
 use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class AddressForm
@@ -16,31 +16,35 @@ class AddressForm
         return $schema
             ->components([
                 Group::make()->schema([
-                    Section::make('Contact Information')->schema([
-                        TextInput::make('first_name')
-                            ->label('First Name')
-                            ->required()
-                            ->maxLength(100),
+                    Section::make('Address Information')->schema([
+                        Select::make('user_id')
+                            ->label('Customer')
+                            ->relationship('user', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
 
-                        TextInput::make('last_name')
-                            ->label('Last Name')
-                            ->required()
-                            ->maxLength(100),
-                    ])->columns(2),
+                        Select::make('title')
+                            ->label('Address Type')
+                            ->options([
+                                'home' => 'Home',
+                                'work_place' => 'Work Place',
+                                'other' => 'Other',
+                            ])
+                            ->required(),
 
-                    Section::make('Address Details')->schema([
                         TextInput::make('phone')
                             ->label('Phone Number')
-                            ->tel()
-                            ->required(),
+                            ->tel(),
+                    ])->columns(3),
 
+                    Section::make('Street Address')->schema([
                         TextInput::make('street_address')
                             ->label('Street Address')
-                            ->required(),
-                    ])->columns(2),
-                ])->columnSpan(2),
+                            ->required()
+                            ->columnSpanFull(),
+                    ]),
 
-                Group::make()->schema([
                     Section::make('Location')->schema([
                         TextInput::make('city')
                             ->label('City')
@@ -51,14 +55,25 @@ class AddressForm
                             ->required(),
 
                         TextInput::make('zip_code')
-                            ->label('Postal Code')
-                            ->required(),
+                            ->label('Postal Code'),
                     ])->columns(3),
 
+                    Section::make('Default Address')->schema([
+                        Select::make('is_active')
+                            ->label('Set as Default')
+                            ->options([
+                                '1' => 'Yes',
+                                '0' => 'No',
+                            ])
+                            ->default('0'),
+                    ])->columns(2),
+                ])->columnSpan(2),
+
+                Group::make()->schema([
                     Section::make('Summary')->schema([
                         Placeholder::make('full_name')
                             ->label('Full Name')
-                            ->content(fn (Address $record): string => $record->full_name ?? '-'),
+                            ->content(fn ($record) => $record ? $record->full_name : '-'),
                     ]),
                 ])->columnSpan(1),
             ])->columns(3);

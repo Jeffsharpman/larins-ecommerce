@@ -22,8 +22,44 @@
                 <div class="col-span-12 lg:col-span-7 space-y-10">
                     
                     {{-- Shipping Destination Card --}}
+                    @if($no_address_error)
+                    <div class="bg-destructive/10 border border-destructive/30 rounded-[2.5rem] p-8 md:p-12">
+                        <div class="flex items-center gap-5 mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-destructive text-destructive-foreground flex items-center justify-center">
+                                <x-lucide-alert-circle class="w-7 h-7" />
+                            </div>
+                            <div>
+                                <h2 class="font-black italic uppercase text-xl tracking-tighter text-destructive">Default Address Required</h2>
+                                <p class="text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-black">Please add a delivery location to continue</p>
+                            </div>
+                        </div>
+                        <p class="text-muted-foreground text-xs mb-6">You need to set a default shipping address in your account before proceeding to checkout.</p>
+                        <a href="/account?tab=addresses" class="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary/90 transition-all">
+                            <x-lucide-plus class="w-4 h-4" />
+                            Add Default Address
+                        </a>
+                    </div>
+                    @else
                     <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden group">
                         <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-700"></div>
+                        
+                        @if($active_address)
+                        <div class="mb-8 p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-2">
+                                @if($active_address->title === 'home')
+                                    <x-lucide-home class="w-4 h-4 text-primary" />
+                                @elseif($active_address->title === 'work_place')
+                                    <x-lucide-briefcase class="w-4 h-4 text-primary" />
+                                @else
+                                    <x-lucide-map-pin class="w-4 h-4 text-primary" />
+                                @endif
+                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Default Address</span>
+                            </div>
+                            <p class="text-foreground font-bold">{{ $user->name }}</p>
+                            <p class="text-muted-foreground text-xs mt-1">{{ $active_address->street_address }}, {{ $active_address->city }}, {{ $active_address->state }} {{ $active_address->zip_code }}</p>
+                            <a href="/account?tab=addresses" class="text-[9px] font-black uppercase text-primary mt-3 inline-block hover:underline">Change Address</a>
+                        </div>
+                        @endif
                         
                         <div class="flex items-center gap-5 mb-12 pb-8 border-b border-border">
                             <div class="w-14 h-14 rounded-2xl bg-primary text-background flex items-center justify-center shadow-lg shadow-primary/20">
@@ -35,57 +71,20 @@
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {{-- Input: First Name --}}
-                            <div class="space-y-3">
-                                <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2" for="first_name">Acquirer Name</label>
-                                <div class="relative">
-                                    <input wire:model="first_name" id="first_name" type="text" placeholder="First Name"
-                                        class="w-full bg-background/50 border-border rounded-2xl px-6 py-5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300 placeholder:opacity-20 font-bold @error('first_name') border-red-500 @enderror">
-                                    @error('first_name') <x-lucide-alert-circle class="absolute right-5 top-5 w-5 h-5 text-red-500" /> @enderror
+                        @if($active_address)
+                        <div class="bg-muted/30 border border-border rounded-2xl p-6">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-2">Delivery To</p>
+                                    <p class="text-lg font-bold text-foreground">{{ $user->name }}</p>
+                                    <p class="text-sm text-muted-foreground mt-1">{{ $active_address->street_address }}</p>
+                                    <p class="text-sm text-muted-foreground">{{ $active_address->city }}, {{ $active_address->state }} {{ $active_address->zip_code }}</p>
+                                    <p class="text-sm text-muted-foreground mt-1">{{ $active_address->phone }}</p>
                                 </div>
-                            </div>
-
-                            {{-- Input: Last Name --}}
-                            <div class="space-y-3">
-                                <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2" for="last_name">Surname</label>
-                                <input wire:model="last_name" id="last_name" type="text" placeholder="Last Name"
-                                    class="w-full bg-background/50 border-border rounded-2xl px-6 py-5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-bold">
-                            </div>
-
-                            {{-- Input: Phone --}}
-                            <div class="md:col-span-2 space-y-3">
-                                <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2" for="phone">Communication Line</label>
-                                <div class="relative group">
-                                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-primary font-black text-sm tracking-tighter">+234</span>
-                                    <input wire:model="phone" id="phone" type="tel" placeholder="801 000 0000"
-                                        class="w-full bg-background/50 border-border rounded-2xl pl-20 pr-6 py-5 focus:ring-2 focus:ring-primary/20 focus:border-primary font-bold transition-all">
-                                </div>
-                            </div>
-
-                            {{-- Input: Address --}}
-                            <div class="md:col-span-2 space-y-3">
-                                <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2" for="address">Street Address</label>
-                                <input wire:model="address" id="address" type="text" placeholder="Enter physical address"
-                                    class="w-full bg-background/50 border-border rounded-2xl px-6 py-5 focus:ring-2 focus:ring-primary/20 focus:border-primary font-bold transition-all">
-                            </div>
-
-                            <div class="space-y-3">
-                                <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2" for="city">City</label>
-                                <input wire:model="city" id="city" type="text" class="w-full bg-background/50 border-border rounded-2xl px-6 py-5 focus:ring-2 focus:ring-primary/20 focus:border-primary font-bold">
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="space-y-3">
-                                    <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2" for="state">State</label>
-                                    <input wire:model="state" id="state" type="text" class="w-full bg-background/50 border-border rounded-2xl px-6 py-5 font-bold focus:border-primary">
-                                </div>
-                                <div class="space-y-3">
-                                    <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2" for="zip_code">Zip</label>
-                                    <input wire:model="zip_code" id="zip_code" type="text" class="w-full bg-background/50 border-border rounded-2xl px-6 py-5 font-bold focus:border-primary">
-                                </div>
+                                <a href="/account?tab=addresses" class="text-[9px] font-black uppercase text-primary hover:underline">Edit</a>
                             </div>
                         </div>
+                        @endif
                     </div>
 
                     {{-- Shipping Method Card --}}
@@ -332,5 +331,6 @@
                 </aside>
             </div>
         </form>
+        @endif
     </div>
 </div>

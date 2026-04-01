@@ -23,20 +23,21 @@ class PaystackController extends Controller
             'amount' => 'required|numeric|min:100',
             'email' => 'required|email',
             'order_id' => 'required|exists:orders,id',
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
+            'first_name' => 'nullable|string',
+            'last_name' => 'nullable|string',
             'phone' => 'nullable|string',
         ]);
 
         $user = auth()->user();
+        $nameParts = $user?->nameParts() ?? ['first' => '', 'last' => ''];
 
         $result = $this->paystack->initializeTransaction([
             'email' => $request->email,
             'amount' => $request->amount,
             'order_id' => $request->order_id,
             'user_id' => $user->id,
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
+            'first_name' => $request->first_name ?? $nameParts['first'],
+            'last_name' => $request->last_name ?? $nameParts['last'],
             'phone' => $request->phone,
             'callback_url' => route('paystack.callback'),
             'currency' => 'NGN',

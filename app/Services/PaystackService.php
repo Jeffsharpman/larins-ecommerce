@@ -27,6 +27,8 @@ class PaystackService
     {
         $reference = $this->generateReference();
 
+        Log::info('Paystack init - settings key: '.substr($this->secretKey, 0, 10).'...');
+
         $payload = [
             'email' => $data['email'],
             'amount' => (int) ($data['amount'] * 100),
@@ -54,6 +56,8 @@ class PaystackService
                 ->post("{$this->baseUrl}/transaction/initialize", $payload);
 
             $result = $response->json();
+
+            Log::info('Paystack response', ['status' => $result['status'] ?? 'no status', 'message' => $result['message'] ?? 'no message']);
 
             if ($response->successful() && ($result['status'] ?? false)) {
                 return [

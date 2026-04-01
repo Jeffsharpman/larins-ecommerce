@@ -251,4 +251,65 @@ class CartManagement
     {
         return self::calculateTotal($items);
     }
+
+    // ============ Wishlist Management ============
+
+    public static function addToWishlist($product_id)
+    {
+        $wishlist = self::getWishlistFromCookie();
+
+        if (! in_array($product_id, $wishlist)) {
+            $wishlist[] = $product_id;
+        }
+
+        self::addWishlistToCookie($wishlist);
+
+        return count($wishlist);
+    }
+
+    public static function removeFromWishlist($product_id)
+    {
+        $wishlist = self::getWishlistFromCookie();
+
+        $wishlist = array_filter($wishlist, fn ($id) => $id != $product_id);
+
+        self::addWishlistToCookie(array_values($wishlist));
+
+        return count($wishlist);
+    }
+
+    public static function isInWishlist($product_id): bool
+    {
+        $wishlist = self::getWishlistFromCookie();
+
+        return in_array($product_id, $wishlist);
+    }
+
+    public static function addWishlistToCookie($wishlist)
+    {
+        Cookie::queue('wishlist', json_encode($wishlist), 60 * 24 * 30);
+    }
+
+    public static function getWishlistFromCookie()
+    {
+        $wishlist = json_decode(Cookie::get('wishlist'), true);
+
+        return $wishlist ?: [];
+    }
+
+    public static function clearWishlist()
+    {
+        Cookie::queue(Cookie::forget('wishlist'));
+    }
+
+    public static function getWishlistProducts()
+    {
+        $wishlist = self::getWishlistFromCookie();
+
+        if (empty($wishlist)) {
+            return collect([]);
+        }
+
+        return Product::whereIn('id', $wishlist)->get();
+    }
 }

@@ -28,8 +28,6 @@ class AddressRelationManager extends RelationManager
     {
         return $schema
             ->components([
-                TextInput::make('first_name'),
-                TextInput::make('last_name'),
                 TextInput::make('phone')
                     ->tel(),
                 TextInput::make('city'),
@@ -119,17 +117,16 @@ class AddressRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('last_name')
+            ->recordTitleAttribute('street_address')
             ->columns([
-                // TextColumn::make('order_id')
-                //     ->numeric()
-                //     ->sortable(),
-                TextColumn::make('fullname')
+                TextColumn::make('user.name')
+                    ->label('Customer')
                     ->searchable(),
-                // TextColumn::make('last_name')
-                //     ->searchable(),
                 TextColumn::make('phone')
                     ->searchable(),
+                TextColumn::make('street_address')
+                    ->searchable()
+                    ->limit(30),
                 TextColumn::make('city')
                     ->searchable(),
                 TextColumn::make('state')
@@ -160,7 +157,7 @@ class AddressRelationManager extends RelationManager
                 ]))
             ->toolbarActions([
                 BulkActionGroup::make([
-                DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

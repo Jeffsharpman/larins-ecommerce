@@ -10,6 +10,7 @@ use App\Models\ShippingMethod;
 use App\Services\PaystackService;
 use App\Services\StripeService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -34,29 +35,25 @@ class CheckoutPage extends Component
 
     public $applied_coupon = null;
 
-    #[Rule('required|string|min:2|max:50')]
-    public $first_name;
-
-    #[Rule('required|string|min:2|max:50')]
-    public $last_name;
+    public $active_address = null;
 
     #[Rule('required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10')]
-    public $phone;
+    public $phone = '';
 
     #[Rule('required|string|min:5|max:255')]
-    public $address;
+    public $address = '';
 
     #[Rule('required|string|min:2|max:100')]
-    public $city;
+    public $city = '';
 
     #[Rule('required|string|min:2|max:100')]
-    public $state;
+    public $state = '';
 
     #[Rule('required|string|in:paystack,stripe')]
     public $payment_method = 'paystack';
 
-    #[Rule('required|numeric|digits:6')]
-    public $zip_code;
+    #[Rule('nullable|min:5|max:10')]
+    public $zip_code = '';
 
     public $selected_shipping_method_id;
 
@@ -64,6 +61,8 @@ class CheckoutPage extends Component
     public $shipping_methods;
 
     public $processing_payment = false;
+
+    public $no_address_error = false;
 
     public function mount()
     {
@@ -82,7 +81,27 @@ class CheckoutPage extends Component
 
         $this->selected_shipping_method_id = $this->shipping_methods->where('is_default', true)->first()?->id ?? $this->shipping_methods->first()?->id;
 
+        $this->loadActiveAddress();
         $this->calculateTotals();
+    }
+
+    public function loadActiveAddress()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $this->active_address = $user->activeAddress();
+
+            if ($this->active_address) {
+                $this->phone = $this->active_address->phone ?? '';
+                $this->address = $this->active_address->street_address ?? '';
+                $this->city = $this->active_address->city ?? '';
+                $this->state = $this->active_address->state ?? '';
+                $this->zip_code = $this->active_address->zip_code ?? '';
+            } else {
+                $this->no_address_error = true;
+                $this->phone = $user->phone ?? '';
+            }
+        }
     }
 
     public function calculateTotals()
@@ -177,6 +196,20 @@ class CheckoutPage extends Component
 
     public function processPayment()
     {
+        if (! Auth::check() || ! Auth::user()->activeAddress()) {
+            $this->no_address_error = true;
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Address Required',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Please add a default address in your account before checkout.</p>',
+                position: 'bottom-end',
+                timer: 5000,
+                toast: true,
+            );
+
+            return;
+        }
+
         $this->validate();
 
         $this->processing_payment = true;
@@ -197,16 +230,23 @@ class CheckoutPage extends Component
             $order->notes = 'Order placed by '.auth()->user()->name;
             $order->save();
 
-            $address = new Address;
-            $address->order_id = $order->id;
-            $address->first_name = $this->first_name;
-            $address->last_name = $this->last_name;
-            $address->phone = $this->phone;
-            $address->street_address = $this->address;
-            $address->city = $this->city;
-            $address->state = $this->state;
-            $address->zip_code = $this->zip_code;
-            $address->save();
+            // Link to existing default address instead of creating new one
+            if ($this->active_address) {
+                $this->active_address->update(['order_id' => $order->id]);
+                $address = $this->active_address;
+            } else {
+                // Fallback: create new address (should not happen due to earlier check)
+                $address = Address::create([
+                    'user_id' => auth()->id(),
+                    'order_id' => $order->id,
+                    'phone' => $this->active_address?->phone ?? auth()->user()->phone ?? '',
+                    'street_address' => $this->active_address?->street_address ?? '',
+                    'city' => $this->active_address?->city ?? '',
+                    'state' => $this->active_address?->state ?? '',
+                    'zip_code' => $this->active_address?->zip_code ?? '',
+                    'is_active' => false,
+                ]);
+            }
 
             $order->items()->createMany($cart_items);
 
@@ -223,10 +263,11 @@ class CheckoutPage extends Component
             }
 
         } catch (\Exception $e) {
+            Log::error('Checkout payment error: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
             $this->dispatch('swal:alert',
                 icon: 'error',
-                title: 'Error',
-                html: '<p class="text-[9px] font-medium uppercase tracking-widest">An error occurred. Please try again.</p>',
+                title: 'Payment Error',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">'.$e->getMessage().'</p>',
                 position: 'bottom-end',
                 timer: 5000,
                 toast: true,
@@ -245,9 +286,9 @@ class CheckoutPage extends Component
             'amount' => $this->grand_total,
             'order_id' => $order->id,
             'user_id' => auth()->id(),
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
-            'phone' => $this->phone,
+            'first_name' => auth()->user()->nameParts()['first'],
+            'last_name' => auth()->user()->nameParts()['last'],
+            'phone' => $this->active_address?->phone ?? auth()->user()->phone ?? '',
             'callback_url' => route('paystack.callback'),
             'currency' => 'NGN',
         ]);
@@ -315,6 +356,8 @@ class CheckoutPage extends Component
 
     public function render()
     {
-        return view('livewire.checkout-page')->layout('components.layouts.app');
+        return view('livewire.checkout-page', [
+            'user' => Auth::user(),
+        ])->layout('components.layouts.app');
     }
 }

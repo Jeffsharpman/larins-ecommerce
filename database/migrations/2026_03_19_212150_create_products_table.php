@@ -24,8 +24,7 @@ return new class extends Migration
             $table->boolean('is_featured')->default(false);
             $table->boolean('in_stock')->default(true);
             $table->boolean('on_sale')->default(false);
-            // $table->decimal('rating', 3, 2)->default(5.00);
-            // $table->boolean('is_limited_edition')->default(false);
+            $table->integer('stock')->default(0);
             $table->timestamps();
         });
     }

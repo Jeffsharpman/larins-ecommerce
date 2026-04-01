@@ -4,14 +4,18 @@ namespace App\Livewire;
 
 use App\Models\Address;
 use App\Models\Order;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 #[Title('Account')]
 class AccountPage extends Component
 {
+    use WithPagination;
+
     public $activeTab = 'profile';
 
     public $user;
@@ -26,7 +30,7 @@ class AccountPage extends Component
 
     public $addresses = [];
 
-    public $orders = [];
+    public ?LengthAwarePaginator $orders = null;
 
     public $wishlistItems = [];
 
@@ -37,6 +41,38 @@ class AccountPage extends Component
     public $isLoading = true;
 
     public $error = null;
+
+    public $showAddressModal = false;
+
+    public $editingAddress = null;
+
+    public $showDeleteModal = false;
+
+    public $addressToDelete = null;
+
+    public $addressTitle = '';
+
+    public $addressStreet = '';
+
+    public $addressCity = '';
+
+    public $addressState = '';
+
+    public $addressZip = '';
+
+    public $addressPhone = '';
+
+    protected function rules(): array
+    {
+        return [
+            'addressTitle' => 'required|in:home,work_place,other',
+            'addressStreet' => 'required|min:5',
+            'addressCity' => 'required|min:2',
+            'addressState' => 'required|min:2',
+            'addressZip' => 'nullable|min:5',
+            'addressPhone' => 'nullable|min:10',
+        ];
+    }
 
     public function mount()
     {
@@ -58,21 +94,15 @@ class AccountPage extends Component
                 return;
             }
 
-            $nameParts = explode(' ', $this->user->name, 2);
-            $this->first_name = $nameParts[0] ?? '';
-            $this->last_name = $nameParts[1] ?? '';
-            $this->phone = '';
+            // Refresh user to ensure attributes are loaded
+            $this->user = $this->user->fresh();
+
+            $this->first_name = $this->user->nameParts()['first'];
+            $this->last_name = $this->user->nameParts()['last'];
+            $this->phone = $this->user->phone ?? '';
             $this->birthday = '';
 
-            $this->addresses = Address::whereHas('order', function ($query) {
-                $query->where('user_id', $this->user->id);
-            })->orderBy('created_at', 'desc')->get()->unique(fn ($a) => $a->street_address.$a->city.$a->state)->values()->toArray();
-
-            $this->orders = Order::where('user_id', $this->user->id)
-                ->with(['items.product', 'items.product.category', 'items.product.brand'])
-                ->orderBy('created_at', 'desc')
-                ->limit(10)
-                ->get();
+            $this->addresses = $this->user->addresses()->orderBy('created_at', 'desc')->get()->toArray();
 
             $this->totalOrders = Order::where('user_id', $this->user->id)->count();
 
@@ -81,27 +111,50 @@ class AccountPage extends Component
             $this->totalWishlist = count($wishlist);
         } catch (\Exception $e) {
             $this->error = 'Unable to load account data. Please try again.';
-            Log::error('Account page error: '.$e->getMessage());
+            Log::error('Account page error: '.$e->getMessage().' - Trace: '.$e->getTraceAsString());
         } finally {
             $this->isLoading = false;
         }
     }
 
+    public function updatedOrdersPage(): void
+    {
+        $this->loadOrders();
+    }
+
+    private function loadOrders()
+    {
+        if (! $this->user) {
+            return;
+        }
+
+        $this->orders = Order::where('user_id', $this->user->id)
+            ->with(['items.product', 'items.product.category', 'items.product.brand'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+    }
+
     public function setActiveTab($tab)
     {
         $this->activeTab = $tab;
+        if ($tab === 'orders') {
+            $this->loadOrders();
+        }
     }
 
     public function updateProfile()
     {
         $this->validate([
             'first_name' => 'required|min:2|max:255',
-            'last_name' => 'required|min:2|max:255',
+            'last_name' => 'nullable|min:2|max:255',
             'phone' => 'nullable|min:10|max:20',
         ]);
 
+        $fullName = trim($this->first_name.' '.$this->last_name);
+
         $this->user->update([
-            'name' => trim($this->first_name.' '.$this->last_name),
+            'name' => $fullName ?: $this->user->name,
+            'phone' => $this->phone,
         ]);
 
         session()->flash('success', 'Profile updated successfully');
@@ -114,6 +167,167 @@ class AccountPage extends Component
             timer: 3000,
             toast: true,
         );
+    }
+
+    public function openAddressModal(?Address $address = null)
+    {
+        $this->editingAddress = $address;
+        if ($address) {
+            $this->addressTitle = $address->title;
+            $this->addressStreet = $address->street_address;
+            $this->addressCity = $address->city;
+            $this->addressState = $address->state;
+            $this->addressZip = $address->zip_code ?? '';
+            $this->addressPhone = $address->phone ?? '';
+        } else {
+            $this->resetAddressFields();
+        }
+        $this->showAddressModal = true;
+    }
+
+    public function closeAddressModal()
+    {
+        $this->showAddressModal = false;
+        $this->editingAddress = null;
+        $this->resetAddressFields();
+    }
+
+    private function resetAddressFields()
+    {
+        $this->addressTitle = '';
+        $this->addressStreet = '';
+        $this->addressCity = '';
+        $this->addressState = '';
+        $this->addressZip = '';
+        $this->addressPhone = '';
+    }
+
+    public function saveAddress()
+    {
+        $this->validate();
+
+        try {
+            if ($this->editingAddress) {
+                $this->editingAddress->update([
+                    'title' => $this->addressTitle,
+                    'street_address' => $this->addressStreet,
+                    'city' => $this->addressCity,
+                    'state' => $this->addressState,
+                    'zip_code' => $this->addressZip,
+                    'phone' => $this->addressPhone,
+                ]);
+                $message = 'Address updated successfully';
+            } else {
+                Address::create([
+                    'user_id' => $this->user->id,
+                    'title' => $this->addressTitle,
+                    'street_address' => $this->addressStreet,
+                    'city' => $this->addressCity,
+                    'state' => $this->addressState,
+                    'zip_code' => $this->addressZip,
+                    'phone' => $this->addressPhone,
+                    'is_active' => $this->user->addresses()->count() === 0,
+                ]);
+                $message = 'Address added successfully';
+            }
+
+            $this->addresses = $this->user->addresses()->orderBy('created_at', 'desc')->get()->toArray();
+            $this->closeAddressModal();
+
+            $this->dispatch('swal:alert',
+                icon: 'success',
+                title: 'Address Saved',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">'.$message.'</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        } catch (\Exception $e) {
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Error',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Unable to save address</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        }
+    }
+
+    public function setActiveAddress(Address $address)
+    {
+        try {
+            $address->setAsActive();
+            $this->addresses = $this->user->addresses()->orderBy('created_at', 'desc')->get()->toArray();
+
+            $this->dispatch('swal:alert',
+                icon: 'success',
+                title: 'Default Address Updated',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">This address is now your default</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        } catch (\Exception $e) {
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Error',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Unable to update default address</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        }
+    }
+
+    public function confirmDeleteAddress(Address $address)
+    {
+        $this->addressToDelete = $address;
+        $this->showDeleteModal = true;
+    }
+
+    public function closeDeleteModal()
+    {
+        $this->showDeleteModal = false;
+        $this->addressToDelete = null;
+    }
+
+    public function deleteAddress()
+    {
+        if (! $this->addressToDelete) {
+            return;
+        }
+
+        try {
+            $wasActive = $this->addressToDelete->is_active;
+            $this->addressToDelete->delete();
+            $this->addresses = $this->user->addresses()->orderBy('created_at', 'desc')->get()->toArray();
+
+            if ($wasActive && $this->user->addresses()->exists()) {
+                $this->user->addresses()->first()->setAsActive();
+                $this->addresses = $this->user->addresses()->orderBy('created_at', 'desc')->get()->toArray();
+            }
+
+            $this->dispatch('swal:alert',
+                icon: 'success',
+                title: 'Address Deleted',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Address has been removed</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        } catch (\Exception $e) {
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Error',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Unable to delete address</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        } finally {
+            $this->closeDeleteModal();
+        }
     }
 
     public function render()
@@ -131,6 +345,9 @@ class AccountPage extends Component
             'totalWishlist' => $this->totalWishlist,
             'isLoading' => $this->isLoading,
             'error' => $this->error,
+            'showAddressModal' => $this->showAddressModal,
+            'editingAddress' => $this->editingAddress,
+            'showDeleteModal' => $this->showDeleteModal,
         ])->layout('components.layouts.app');
     }
 }
