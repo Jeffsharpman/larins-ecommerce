@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use App\Notifications\CustomVerifyEmail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Livewire\Attributes\Rule;
@@ -40,7 +41,7 @@ class RegisterPage extends Component
             'password' => Hash::make($this->password),
         ]);
 
-        $user->sendEmailVerificationNotification();
+        $user->notify(new CustomVerifyEmail);
 
         RateLimiter::clear($key);
 
