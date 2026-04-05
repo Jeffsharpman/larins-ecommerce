@@ -164,13 +164,26 @@ class CartManagement
 
     public static function applyCoupon($code)
     {
-        $coupon = Coupon::where('code', $code)->first();
+        $normalizedCode = strtoupper(trim($code));
+        $coupon = Coupon::whereRaw('UPPER(code) = ?', [$normalizedCode])->first();
 
-        if (! $coupon || ! $coupon->isValid()) {
-            return ['success' => false, 'message' => 'Invalid or expired coupon code'];
+        if (! $coupon) {
+            return ['success' => false, 'message' => 'Coupon code not found'];
         }
 
-        Cookie::queue('coupon_code', $code, 60 * 24 * 30);
+        if (! $coupon->isValid()) {
+            return ['success' => false, 'message' => 'This coupon is expired or no longer active'];
+        }
+
+        $subtotal = self::calculateGrandTotal(self::getCartItemsFromCookie());
+        if ($coupon->min_order_amount && $subtotal < $coupon->min_order_amount) {
+            return [
+                'success' => false,
+                'message' => 'Minimum order of '.number_format($coupon->min_order_amount, 2).' required for this coupon',
+            ];
+        }
+
+        Cookie::queue('coupon_code', $coupon->code, 60 * 24 * 30);
 
         return ['success' => true, 'coupon' => $coupon, 'message' => 'Coupon applied successfully'];
     }
@@ -187,7 +200,7 @@ class CartManagement
             return 0;
         }
 
-        $coupon = Coupon::where('code', $code)->first();
+        $coupon = Coupon::whereRaw('UPPER(code) = ?', [strtoupper($code)])->first();
         if (! $coupon || ! $coupon->isValid()) {
             return 0;
         }

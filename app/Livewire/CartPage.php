@@ -14,12 +14,6 @@ class CartPage extends Component
 
     public $grand_total;
 
-    public $coupon_code = '';
-
-    public $applied_coupon = null;
-
-    public $discount = 0;
-
     public $subtotal = 0;
 
     public $shipping = 0;
@@ -27,6 +21,8 @@ class CartPage extends Component
     public $tax = 0;
 
     public $total = 0;
+
+    public $discount = 0;
 
     public function mount()
     {
@@ -36,7 +32,6 @@ class CartPage extends Component
     public function loadCart()
     {
         $this->cart_items = CartManagement::getCartItemsFromCookie();
-        $this->coupon_code = CartManagement::getCouponCode();
         $this->calculateTotals();
     }
 
@@ -50,57 +45,6 @@ class CartPage extends Component
         $this->tax = $totals['tax'];
         $this->total = $totals['total'];
         $this->grand_total = $this->total;
-    }
-
-    public function applyCoupon()
-    {
-        if (empty($this->coupon_code)) {
-            $this->dispatch('swal:alert',
-                icon: 'error',
-                title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Error</span>',
-                html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">Please enter a coupon code.</p>',
-                position: 'bottom-end',
-                timer: 3000,
-                toast: true,
-                showConfirmButton: false,
-            );
-
-            return;
-        }
-
-        $result = CartManagement::applyCoupon($this->coupon_code);
-
-        if ($result['success']) {
-            $this->applied_coupon = $result['coupon'];
-            $this->calculateTotals();
-            $this->dispatch('swal:alert',
-                icon: 'success',
-                title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Coupon Applied</span>',
-                html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">'.$result['message'].'</p>',
-                position: 'bottom-end',
-                timer: 3000,
-                toast: true,
-                showConfirmButton: false,
-            );
-        } else {
-            $this->dispatch('swal:alert',
-                icon: 'error',
-                title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Invalid Coupon</span>',
-                html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">'.$result['message'].'</p>',
-                position: 'bottom-end',
-                timer: 3000,
-                toast: true,
-                showConfirmButton: false,
-            );
-        }
-    }
-
-    public function removeCoupon()
-    {
-        CartManagement::removeCoupon();
-        $this->coupon_code = '';
-        $this->applied_coupon = null;
-        $this->calculateTotals();
     }
 
     protected function dispatchUpdate($action = 'recalibrated')

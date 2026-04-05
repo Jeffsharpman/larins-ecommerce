@@ -11,6 +11,7 @@ use App\Services\PaystackService;
 use App\Services\StripeService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -76,7 +77,7 @@ class CheckoutPage extends Component
 
         $this->coupon_code = CartManagement::getCouponCode() ?? '';
         if ($this->coupon_code) {
-            $this->applied_coupon = Coupon::where('code', $this->coupon_code)->first();
+            $this->applied_coupon = Coupon::whereRaw('UPPER(code) = ?', [strtoupper($this->coupon_code)])->first();
         }
 
         $this->selected_shipping_method_id = $this->shipping_methods->where('is_default', true)->first()?->id ?? $this->shipping_methods->first()?->id;
@@ -106,10 +107,15 @@ class CheckoutPage extends Component
 
     public function calculateTotals()
     {
-        $totals = CartManagement::calculateTotal($this->cart_items);
-        $this->subtotal = $totals['subtotal'];
-        $this->discount = $totals['discount'];
-        $this->tax = $totals['tax'];
+        $this->subtotal = CartManagement::calculateGrandTotal($this->cart_items);
+
+        if ($this->applied_coupon) {
+            $this->discount = $this->applied_coupon->calculateDiscount($this->subtotal);
+        } else {
+            $this->discount = 0;
+        }
+
+        $this->tax = CartManagement::getTaxAmount($this->subtotal, $this->discount);
 
         if ($this->selected_shipping_method_id) {
             $shippingMethod = $this->shipping_methods->firstWhere('id', $this->selected_shipping_method_id);
@@ -164,6 +170,7 @@ class CheckoutPage extends Component
         $result = CartManagement::applyCoupon($this->coupon_code);
 
         if ($result['success']) {
+            $this->coupon_code = $result['coupon']->code;
             $this->applied_coupon = $result['coupon'];
             $this->calculateTotals();
             $this->dispatch('swal:alert',
@@ -191,6 +198,7 @@ class CheckoutPage extends Component
         CartManagement::removeCoupon();
         $this->coupon_code = '';
         $this->applied_coupon = null;
+        $this->discount = 0;
         $this->calculateTotals();
     }
 

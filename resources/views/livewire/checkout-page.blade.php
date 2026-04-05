@@ -229,10 +229,10 @@
                                         <div>
                                             <span class="text-[10px] font-black uppercase tracking-widest text-primary block">{{ $applied_coupon->code }}</span>
                                             <span class="text-[9px] text-muted-foreground font-medium uppercase tracking-wider">
-                                                @if($applied_coupon->discount_type === 'percentage')
-                                                    {{ $applied_coupon->discount_value }}% off
+                                                @if($applied_coupon->type === 'percentage')
+                                                    {{ $applied_coupon->value }}% off
                                                 @else
-                                                    {{ Number::currency($applied_coupon->discount_value, 'NGN') }} off
+                                                    {{ Number::currency($applied_coupon->value, 'NGN') }} off
                                                 @endif
                                             </span>
                                         </div>
