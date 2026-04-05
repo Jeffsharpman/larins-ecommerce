@@ -49,6 +49,29 @@ Route::get('/privacy', PrivacyPage::class)->name('privacy');
 Route::get('/shipping', ShippingPage::class)->name('shipping');
 Route::get('/wishlist', WishlistPage::class)->name('wishlist');
 
+Route::post('/wishlist/toggle', function () {
+    $productId = request()->json('product_id');
+
+    if (! $productId) {
+        return response()->json(['error' => 'Product ID required'], 400);
+    }
+
+    $isInWishlist = CartManagement::isInWishlist($productId);
+
+    if ($isInWishlist) {
+        CartManagement::removeFromWishlist($productId);
+    } else {
+        CartManagement::addToWishlist($productId);
+    }
+
+    $cartCount = count(CartManagement::getCartItemsFromCookie());
+
+    return response()->json([
+        'is_in_wishlist' => ! $isInWishlist,
+        'cart_count' => $cartCount,
+    ]);
+})->name('wishlist.toggle');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', LoginPage::class)->name('login');
     Route::get('/register', RegisterPage::class);

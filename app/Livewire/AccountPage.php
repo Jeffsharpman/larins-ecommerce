@@ -2,9 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Helpers\CartManagement;
 use App\Models\Address;
 use App\Models\Order;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Title;
@@ -30,9 +31,8 @@ class AccountPage extends Component
 
     public $addresses = [];
 
-    public ?LengthAwarePaginator $orders = null;
-
-    public $wishlistItems = [];
+    /** @var Collection<int, Product> */
+    public $wishlistProducts;
 
     public $totalOrders = 0;
 
@@ -66,9 +66,9 @@ class AccountPage extends Component
     {
         return [
             'addressTitle' => 'required|in:home,work_place,other',
-            'addressStreet' => 'required|min:5',
-            'addressCity' => 'required|min:2',
-            'addressState' => 'required|min:2',
+            'addressStreet' => 'min:5',
+            'addressCity' => 'min:2',
+            'addressState' => 'min:2',
             'addressZip' => 'nullable|min:5',
             'addressPhone' => 'nullable|min:10',
         ];
@@ -94,7 +94,6 @@ class AccountPage extends Component
                 return;
             }
 
-            // Refresh user to ensure attributes are loaded
             $this->user = $this->user->fresh();
 
             $this->first_name = $this->user->nameParts()['first'];
@@ -106,9 +105,8 @@ class AccountPage extends Component
 
             $this->totalOrders = Order::where('user_id', $this->user->id)->count();
 
-            $wishlist = json_decode(request()->cookie('wishlist') ?? '[]', true);
-            $this->wishlistItems = $wishlist;
-            $this->totalWishlist = count($wishlist);
+            $this->wishlistProducts = CartManagement::getWishlistProducts();
+            $this->totalWishlist = $this->wishlistProducts->count();
         } catch (\Exception $e) {
             $this->error = 'Unable to load account data. Please try again.';
             Log::error('Account page error: '.$e->getMessage().' - Trace: '.$e->getTraceAsString());
@@ -117,29 +115,30 @@ class AccountPage extends Component
         }
     }
 
-    public function updatedOrdersPage(): void
-    {
-        $this->loadOrders();
-    }
-
-    private function loadOrders()
-    {
-        if (! $this->user) {
-            return;
-        }
-
-        $this->orders = Order::where('user_id', $this->user->id)
-            ->with(['items.product', 'items.product.category', 'items.product.brand'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-    }
-
     public function setActiveTab($tab)
     {
         $this->activeTab = $tab;
         if ($tab === 'orders') {
             $this->loadOrders();
         }
+        if ($tab === 'wishlist') {
+            $this->wishlistProducts = CartManagement::getWishlistProducts();
+            $this->totalWishlist = $this->wishlistProducts->count();
+        }
+    }
+
+    private function loadOrders() {}
+
+    public function getOrdersProperty()
+    {
+        if (! $this->user) {
+            return collect();
+        }
+
+        return Order::where('user_id', $this->user->id)
+            ->with(['items.product', 'items.product.category', 'items.product.brand'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
     }
 
     public function updateProfile()
@@ -156,8 +155,6 @@ class AccountPage extends Component
             'name' => $fullName ?: $this->user->name,
             'phone' => $this->phone,
         ]);
-
-        session()->flash('success', 'Profile updated successfully');
 
         $this->dispatch('swal:alert',
             icon: 'success',
@@ -254,32 +251,6 @@ class AccountPage extends Component
         }
     }
 
-    public function setActiveAddress(Address $address)
-    {
-        try {
-            $address->setAsActive();
-            $this->addresses = $this->user->addresses()->orderBy('created_at', 'desc')->get()->toArray();
-
-            $this->dispatch('swal:alert',
-                icon: 'success',
-                title: 'Default Address Updated',
-                html: '<p class="text-[9px] font-medium uppercase tracking-widest">This address is now your default</p>',
-                position: 'bottom-end',
-                timer: 3000,
-                toast: true,
-            );
-        } catch (\Exception $e) {
-            $this->dispatch('swal:alert',
-                icon: 'error',
-                title: 'Error',
-                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Unable to update default address</p>',
-                position: 'bottom-end',
-                timer: 3000,
-                toast: true,
-            );
-        }
-    }
-
     public function confirmDeleteAddress(Address $address)
     {
         $this->addressToDelete = $address;
@@ -330,6 +301,41 @@ class AccountPage extends Component
         }
     }
 
+    public function removeFromWishlist(Product $product)
+    {
+        CartManagement::removeFromWishlist($product->id);
+        $this->wishlistProducts = CartManagement::getWishlistProducts();
+        $this->totalWishlist = $this->wishlistProducts->count();
+
+        $this->dispatch('wishlistUpdated');
+
+        $this->dispatch('swal:alert',
+            icon: 'success',
+            title: 'Removed',
+            html: '<p class="text-[9px] font-medium uppercase tracking-widest">Removed from favorites</p>',
+            position: 'bottom-end',
+            timer: 3000,
+            toast: true,
+        );
+    }
+
+    public function addToCart($productId)
+    {
+        $count = CartManagement::addItemToCart($productId);
+        $this->dispatch('cartUpdated', count: $count);
+        $this->dispatch('update-cart-count', total_count: $count)->to(Navbar::class);
+        $this->dispatchBrowserEvent('cart-count-updated', ['count' => $count]);
+
+        $this->dispatch('swal:alert',
+            icon: 'success',
+            title: 'Added to Cart',
+            html: '<p class="text-[9px] font-medium uppercase tracking-widest">Item added to your archive</p>',
+            position: 'bottom-end',
+            timer: 3000,
+            toast: true,
+        );
+    }
+
     public function render()
     {
         return view('livewire.account-page', [
@@ -339,8 +345,7 @@ class AccountPage extends Component
             'phone' => $this->phone,
             'birthday' => $this->birthday,
             'addresses' => $this->addresses,
-            'orders' => $this->orders,
-            'wishlistItems' => $this->wishlistItems,
+            'wishlistProducts' => $this->wishlistProducts,
             'totalOrders' => $this->totalOrders,
             'totalWishlist' => $this->totalWishlist,
             'isLoading' => $this->isLoading,
@@ -348,6 +353,7 @@ class AccountPage extends Component
             'showAddressModal' => $this->showAddressModal,
             'editingAddress' => $this->editingAddress,
             'showDeleteModal' => $this->showDeleteModal,
+            'orders' => $this->orders,
         ])->layout('components.layouts.app');
     }
 }

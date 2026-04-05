@@ -119,9 +119,7 @@
                         </div>
 
                         {{-- Heart/Wish --}}
-                        <button class="w-20 h-20 border border-border rounded-[2rem] flex items-center justify-center hover:bg-primary/5 hover:border-primary/40 transition-all duration-500 group">
-                            <x-lucide-heart class="w-6 h-6 group-hover:fill-primary group-hover:text-primary transition-all duration-500 stroke-[1.2]" />
-                        </button>
+                        <livewire:wishlist-button :product-id="$product->id" />
                     </div>
 
                     <button wire:click="addToCart({{ $product->id }})" wire:loading.attr="disabled"

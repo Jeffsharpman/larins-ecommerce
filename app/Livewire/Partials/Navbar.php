@@ -5,6 +5,7 @@ namespace App\Livewire\Partials;
 use App\Helpers\CartManagement;
 use App\Models\Announcement;
 use App\Models\User;
+use Illuminate\Support\Facades\Cookie;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -14,6 +15,8 @@ class Navbar extends Component
 
     public $total_count = 0;
 
+    public $wishlist_count = 0;
+
     public $announcements = [];
 
     public $dismissedAnnouncements = [];
@@ -21,6 +24,7 @@ class Navbar extends Component
     public function mount()
     {
         $this->total_count = count(CartManagement::getCartItemsFromCookie());
+        $this->wishlist_count = count(CartManagement::getWishlistFromCookie());
         $this->dismissedAnnouncements = json_decode(request()->cookie('dismissed_announcements') ?? '[]', true);
         $this->loadAnnouncements();
     }
@@ -44,12 +48,24 @@ class Navbar extends Component
         $this->total_count = $total_count;
     }
 
+    #[On('cart-count-updated')]
+    public function refreshCartCount($count)
+    {
+        $this->total_count = $count;
+    }
+
+    #[On('wishlistUpdated')]
+    public function refreshWishlistCount()
+    {
+        $this->wishlist_count = count(CartManagement::getWishlistFromCookie());
+    }
+
     public function dismissAnnouncement($id)
     {
         $this->dismissedAnnouncements[] = $id;
         $dismissed = json_encode($this->dismissedAnnouncements);
 
-        \Cookie::queue('dismissed_announcements', $dismissed, 60 * 24 * 30);
+        Cookie::queue('dismissed_announcements', $dismissed, 60 * 24 * 30);
 
         $this->announcements = collect($this->announcements)->reject(fn ($a) => $a['id'] === $id)->values()->toArray();
     }

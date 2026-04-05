@@ -18,10 +18,9 @@
         </div>
 
         {{-- Wishlist Button --}}
-        <button class="absolute top-5 right-5 w-10 h-10 bg-card dark:bg-background/80 backdrop-blur-md border border-border dark:border-border rounded-full flex items-center justify-center text-muted-foreground opacity-0 translate-y-[-10px] group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 hover:bg-primary hover:text-white dark:hover:bg-primary shadow-sm z-20"
-                aria-label="Add to wishlist">
-            <x-lucide-heart class="w-4 h-4" />
-        </button>
+        <div class="absolute top-5 right-5 z-30 transition-opacity duration-300">
+            <livewire:wishlist-button :product-id="$product->id" />
+        </div>
 
         {{-- Quick Add (Desktop) --}}
         <div class="absolute inset-x-0 bottom-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500 bg-gradient-to-t from-card dark:from-card via-card/80 dark:via-card/80 to-transparent hidden lg:block z-30">

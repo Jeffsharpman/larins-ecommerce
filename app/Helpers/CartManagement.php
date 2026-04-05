@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Settings\ShippingSettings;
 use App\Settings\TaxSettings;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
 
 class CartManagement
 {
@@ -101,7 +102,7 @@ class CartManagement
 
     public static function getCartItemsFromCookie()
     {
-        $cart_items = json_decode(Cookie::get('cart_items'), true);
+        $cart_items = json_decode(Cookie::get('cart_items') ?? '[]', true);
 
         return $cart_items ?: [];
     }
@@ -287,18 +288,34 @@ class CartManagement
 
     public static function addWishlistToCookie($wishlist)
     {
-        Cookie::queue('wishlist', json_encode($wishlist), 60 * 24 * 30);
+        Session::put('wishlist', $wishlist);
+
+        $encoded = json_encode($wishlist);
+        $minutes = 60 * 24 * 30;
+        $cookie = Cookie::make('wishlist', $encoded, $minutes);
+        Cookie::queue($cookie);
     }
 
     public static function getWishlistFromCookie()
     {
-        $wishlist = json_decode(Cookie::get('wishlist'), true);
+        if (Session::has('wishlist')) {
+            return Session::get('wishlist');
+        }
 
-        return $wishlist ?: [];
+        $value = Cookie::get('wishlist');
+
+        if (! $value) {
+            return [];
+        }
+
+        $decoded = json_decode($value, true);
+
+        return is_array($decoded) ? $decoded : [];
     }
 
     public static function clearWishlist()
     {
+        Session::forget('wishlist');
         Cookie::queue(Cookie::forget('wishlist'));
     }
 

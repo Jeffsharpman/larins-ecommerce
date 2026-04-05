@@ -73,7 +73,7 @@
         <a wire:navigate href="/cart" class="relative p-2 text-muted-foreground hover:text-primary transition-all">
           <x-lucide-shopping-bag class="w-5 h-5 stroke-[1.5]" />
           @if ($total_count > 0)
-            <span
+            <span data-cart-badge-mobile
               class="absolute top-1 right-1 h-3.5 w-3.5 bg-primary text-primary-foreground text-[8px] font-black flex items-center justify-center rounded-full shadow-lg ring-2 ring-background">
               {{ $total_count }}
             </span>
@@ -99,16 +99,24 @@
           </a>
         @endguest
 
+        <a wire:navigate href="/wishlist" class="relative p-2 text-muted-foreground hover:text-primary transition-all group">
+          <x-lucide-heart class="w-5 h-5 stroke-[1.5] {{ $wishlist_count > 0 ? 'fill-primary/20' : '' }}" />
+          @if ($wishlist_count > 0)
+            <span
+              class="absolute top-1 right-1 h-3.5 w-3.5 bg-primary text-primary-foreground text-[8px] font-black flex items-center justify-center rounded-full shadow-lg ring-2 ring-background">
+              {{ $wishlist_count > 9 ? '9+' : $wishlist_count }}
+            </span>
+          @endif
+        </a>
+
         <div class="h-4 w-[1px] bg-border/40 mx-1"></div>
 
         <a wire:navigate href="/cart" class="relative p-2 text-muted-foreground hover:text-primary transition-all group">
           <x-lucide-shopping-bag class="w-5 h-5 stroke-[1.5]" />
-          @if ($total_count > 0)
-            <span
-              class="absolute top-1 right-1 h-3.5 w-3.5 bg-primary text-primary-foreground text-[8px] font-black flex items-center justify-center rounded-full shadow-lg ring-2 ring-background animate-in zoom-in duration-300">
-              {{ $total_count }}
-            </span>
-          @endif
+          <span data-cart-badge
+            class="absolute top-1 right-1 h-3.5 w-3.5 bg-primary text-primary-foreground text-[8px] font-black flex items-center justify-center rounded-full shadow-lg ring-2 ring-background animate-in zoom-in duration-300 {{ $total_count > 0 ? '' : 'hidden' }}">
+            {{ $total_count > 0 ? ($total_count > 9 ? '9+' : $total_count) : '0' }}
+          </span>
         </a>
 
         <button id="themeToggle" class="p-2 text-muted-foreground hover:text-primary transition-all group">

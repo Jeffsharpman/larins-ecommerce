@@ -175,6 +175,33 @@
                 }
             });
         });
+
+        // Cart count badge update handler
+        window.addEventListener('cart-count-updated', event => {
+            const count = event.detail.count;
+            
+            // Update desktop badge
+            const badge = document.querySelector('[data-cart-badge]');
+            if (badge) {
+                badge.textContent = count > 9 ? '9+' : count;
+                if (count > 0) {
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+            
+            // Update mobile badge
+            const mobileBadge = document.querySelector('[data-cart-badge-mobile]');
+            if (mobileBadge) {
+                mobileBadge.textContent = count;
+                if (count > 0) {
+                    mobileBadge.classList.remove('hidden');
+                } else {
+                    mobileBadge.classList.add('hidden');
+                }
+            }
+        });
     </script>
 </body>
 </html>
