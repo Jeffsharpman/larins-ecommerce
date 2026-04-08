@@ -175,6 +175,10 @@ class CartManagement
             return ['success' => false, 'message' => 'This coupon is expired or no longer active'];
         }
 
+        if ($coupon->single_use_per_user && auth()->check() && $coupon->hasBeenUsedByUser(auth()->id())) {
+            return ['success' => false, 'message' => 'You have already used this coupon'];
+        }
+
         $subtotal = self::calculateGrandTotal(self::getCartItemsFromCookie());
         if ($coupon->min_order_amount && $subtotal < $coupon->min_order_amount) {
             return [

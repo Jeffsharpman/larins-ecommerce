@@ -91,6 +91,11 @@ class CouponForm
                         Toggle::make('is_active')
                             ->label('Active')
                             ->default(true),
+
+                        Toggle::make('single_use_per_user')
+                            ->label('One use per customer')
+                            ->default(true)
+                            ->helperText('When enabled, each customer can only use this coupon once'),
                     ]),
                 ])->columnSpan(1),
 

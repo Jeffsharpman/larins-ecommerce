@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Coupon extends Model
 {
@@ -20,6 +21,7 @@ class Coupon extends Model
         'starts_at',
         'expires_at',
         'is_active',
+        'single_use_per_user',
     ];
 
     protected $casts = [
@@ -32,6 +34,11 @@ class Coupon extends Model
         'expires_at' => 'datetime',
         'is_active' => 'boolean',
     ];
+
+    public function usages(): HasMany
+    {
+        return $this->hasMany(CouponUsage::class);
+    }
 
     public function isValid(): bool
     {
@@ -52,6 +59,11 @@ class Coupon extends Model
         }
 
         return true;
+    }
+
+    public function hasBeenUsedByUser(int $userId): bool
+    {
+        return $this->usages()->where('user_id', $userId)->exists();
     }
 
     public function calculateDiscount(float $orderAmount): float

@@ -5,11 +5,11 @@ namespace App\Livewire;
 use App\Helpers\CartManagement;
 use App\Models\Address;
 use App\Models\Coupon;
+use App\Models\CouponUsage;
 use App\Models\Order;
 use App\Models\ShippingMethod;
 use App\Services\PaystackService;
 use App\Services\StripeService;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Rule;
@@ -260,6 +260,13 @@ class CheckoutPage extends Component
 
             if ($this->applied_coupon) {
                 $this->applied_coupon->increment('used_count');
+
+                CouponUsage::create([
+                    'coupon_id' => $this->applied_coupon->id,
+                    'user_id' => auth()->id(),
+                    'order_id' => $order->id,
+                    'used_at' => now(),
+                ]);
             }
 
             if ($this->payment_method === 'paystack') {
