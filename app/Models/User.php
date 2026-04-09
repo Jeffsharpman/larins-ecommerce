@@ -17,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'email_verified_at'])]
+#[Fillable(['name', 'email', 'password', 'email_verified_at', 'profile_picture', 'phone'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
@@ -70,5 +70,24 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new CustomResetPassword($token));
+    }
+
+    public function getProfilePictureUrlAttribute(): ?string
+    {
+        if ($this->profile_picture) {
+            return asset('storage/'.$this->profile_picture);
+        }
+
+        return null;
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        $parts = $this->nameParts();
+
+        return strtoupper(
+            substr($parts['first'], 0, 1).
+            (isset($parts['last']) ? substr($parts['last'], 0, 1) : '')
+        );
     }
 }

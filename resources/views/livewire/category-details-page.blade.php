@@ -67,9 +67,15 @@
                         {{-- Product Image --}}
                         <div class="aspect-[3/4] p-12 flex items-center justify-center">
                             @php $images = is_array($product->images) ? $product->images : json_decode($product->images, true); @endphp
-                            <img src="{{ url('storage', $images[0] ?? 'placeholder.jpg') }}" 
-                                 alt="{{ $product->name }}" 
-                                 class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out">
+                            @if(!empty($images[0]))
+                                <img src="{{ url('storage', $images[0]) }}" 
+                                     alt="{{ $product->name }}" 
+                                     class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 rounded-3xl">
+                                    <span class="text-8xl font-black text-primary/30">{{ substr($product->name, 0, 1) }}</span>
+                                </div>
+                            @endif
                         </div>
 
                         {{-- Price Footer Overlay --}}

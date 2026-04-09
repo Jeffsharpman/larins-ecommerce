@@ -36,9 +36,14 @@ class UserInfolist
                                 TextEntry::make('email')
                                     ->label('Email Address')
                                     ->icon('heroicon-m-envelope')
-                                    ->copyable() // Handy for admin tasks
+                                    ->copyable()
                                     ->color('gray')
                                     ->tooltip('Click to copy email'),
+
+                                TextEntry::make('phone')
+                                    ->label('Phone')
+                                    ->icon('heroicon-m-phone')
+                                    ->color('gray'),
 
                                 TextEntry::make('created_at')
                                     ->label('Member Since')
@@ -64,13 +69,13 @@ class UserInfolist
                                 'lg' => 1,
                             ])
                             ->schema([
-                                ImageEntry::make('avatar_url')
+                                ImageEntry::make('profile_picture')
                                     ->label('')
                                     ->circular()
                                     ->extraAttributes([
                                         'class' => 'mx-auto ring-4 ring-primary-500/10 shadow-xl',
                                     ])
-                                    // ->defaultImageUrl(url('public/images/default-avatar.png'))
+                                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->name).'&background=667eea&color=fff&bold=true&size=200')
                                     ->imageHeight(200)
                                     ->stacked()
                                     ->circular()
@@ -80,13 +85,12 @@ class UserInfolist
                                     ->placeholder('No images uploaded')
                                     ->columnSpanFull(),
 
-                                // Add a centered label below the picture
                                 TextEntry::make('fullname_sub')
                                     ->label('')
-                                    ->state(fn ($record) => 'Verified User')
+                                    ->state(fn ($record) => $record->email_verified_at ? 'Verified User' : 'Unverified')
                                     ->alignCenter()
                                     ->size('xs')
-                                    ->color('gray'),
+                                    ->color(fn ($record) => $record->email_verified_at ? 'success' : 'warning'),
                             ])->columns(1),
                     ])->columns(4),
             ])->columns(1);

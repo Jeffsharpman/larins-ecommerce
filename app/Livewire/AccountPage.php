@@ -3,19 +3,23 @@
 namespace App\Livewire;
 
 use App\Helpers\CartManagement;
+use App\Livewire\Partials\Navbar;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 #[Title('Account')]
 class AccountPage extends Component
 {
-    use WithPagination;
+    use WithFileUploads, WithPagination;
 
     public $activeTab = 'profile';
 
@@ -50,6 +54,8 @@ class AccountPage extends Component
 
     public $addressToDelete = null;
 
+    public $temp_profile_picture = null;
+
     public $addressTitle = '';
 
     public $addressStreet = '';
@@ -77,6 +83,87 @@ class AccountPage extends Component
     public function mount()
     {
         $this->loadUserData();
+    }
+
+    public function removeTempProfilePicture()
+    {
+        $this->temp_profile_picture = null;
+    }
+
+    public function saveProfilePicture()
+    {
+        if (! $this->temp_profile_picture) {
+            Log::info('No temp profile picture to save');
+
+            return;
+        }
+
+        try {
+            $user = Auth::user();
+            Log::info('Saving profile picture for user: '.$user->id);
+
+            $path = $this->temp_profile_picture->store('profile-pictures', 'public');
+            Log::info('Profile picture stored at: '.$path);
+
+            $user->update(['profile_picture' => $path]);
+            Log::info('User profile_picture updated in database');
+
+            $this->temp_profile_picture = null;
+            $this->loadUserData();
+
+            $this->dispatch('swal:alert',
+                icon: 'success',
+                title: 'Photo Updated',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Your profile photo has been saved</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        } catch (\Exception $e) {
+            Log::error('Profile picture save error: '.$e->getMessage().' - '.$e->getTraceAsString());
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Upload Failed',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Unable to save photo</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        }
+    }
+
+    public function removeProfilePicture()
+    {
+        try {
+            $user = Auth::user();
+
+            if ($user->profile_picture) {
+                Storage::disk('public')->delete($user->profile_picture);
+                $user->update(['profile_picture' => null]);
+                $this->loadUserData();
+            }
+
+            $this->temp_profile_picture = null;
+
+            $this->dispatch('swal:alert',
+                icon: 'success',
+                title: 'Photo Removed',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Profile photo has been removed</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        } catch (\Exception $e) {
+            Log::error('Profile picture remove error: '.$e->getMessage());
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Error',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Unable to remove photo</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        }
     }
 
     public function loadUserData()
@@ -151,10 +238,12 @@ class AccountPage extends Component
 
         $fullName = trim($this->first_name.' '.$this->last_name);
 
-        $this->user->update([
-            'name' => $fullName ?: $this->user->name,
+        User::where('id', auth()->id())->update([
+            'name' => $fullName ?: auth()->user()->name,
             'phone' => $this->phone,
         ]);
+
+        $this->loadUserData();
 
         $this->dispatch('swal:alert',
             icon: 'success',

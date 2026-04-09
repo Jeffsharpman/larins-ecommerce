@@ -47,17 +47,48 @@
               </div>
               <div
                 class="relative w-28 h-28 bg-card border border-border rounded-full flex items-center justify-center overflow-hidden shadow-card">
-                @if ($user && $user->avatar)
-                  <img src="{{ $user->avatar }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                @if ($temp_profile_picture)
+                  {{-- Show temp preview --}}
+                  <img src="{{ $temp_profile_picture->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover">
+                @elseif ($user && $user->profile_picture)
+                  <img src="{{ asset('storage/' . $user->profile_picture) }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                @elseif($user)
+                  <span class="text-3xl font-black text-primary">{{ $user->initials }}</span>
                 @else
                   <x-lucide-user
                     class="w-12 h-12 text-primary/40 group-hover:text-primary transition-colors duration-500" />
                 @endif
+                
+                {{-- Upload Button Overlay --}}
+                <label class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-full">
+                  <input type="file" wire:model="temp_profile_picture" accept="image/*" class="hidden">
+                  <x-lucide-camera class="w-6 h-6 text-white" />
+                </label>
               </div>
+              
+              {{-- Action Buttons --}}
+              @if($temp_profile_picture)
+                <div class="absolute -bottom-2 right-0 flex gap-1">
+                  <button wire:click="saveProfilePicture" class="w-8 h-8 bg-emerald-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors">
+                    <x-lucide-check class="w-4 h-4" />
+                  </button>
+                  <button wire:click="removeTempProfilePicture" class="w-8 h-8 bg-destructive text-white rounded-full flex items-center justify-center shadow-lg hover:bg-destructive/90 transition-colors">
+                    <x-lucide-x class="w-4 h-4" />
+                  </button>
+                </div>
+              @elseif($user && $user->profile_picture)
+                <button wire:click="removeProfilePicture" class="absolute -bottom-2 -right-2 w-8 h-8 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center shadow-lg hover:bg-destructive/90 transition-colors">
+                  <x-lucide-x class="w-4 h-4" />
+                </button>
+              @endif
             </div>
             <div class="space-y-1">
               <h1 class="text-5xl font-black tracking-tighter uppercase italic text-foreground leading-none">
-                Maison <span class="text-primary not-italic">{{ $user->name }}</span>
+                @if($user && $user->profile_picture)
+                  {{ $user->name }}
+                @else
+                  Maison <span class="text-primary not-italic">{{ $user->name ?? 'Guest' }}</span>
+                @endif
               </h1>
             </div>
           </div>

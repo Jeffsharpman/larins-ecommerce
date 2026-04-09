@@ -8,6 +8,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -18,15 +19,23 @@ class UsersTable
     {
         return $table
             ->columns([
-                // 1. Primary Identity: Name + Email as a subtitle
+                ImageColumn::make('profile_picture')
+                    ->label('')
+                    ->disk('public')
+                    ->circular()
+                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name='.urlencode($record->name).'&background=667eea&color=fff&bold=true'),
+
                 TextColumn::make('name')
                     ->label('User')
                     ->weight('bold')
                     ->searchable()
                     ->sortable()
-                    ->description(fn ($record) => $record->email), // Puts the email under the name
+                    ->description(fn ($record) => $record->email),
 
-                // 2. Verification Status: Use a badge instead of a raw date
+                TextColumn::make('phone')
+                    ->label('Phone')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 TextColumn::make('email_verified_at')
                     ->label('Verification')
                     ->sortable()
@@ -36,17 +45,6 @@ class UsersTable
                     ->icon(fn ($state) => $state ? 'heroicon-m-check-badge' : 'heroicon-m-exclamation-triangle')
                     ->formatStateUsing(fn ($state) => $state ? 'Verified' : 'Unverified'),
 
-                // 3. User Role (Example: adding a badge if they are an Admin)
-                // You can add this if you have a role/is_admin column
-                /*
-                TextColumn::make('is_admin')
-                    ->label('Role')
-                    ->badge()
-                    ->color(fn (string $state): string => $state ? 'danger' : 'gray')
-                    ->formatStateUsing(fn (string $state): string => $state ? 'Admin' : 'Customer'),
-                */
-
-                // 4. Timestamps
                 TextColumn::make('created_at')
                     ->label('Joined')
                     ->dateTime('d M Y')
@@ -55,16 +53,15 @@ class UsersTable
 
                 TextColumn::make('updated_at')
                     ->label('Last Activity')
-                    ->since() // Shows "3 hours ago"
+                    ->since()
                     ->color('gray')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // A clean "Verified vs Unverified" filter
                 TernaryFilter::make('email_verified_at')
                     ->label('Verification Status')
-                    ->nullable() // Ternary uses nullable to check for verified (not null) vs unverified (null)
+                    ->nullable()
                     ->placeholder('All Users')
                     ->trueLabel('Verified Users')
                     ->falseLabel('Unverified Users'),
@@ -77,7 +74,7 @@ class UsersTable
                 ]))
             ->toolbarActions([
                 BulkActionGroup::make([
-                DeleteBulkAction::make(),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -75,9 +75,15 @@
                     <div class="relative mb-8">
                         <a href="/products/{{ $product->slug }}" class="block relative aspect-[3/4] bg-muted rounded-[2.5rem] overflow-hidden border border-border group-hover:border-primary/30 transition-all duration-700">
                             @php $images = is_array($product->images) ? $product->images : json_decode($product->images, true); @endphp
-                            <img src="{{ url('storage', $images[0] ?? 'placeholder.jpg') }}" 
-                                 alt="{{ $product->name }}" 
-                                 class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000 ease-out">
+                            @if(!empty($images[0]))
+                                <img src="{{ url('storage', $images[0]) }}" 
+                                     alt="{{ $product->name }}" 
+                                     class="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-1000 ease-out">
+                            @else
+                                <div class="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                                    <span class="text-6xl font-black text-primary/30">{{ substr($product->name, 0, 1) }}</span>
+                                </div>
+                            @endif
                             
                             {{-- Price Badge: Glassmorphism --}}
                             <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-[85%]">
