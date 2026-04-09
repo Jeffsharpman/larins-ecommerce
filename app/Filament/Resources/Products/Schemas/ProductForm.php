@@ -76,6 +76,18 @@ class ProductForm
                             ->numeric()
                             ->prefix('NGN'),
 
+                        TextInput::make('old_price')
+                            ->label('Old Price (Original)')
+                            ->numeric()
+                            ->prefix('NGN')
+                            ->helperText('Show this when product is on sale'),
+
+                        TextInput::make('sale_price')
+                            ->label('Sale Price')
+                            ->numeric()
+                            ->prefix('NGN')
+                            ->helperText('Leave empty or set lower than price'),
+
                         TextInput::make('stock')
                             ->label('Stock (for products without variants)')
                             ->numeric()

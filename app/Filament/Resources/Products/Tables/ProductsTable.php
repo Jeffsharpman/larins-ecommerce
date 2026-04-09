@@ -63,9 +63,21 @@ class ProductsTable
 
                 // 3. Pricing: Colored and formatted
                 TextColumn::make('price')
-                    ->money('NGN') // Set your currency
+                    ->money('NGN')
+                    ->color('gray')
+                    ->weight('bold')
+                    ->sortable(),
+
+                TextColumn::make('old_price')
+                    ->money('NGN')
+                    ->color('danger')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('sale_price')
+                    ->money('NGN')
                     ->color('success')
-                    ->weight('black')
+                    ->weight('bold')
                     ->sortable(),
 
                 // 4. Status Group: Using different icons/colors for each state

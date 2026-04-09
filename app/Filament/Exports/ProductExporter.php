@@ -24,6 +24,11 @@ class ProductExporter extends Exporter
             ExportColumn::make('images'),
             ExportColumn::make('description'),
             ExportColumn::make('price'),
+            ExportColumn::make('old_price'),
+            ExportColumn::make('sale_price'),
+            ExportColumn::make('stock'),
+            ExportColumn::make('total_stock')
+                ->label('Total Stock'),
             ExportColumn::make('is_active'),
             ExportColumn::make('is_featured'),
             ExportColumn::make('in_stock'),

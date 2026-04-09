@@ -100,23 +100,37 @@ class ProductInfolist
 
                 // Pricing & timestamps – compact row
                 Section::make('Pricing & Timestamps')
-                    ->columns(3)
+                    ->columns(4)
                     ->schema([
                         TextEntry::make('price')
                             ->label('Price')
-                            ->money('ngn')          // change currency to NGN for Nigeria
+                            ->money('ngn')
                             ->weight('bold')
                             ->size('xl')
-                            ->color('success'),
-
-                        TextEntry::make('created_at')
-                            ->label('Created')
-                            ->dateTime('d M Y H:i')
+                            ->color(fn ($record) => $record->on_sale ? 'danger' : 'success')
                             ->placeholder('-'),
 
-                        TextEntry::make('updated_at')
-                            ->label('Last Updated')
-                            ->dateTime('d M Y H:i')
+                        TextEntry::make('old_price')
+                            ->label('Old Price')
+                            ->money('ngn')
+                            ->color('danger')
+                            ->size('lg')
+                            ->placeholder('-'),
+
+                        TextEntry::make('sale_price')
+                            ->label('Sale Price')
+                            ->money('ngn')
+                            ->weight('bold')
+                            ->size('xl')
+                            ->color('success')
+                            ->placeholder('-'),
+
+                        TextEntry::make('total_stock')
+                            ->label('Stock')
+                            ->numeric()
+                            ->suffix(' units')
+                            ->badge()
+                            ->color(fn ($state) => $state > 5 ? 'success' : ($state > 0 ? 'warning' : 'danger'))
                             ->placeholder('-'),
                     ]),
             ]);

@@ -122,20 +122,20 @@
         <div class="mt-auto flex items-end justify-between pt-4 border-t border-border dark:border-border">
             <div class="flex flex-col">
                 <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] mb-1">Valuation</span>
-                <div class="flex items-baseline gap-2">
-                    @if($product->on_sale && $product->sale_price)
+                @if($product->on_sale && $product->sale_price && $product->sale_price < $product->price)
+                    <div class="flex flex-col">
                         <span class="text-2xl font-black italic tracking-tighter text-emerald-500">
                             ₦{{ number_format($product->sale_price, 2) }}
                         </span>
                         <span class="text-sm font-black italic tracking-tighter text-muted-foreground line-through">
-                            ₦{{ number_format($product->price, 2) }}
+                            ₦{{ number_format($product->old_price ?? $product->price, 2) }}
                         </span>
-                    @else
-                        <span class="text-2xl font-black italic tracking-tighter text-foreground">
-                            ₦{{ number_format($product->price, 2) }}
-                        </span>
-                    @endif
-                </div>
+                    </div>
+                @else
+                    <span class="text-2xl font-black italic tracking-tighter text-foreground">
+                        ₦{{ number_format($product->price, 2) }}
+                    </span>
+                @endif
             </div>
 
             <a wire:navigate href="{{ route('product.details', $product->slug) }}"

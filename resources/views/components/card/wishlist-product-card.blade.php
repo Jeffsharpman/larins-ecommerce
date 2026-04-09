@@ -75,12 +75,14 @@
         
         <div class="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
             <div class="flex flex-col">
-                <span class="text-lg font-black italic tracking-tighter">&#x20A6;{{ number_format($product->price, 2) }}</span>
-                @if($product->on_sale && $product->sale_price)
-                <span class="text-[10px] text-emerald-500 font-bold">On Sale</span>
+                @if($product->on_sale && $product->sale_price && $product->sale_price < $product->price)
+                    <span class="text-lg font-black italic tracking-tighter text-emerald-500">&#x20A6;{{ number_format($product->sale_price, 2) }}</span>
+                    <span class="text-[10px] text-muted-foreground line-through">&#x20A6;{{ number_format($product->old_price ?? $product->price, 2) }}</span>
+                @else
+                    <span class="text-lg font-black italic tracking-tighter">&#x20A6;{{ number_format($product->price, 2) }}</span>
                 @endif
             </div>
-            @if($product->on_sale && $product->sale_price)
+            @if($product->on_sale && $product->sale_price && $product->sale_price < $product->price)
             <div class="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black rounded-lg uppercase">
                 Sale
             </div>

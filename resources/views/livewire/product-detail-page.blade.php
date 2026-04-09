@@ -123,12 +123,12 @@
                     </div>
 
                     <div class="flex items-baseline gap-6">
-                        @if($product->on_sale && $product->sale_price && !$isOutOfStock)
+                        @if($product->on_sale && $product->sale_price && $product->sale_price < $product->price && !$isOutOfStock)
                             <span class="text-5xl font-black tracking-tighter text-emerald-500 italic">
                                 {{ Number::currency($product->sale_price, 'NGN') }}
                             </span>
                             <span class="text-xl text-muted-foreground/40 line-through font-bold decoration-primary/40">
-                                {{ Number::currency($product->price, 'NGN') }}
+                                {{ Number::currency($product->old_price ?? $product->price, 'NGN') }}
                             </span>
                         @else
                             <span class="text-5xl font-black tracking-tighter text-foreground italic {{ $isOutOfStock ? 'opacity-40' : '' }}">

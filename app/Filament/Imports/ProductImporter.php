@@ -35,22 +35,21 @@ class ProductImporter extends Importer
                 ->requiredMapping()
                 ->numeric()
                 ->rules(['required', 'integer']),
+            ImportColumn::make('old_price')
+                ->numeric(),
+            ImportColumn::make('sale_price')
+                ->numeric(),
+            ImportColumn::make('stock')
+                ->numeric()
+                ->default(0),
             ImportColumn::make('is_active')
-                ->requiredMapping()
-                ->boolean()
-                ->rules(['required', 'boolean']),
+                ->boolean(),
             ImportColumn::make('is_featured')
-                ->requiredMapping()
-                ->boolean()
-                ->rules(['required', 'boolean']),
+                ->boolean(),
             ImportColumn::make('in_stock')
-                ->requiredMapping()
-                ->boolean()
-                ->rules(['required', 'boolean']),
+                ->boolean(),
             ImportColumn::make('on_sale')
-                ->requiredMapping()
-                ->boolean()
-                ->rules(['required', 'boolean']),
+                ->boolean(),
         ];
     }
 
