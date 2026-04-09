@@ -13,7 +13,7 @@ class Product extends Model implements HasMedia
 {
     use HasFactory, InteractsWithMedia, LogsActivity;
 
-    protected $fillable = ['category_id', 'brand_id', 'name', 'slug', 'images', 'description', 'price', 'is_active', 'is_featured', 'in_stock', 'on_sale', 'stock'];
+    protected $fillable = ['category_id', 'brand_id', 'name', 'slug', 'images', 'description', 'price', 'sale_price', 'old_price', 'is_active', 'is_featured', 'in_stock', 'on_sale', 'stock'];
 
     protected $casts = [
         'images' => 'array',

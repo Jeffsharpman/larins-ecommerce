@@ -22,7 +22,7 @@ class CategoryFactory extends Factory
 
         return [
             'name' => $current['name'],
-            'slug' => Str::slug($current['name']),
+            'slug' => Str::slug($current['name']).'-'.Str::random(4),
             'image' => $current['image'],
             'description' => 'A curated selection from the '.$current['name'].' series.',
             'is_active' => true,

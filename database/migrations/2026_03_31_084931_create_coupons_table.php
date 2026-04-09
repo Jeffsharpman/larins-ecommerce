@@ -20,6 +20,7 @@ return new class extends Migration
             $table->dateTime('starts_at')->nullable();
             $table->dateTime('expires_at')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('single_use_per_user')->default(true);
             $table->timestamps();
         });
     }

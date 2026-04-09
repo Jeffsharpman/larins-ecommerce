@@ -37,19 +37,54 @@ class ProductFactory extends Factory
 
         $current = $items[$index % count($items)];
         $index++;
+        $stock = rand(0, 50);
+        $isOnSale = fake()->boolean(30);
+        $salePrice = $isOnSale ? $current['price'] * 0.8 : $current['price'];
+        $oldPrice = $isOnSale ? $current['price'] : $current['price'];
 
         return [
             'category_id' => Category::inRandomOrder()->first()->id ?? 1,
             'brand_id' => Brand::inRandomOrder()->first()->id ?? 1,
             'name' => $current['name'],
-            'slug' => Str::slug($current['name']),
-            'images' => ['products/placeholder.jpg', 'products/placeholder1.jpg', 'products/placeholder2.jpg', 'products/placeholder3.jpg', 'products/placeholder4.jpg'], // JSON array format
+            'slug' => Str::slug($current['name']).'-'.Str::random(4),
+            'images' => ['products/placeholder.jpg', 'products/placeholder1.jpg', 'products/placeholder2.jpg', 'products/placeholder3.jpg', 'products/placeholder4.jpg'],
             'description' => 'An exquisite piece representing the pinnacle of Larins craftsmanship.',
             'price' => $current['price'],
-            'is_active' => true,
+            'old_price' => $oldPrice,
+            'sale_price' => $salePrice,
+            'stock' => $stock,
+            'is_active' => $stock > 0,
             'is_featured' => $current['price'] > 100000,
-            'in_stock' => true,
-            'on_sale' => false,
+            'in_stock' => $stock > 0,
+            'on_sale' => $isOnSale && $stock > 0,
         ];
+    }
+
+    public function outOfStock(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'stock' => 0,
+            'is_active' => false,
+            'in_stock' => false,
+            'on_sale' => false,
+        ]);
+    }
+
+    public function lowStock(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'stock' => rand(1, 5),
+        ]);
+    }
+
+    public function onSale(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'on_sale' => true,
+            'sale_price' => $attributes['price'] * 0.8,
+            'old_price' => $attributes['price'],
+            'is_active' => true,
+            'in_stock' => true,
+        ]);
     }
 }

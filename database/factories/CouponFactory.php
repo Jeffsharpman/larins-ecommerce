@@ -28,6 +28,7 @@ class CouponFactory extends Factory
             'max_discount' => $current['max_discount'],
             'usage_limit' => rand(50, 500),
             'used_count' => 0,
+            'single_use_per_user' => fake()->boolean(50),
             'starts_at' => now()->subDay(),
             'expires_at' => now()->addMonths(3),
             'is_active' => true,
@@ -45,6 +46,13 @@ class CouponFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_active' => false,
+        ]);
+    }
+
+    public function singleUsePerUser(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'single_use_per_user' => true,
         ]);
     }
 }

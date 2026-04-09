@@ -22,7 +22,7 @@ class BrandFactory extends Factory
 
         return [
             'name' => $current['name'],
-            'slug' => Str::slug($current['name']),
+            'slug' => Str::slug($current['name']).'-'.Str::random(4),
             'image' => $current['image'],
             'description' => 'Crafted by '.$current['name'].' for the modern connoisseur.',
             'is_active' => true,
