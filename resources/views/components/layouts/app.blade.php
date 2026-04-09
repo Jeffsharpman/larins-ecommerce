@@ -69,6 +69,37 @@
     @endif
 
     {!! $site->custom_head_scripts !!}
+    <script>
+        // Inline theme toggle (guaranteed to work)
+        (function() {
+            var html = document.documentElement;
+            var savedTheme = localStorage.getItem('theme');
+            var systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                html.classList.add('dark');
+            }
+            
+            window.toggleTheme = function() {
+                html.classList.toggle('dark');
+                var isDark = html.classList.contains('dark');
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
+                updateThemeIcons();
+            };
+            
+            function updateThemeIcons() {
+                var isDark = html.classList.contains('dark');
+                document.querySelectorAll('.desktop-sun, #mobile-sun').forEach(function(el) {
+                    el.classList.toggle('hidden', isDark);
+                });
+                document.querySelectorAll('.desktop-moon, #mobile-moon').forEach(function(el) {
+                    el.classList.toggle('hidden', !isDark);
+                });
+            }
+            
+            window.updateThemeIcons = updateThemeIcons;
+        })();
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>

@@ -83,8 +83,16 @@ class ManageGeneral extends SettingsPage
                                     ->disk('public')
                                     ->visibility('public')
                                     ->directory('site'),
-                                ColorPicker::make('primary_color'),
-                                ColorPicker::make('secondary_color'),
+                                ColorPicker::make('primary_color')
+                                    ->label('Primary Color')
+                                    ->hsl()
+                                    ->regex('/^hsl\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)$/')
+                                    ->helperText('Format: hsl(H, S%, L%) e.g., hsl(0, 84%, 49%)'),
+                                ColorPicker::make('secondary_color')
+                                    ->label('Secondary Color')
+                                    ->hsl()
+                                    ->regex('/^hsl\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)$/')
+                                    ->helperText('Format: hsl(H, S%, L%) e.g., hsl(243, 100%, 49%)'),
                             ])->columns(2),
 
                         // PAYMENTS TAB

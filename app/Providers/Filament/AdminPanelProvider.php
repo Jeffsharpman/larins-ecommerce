@@ -41,6 +41,8 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $settings = app(GeneralSettings::class);
+
         return $panel
             ->default()
             ->id('admin')
@@ -48,11 +50,13 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->emailVerification()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => $this->parseColor($settings->primary_color),
+                'secondary' => $this->parseColor($settings->secondary_color),
             ])
-            ->brandLogo(fn () => app(GeneralSettings::class)->logo ? Storage::disk('public')->url(app(GeneralSettings::class)->logo) : asset('favicon.ico'))
+            ->brandLogo(fn () => $settings->logo ? Storage::disk('public')->url($settings->logo) : asset('favicon.ico'))
             ->brandLogoHeight('2rem')
-            ->favicon(fn () => app(GeneralSettings::class)->favicon ? Storage::disk('public')->url(app(GeneralSettings::class)->favicon) : asset('favicon.ico'))
+            ->favicon(fn () => $settings->favicon ? Storage::disk('public')->url($settings->favicon) : asset('favicon.ico'))
+            ->brandName($settings->site_name ?: 'Larinstore Admin')
 
             // Registering Resources/Pages/Widgets
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
@@ -124,5 +128,74 @@ class AdminPanelProvider extends PanelProvider
                     </style>
                 ')
             );
+    }
+
+    protected function parseColor(string $hslColor): array
+    {
+        if (preg_match('/hsl\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*\)/', $hslColor, $matches)) {
+            $h = (int) $matches[1];
+            $s = (int) $matches[2];
+            $l = (int) $matches[3];
+
+            $rgb = $this->hslToRgb($h, $s, $l);
+
+            return [
+                50 => "rgb({$rgb['r']}, {$rgb['g']}, ".min(255, $rgb['b'] + 60).')',
+                100 => "rgb({$rgb['r']}, {$rgb['g']}, ".min(255, $rgb['b'] + 50).')',
+                200 => "rgb({$rgb['r']}, {$rgb['g']}, ".min(255, $rgb['b'] + 40).')',
+                300 => "rgb({$rgb['r']}, {$rgb['g']}, ".min(255, $rgb['b'] + 30).')',
+                400 => "rgb({$rgb['r']}, {$rgb['g']}, ".min(255, $rgb['b'] + 15).')',
+                500 => "rgb({$rgb['r']}, {$rgb['g']}, {$rgb['b']})",
+                600 => "rgb({$rgb['r']}, {$rgb['g']}, ".max(0, $rgb['b'] - 15).')',
+                700 => "rgb({$rgb['r']}, {$rgb['g']}, ".max(0, $rgb['b'] - 30).')',
+                800 => "rgb({$rgb['r']}, {$rgb['g']}, ".max(0, $rgb['b'] - 45).')',
+                900 => "rgb({$rgb['r']}, {$rgb['g']}, ".max(0, $rgb['b'] - 60).')',
+                950 => "rgb({$rgb['r']}, {$rgb['g']}, ".max(0, $rgb['b'] - 75).')',
+            ];
+        }
+
+        return Color::Amber;
+    }
+
+    protected function hslToRgb(int $h, int $s, int $l): array
+    {
+        $s /= 100;
+        $l /= 100;
+
+        $c = (1 - abs(2 * $l - 1)) * $s;
+        $x = $c * (1 - abs(fmod($h / 60, 2) - 1));
+        $m = $l - $c / 2;
+
+        if ($h >= 0 && $h < 60) {
+            $r = $c;
+            $g = $x;
+            $b = 0;
+        } elseif ($h >= 60 && $h < 120) {
+            $r = $x;
+            $g = $c;
+            $b = 0;
+        } elseif ($h >= 120 && $h < 180) {
+            $r = 0;
+            $g = $c;
+            $b = $x;
+        } elseif ($h >= 180 && $h < 240) {
+            $r = 0;
+            $g = $x;
+            $b = $c;
+        } elseif ($h >= 240 && $h < 300) {
+            $r = $x;
+            $g = 0;
+            $b = $c;
+        } else {
+            $r = $c;
+            $g = 0;
+            $b = $x;
+        }
+
+        return [
+            'r' => (int) round(($r + $m) * 255),
+            'g' => (int) round(($g + $m) * 255),
+            'b' => (int) round(($b + $m) * 255),
+        ];
     }
 }

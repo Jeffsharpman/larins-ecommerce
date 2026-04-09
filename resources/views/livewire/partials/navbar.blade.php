@@ -65,9 +65,9 @@
 
       {{-- 1. MOBILE ACTIONS --}}
       <div class="flex lg:hidden items-center justify-end gap-2 flex-1">
-        <button id="themeToggleMobile" class="p-2 text-muted-foreground hover:text-primary transition-all">
-          <x-lucide-sun class="w-5 h-5 sun-icon stroke-[1.5]" />
-          <x-lucide-moon class="w-5 h-5 moon-icon hidden stroke-[1.5]" />
+        <button type="button" onclick="window.toggleTheme()" class="p-2 text-muted-foreground hover:text-primary transition-all">
+          <x-lucide-sun class="w-5 h-5 stroke-[1.5] transition-transform" id="mobile-sun" />
+          <x-lucide-moon class="w-5 h-5 stroke-[1.5] transition-transform hidden" id="mobile-moon" />
         </button>
 
         <a wire:navigate href="/cart" class="relative p-2 text-muted-foreground hover:text-primary transition-all">
@@ -119,9 +119,9 @@
           </span>
         </a>
 
-        <button id="themeToggle" class="p-2 text-muted-foreground hover:text-primary transition-all group">
-          <x-lucide-sun class="w-5 h-5 sun-icon stroke-[1.5] group-hover:rotate-90 transition-transform duration-700" />
-          <x-lucide-moon class="w-5 h-5 moon-icon hidden stroke-[1.5] group-hover:-rotate-12 transition-transform duration-700" />
+        <button type="button" onclick="window.toggleTheme()" class="p-2 text-muted-foreground hover:text-primary transition-all group">
+          <x-lucide-sun class="w-5 h-5 stroke-[1.5] group-hover:rotate-90 transition-transform duration-700 desktop-sun" />
+          <x-lucide-moon class="w-5 h-5 stroke-[1.5] group-hover:-rotate-12 transition-transform duration-700 desktop-moon hidden" />
         </button>
       </div>
     </div>
