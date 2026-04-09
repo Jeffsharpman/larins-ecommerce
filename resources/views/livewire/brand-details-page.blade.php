@@ -44,7 +44,7 @@
                 <div class="flex flex-wrap items-center justify-center lg:justify-start gap-10 pt-4">
                     <div class="space-y-1">
                         <p class="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em]">Curated Pieces</p>
-                        <p class="text-2xl font-black italic text-foreground">{{ $brand->products->count() }}</p>
+                        <p class="text-2xl font-black italic text-foreground">{{ $activeProductsCount }}</p>
                     </div>
                     <div class="h-10 w-[1px] bg-border hidden md:block"></div>
                     <div class="space-y-1">

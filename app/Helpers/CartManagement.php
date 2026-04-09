@@ -13,6 +13,18 @@ class CartManagement
 {
     public static function addItemToCart($product_id, $qty = 1)
     {
+        $product = Product::find($product_id);
+
+        if (! $product) {
+            return ['success' => false, 'count' => 0, 'message' => 'Product not found'];
+        }
+
+        $availableStock = $product->total_stock;
+
+        if ($availableStock <= 0) {
+            return ['success' => false, 'count' => 0, 'message' => 'Product is out of stock'];
+        }
+
         $cart_items = self::getCartItemsFromCookie();
         $existing_item_key = null;
 
@@ -24,31 +36,40 @@ class CartManagement
         }
 
         if ($existing_item_key !== null) {
-            $cart_items[$existing_item_key]['quantity'] += ($qty == 1) ? 1 : $qty;
+            $newQty = $cart_items[$existing_item_key]['quantity'] + (($qty == 1) ? 1 : $qty);
+            $cart_items[$existing_item_key]['quantity'] = min($newQty, $availableStock);
             $cart_items[$existing_item_key]['total_amount'] = $cart_items[$existing_item_key]['quantity'] * $cart_items[$existing_item_key]['unit_amount'];
         } else {
-            $product = Product::find($product_id, ['id', 'name', 'price', 'images']);
-            if ($product) {
-                $cart_items[] = [
-                    'product_id' => $product_id,
-                    'name' => $product->name,
-                    'image' => $product->images[0] ?? null,
-                    'quantity' => $qty,
-                    'unit_amount' => $product->price,
-                    'total_amount' => $product->price * $qty,
-                ];
-            }
+            $cart_items[] = [
+                'product_id' => $product_id,
+                'name' => $product->name,
+                'image' => $product->images[0] ?? null,
+                'quantity' => min($qty, $availableStock),
+                'unit_amount' => $product->price,
+                'total_amount' => $product->price * min($qty, $availableStock),
+            ];
         }
 
         self::addCartItemToCookie($cart_items);
 
-        return count($cart_items);
+        return ['success' => true, 'count' => count($cart_items), 'message' => 'Added to cart'];
     }
 
     public static function addItemToCartWithQty($product_id, $qty = 1)
     {
-        $cart_items = self::getCartItemsFromCookie();
+        $product = Product::find($product_id);
 
+        if (! $product) {
+            return ['success' => false, 'count' => 0, 'message' => 'Product not found'];
+        }
+
+        $availableStock = $product->total_stock;
+
+        if ($availableStock <= 0) {
+            return ['success' => false, 'count' => 0, 'message' => 'Product is out of stock'];
+        }
+
+        $cart_items = self::getCartItemsFromCookie();
         $existing_item = null;
 
         foreach ($cart_items as $key => $item) {
@@ -59,25 +80,22 @@ class CartManagement
         }
 
         if ($existing_item !== null) {
-            $cart_items[$existing_item]['quantity'] = $qty;
+            $cart_items[$existing_item]['quantity'] = min($qty, $availableStock);
             $cart_items[$existing_item]['total_amount'] = $cart_items[$existing_item]['quantity'] * $cart_items[$existing_item]['unit_amount'];
         } else {
-            $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
-            if ($product) {
-                $cart_items[] = [
-                    'product_id' => $product_id,
-                    'name' => $product->name,
-                    'image' => $product->images[0],
-                    'quantity' => $qty,
-                    'unit_amount' => $product->price,
-                    'total_amount' => $product->price,
-                ];
-            }
+            $cart_items[] = [
+                'product_id' => $product_id,
+                'name' => $product->name,
+                'image' => $product->images[0],
+                'quantity' => min($qty, $availableStock),
+                'unit_amount' => $product->price,
+                'total_amount' => $product->price * min($qty, $availableStock),
+            ];
         }
 
         self::addCartItemToCookie($cart_items);
 
-        return count($cart_items);
+        return ['success' => true, 'count' => count($cart_items), 'message' => 'Added to cart'];
     }
 
     public static function removeCartItem($product_id)
@@ -115,12 +133,18 @@ class CartManagement
 
     public static function incrementQuantity($product_id)
     {
+        $product = Product::find($product_id);
+        $maxStock = $product ? $product->total_stock : 1;
+
         $cart_items = self::getCartItemsFromCookie();
 
         foreach ($cart_items as $key => $item) {
             if ($item['product_id'] == $product_id) {
-                $cart_items[$key]['quantity']++;
-                $cart_items[$key]['total_amount'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_amount'];
+                if ($cart_items[$key]['quantity'] < $maxStock) {
+                    $cart_items[$key]['quantity']++;
+                    $cart_items[$key]['total_amount'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_amount'];
+                }
+                break;
             }
         }
 
@@ -139,12 +163,20 @@ class CartManagement
                     $cart_items[$key]['quantity']--;
                     $cart_items[$key]['total_amount'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_amount'];
                 }
+                break;
             }
         }
 
         self::addCartItemToCookie($cart_items);
 
         return $cart_items;
+    }
+
+    public static function getAvailableStock($product_id): int
+    {
+        $product = Product::find($product_id);
+
+        return $product ? $product->total_stock : 0;
     }
 
     public static function calculateGrandTotal($items)
@@ -344,6 +376,6 @@ class CartManagement
             return collect([]);
         }
 
-        return Product::whereIn('id', $wishlist)->get();
+        return Product::active()->whereIn('id', $wishlist)->get();
     }
 }

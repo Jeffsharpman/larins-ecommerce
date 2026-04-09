@@ -24,12 +24,15 @@ class BrandDetailsPage extends Component
         $brand = Brand::where('slug', $this->slug)->firstOrFail();
 
         $products = $brand->products()
-            ->where('is_active', true)
+            ->active()
             ->paginate(12);
+
+        $activeProductsCount = $brand->products()->active()->count();
 
         return view('livewire.brand-details-page', [
             'brand' => $brand,
             'products' => $products,
+            'activeProductsCount' => $activeProductsCount,
         ])->layout('components.layouts.app');
     }
 }

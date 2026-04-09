@@ -40,9 +40,9 @@
                 {{-- Cart Items List --}}
                 <div class="lg:col-span-8 space-y-8 animate-in fade-in slide-in-from-left-4 duration-700">
                     <div class="flex flex-col gap-6">
-                        @foreach ($cart_items as $item)
+                        @foreach ($cart_items_with_stock as $item)
                             <div class="group relative transition-all duration-500 hover:-translate-y-1">
-                                <x-card.cart-item-card :item="$item" :key="'cart-item-' . $item['product_id']" />
+                                <x-card.cart-item-card :item="$item" :availableStock="$item['available_stock']" :key="'cart-item-' . $item['product_id']" />
                             </div>
                         @endforeach
                     </div>

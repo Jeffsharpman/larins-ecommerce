@@ -11,7 +11,11 @@ class BrandsPage extends Component
 {
     public function render()
     {
-        $brands = Brand::where('is_active', 1)->get();
+        $brands = Brand::where('is_active', 1)
+            ->withCount(['products' => function ($query) {
+                $query->active();
+            }])
+            ->get();
 
         return view('livewire.brands-page', [
             'brands' => $brands,

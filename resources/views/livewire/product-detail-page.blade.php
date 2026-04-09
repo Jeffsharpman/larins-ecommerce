@@ -1,3 +1,9 @@
+@php
+    $stock = $product->total_stock;
+    $isLowStock = $stock > 0 && $stock <= 5;
+    $isOutOfStock = $stock <= 0;
+@endphp
+
 <div class="min-h-screen bg-background text-foreground transition-colors duration-700" x-data="{ headerHeight: 0 }" x-init="setTimeout(() => { const header = document.querySelector('header.fixed'); if (header) { headerHeight = header.offsetHeight; } else { headerHeight = 80; } }, 50)">
     {{-- Ambient Light Leak --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
@@ -14,7 +20,19 @@
             </nav>
             
             <div class="hidden md:flex items-center gap-6 shrink-0">
-                <span class="text-[10px] font-black uppercase tracking-widest text-primary italic whitespace-nowrap">Status: Verified</span>
+                @if($isOutOfStock)
+                    <span class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-destructive-foreground bg-destructive/10 rounded-full animate-pulse">
+                        Out of Stock
+                    </span>
+                @elseif($isLowStock)
+                    <span class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white bg-amber-500 rounded-full animate-pulse">
+                        Only {{ $stock }} left
+                    </span>
+                @else
+                    <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500 italic whitespace-nowrap">
+                        In Stock • {{ $stock }} available
+                    </span>
+                @endif
             </div>
         </div>
     </div>
@@ -24,7 +42,7 @@
 
             {{-- Image Sculpture Gallery --}}
             <div class="lg:col-span-7 space-y-10" x-data="{ mainImage: '{{ url('storage/' . $product->images[0]) }}' }">
-                <div class="relative aspect-[4/5] bg-muted/20 rounded-[3.5rem] overflow-hidden border border-border/60 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] group">
+                <div class="relative aspect-[4/5] bg-muted/20 rounded-[3.5rem] overflow-hidden border border-border/60 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] group {{ $isOutOfStock ? 'opacity-60' : '' }}">
                     <img :src="mainImage" alt="{{ $product->name }}"
                         class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110" />
 
@@ -35,11 +53,26 @@
                         </p>
                     </div>
 
-                    {{-- Limited Label --}}
-                    <div class="absolute top-10 right-10">
-                        <div class="bg-foreground/90 text-background px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl">
-                            Edition: 001/Archive
-                        </div>
+                    {{-- Badges --}}
+                    <div class="absolute top-10 right-10 flex flex-col gap-2">
+                        @if($isOutOfStock)
+                            <div class="bg-destructive/90 text-destructive-foreground px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl">
+                                Out of Stock
+                            </div>
+                        @elseif($isLowStock)
+                            <div class="bg-amber-500/90 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl animate-pulse">
+                                Only {{ $stock }} Left
+                            </div>
+                        @else
+                            <div class="bg-emerald-500/90 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl">
+                                In Stock
+                            </div>
+                        @endif
+                        @if($product->on_sale && !$isOutOfStock)
+                            <div class="bg-primary/90 text-primary-foreground px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl animate-pulse">
+                                SALE
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -67,13 +100,39 @@
                         </h1>
                     </div>
 
+                    {{-- Stock Progress Bar --}}
+                    <div class="bg-muted/20 rounded-2xl p-4 border border-border">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[9px] font-black uppercase tracking-widest text-muted-foreground">Availability</span>
+                            @if($isOutOfStock)
+                                <span class="text-[9px] font-black uppercase tracking-widest text-destructive">Out of Stock</span>
+                            @elseif($isLowStock)
+                                <span class="text-[9px] font-black uppercase tracking-widest text-amber-500">Low Stock</span>
+                            @else
+                                <span class="text-[9px] font-black uppercase tracking-widest text-emerald-500">In Stock</span>
+                            @endif
+                        </div>
+                        <div class="w-full bg-muted rounded-full h-2.5 overflow-hidden">
+                            <div class="h-full rounded-full transition-all duration-700 {{ $isOutOfStock ? 'bg-destructive' : ($isLowStock ? 'bg-amber-500' : 'bg-primary') }}"
+                                 style="width: {{ $isOutOfStock ? '0' : min(100, max(5, ($stock / 20) * 100)) }}%">
+                            </div>
+                        </div>
+                        <p class="text-[8px] text-muted-foreground uppercase tracking-widest mt-2">
+                            {{ $stock }} {{ $stock == 1 ? 'unit' : 'units' }} available
+                        </p>
+                    </div>
+
                     <div class="flex items-baseline gap-6">
-                        <span class="text-5xl font-black tracking-tighter text-foreground italic">
-                            {{ Number::currency($product->price, 'NGN') }}
-                        </span>
-                        @if ($product->old_price)
+                        @if($product->on_sale && $product->sale_price && !$isOutOfStock)
+                            <span class="text-5xl font-black tracking-tighter text-emerald-500 italic">
+                                {{ Number::currency($product->sale_price, 'NGN') }}
+                            </span>
                             <span class="text-xl text-muted-foreground/40 line-through font-bold decoration-primary/40">
-                                {{ Number::currency($product->old_price, 'NGN') }}
+                                {{ Number::currency($product->price, 'NGN') }}
+                            </span>
+                        @else
+                            <span class="text-5xl font-black tracking-tighter text-foreground italic {{ $isOutOfStock ? 'opacity-40' : '' }}">
+                                {{ Number::currency($product->price, 'NGN') }}
                             </span>
                         @endif
                     </div>
@@ -106,30 +165,49 @@
 
                 {{-- Acquisition Controls --}}
                 <div class="space-y-10 pt-10">
-                    <div class="flex items-center gap-6">
-                        {{-- Boutique Qty --}}
-                        <div class="flex items-center bg-muted/20 rounded-full p-2 border border-border shadow-inner">
-                            <button wire:click="decreaseQty" class="w-14 h-14 flex items-center justify-center hover:text-primary transition-colors group">
-                                <x-lucide-minus class="w-4 h-4 transition-transform group-active:scale-75" />
-                            </button>
-                            <span class="w-12 text-center font-black text-sm tracking-tighter">{{ $quantity }}</span>
-                            <button wire:click="increaseQty" class="w-14 h-14 flex items-center justify-center hover:text-primary transition-colors group">
-                                <x-lucide-plus class="w-4 h-4 transition-transform group-active:scale-125" />
-                            </button>
+                    @if(!$isOutOfStock)
+                        <div class="flex items-center gap-6">
+                            {{-- Boutique Qty --}}
+                            <div class="flex items-center bg-muted/20 rounded-full p-2 border border-border shadow-inner">
+                                <button wire:click="decreaseQty" wire:loading.attr="disabled" class="w-14 h-14 flex items-center justify-center hover:text-primary transition-colors group disabled:opacity-50">
+                                    <x-lucide-minus class="w-4 h-4 transition-transform group-active:scale-75" />
+                                </button>
+                                <span class="w-12 text-center font-black text-sm tracking-tighter">{{ $quantity }}</span>
+                                <button wire:click="increaseQty" wire:loading.attr="disabled" class="w-14 h-14 flex items-center justify-center hover:text-primary transition-colors group disabled:opacity-50 {{ $quantity >= $stock ? 'opacity-50 cursor-not-allowed' : '' }}">
+                                    <x-lucide-plus class="w-4 h-4 transition-transform group-active:scale-125" />
+                                </button>
+                            </div>
+
+                            {{-- Heart/Wish --}}
+                            <livewire:wishlist-button :product-id="$product->id" />
                         </div>
 
-                        {{-- Heart/Wish --}}
-                        <livewire:wishlist-button :product-id="$product->id" />
-                    </div>
-
-                    <button wire:click="addToCart({{ $product->id }})" wire:loading.attr="disabled"
-                        class="w-full bg-foreground text-background dark:bg-primary dark:text-background py-8 rounded-[2rem] font-black uppercase tracking-[0.5em] text-[11px] hover:scale-[1.02] active:scale-[0.98] transition-all duration-700 shadow-[0_30px_60px_-15px_rgba(var(--primary),0.3)] flex items-center justify-center gap-6 group overflow-hidden relative">
-                        <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
+                        <button wire:click="addToCart({{ $product->id }})" wire:loading.attr="disabled"
+                            class="w-full bg-foreground text-background dark:bg-primary dark:text-background py-8 rounded-[2rem] font-black uppercase tracking-[0.5em] text-[11px] hover:scale-[1.02] active:scale-[0.98] transition-all duration-700 shadow-[0_30px_60px_-15px_rgba(var(--primary),0.3)] flex items-center justify-center gap-6 group overflow-hidden relative disabled:opacity-50 disabled:cursor-not-allowed">
+                            <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
+                            
+                            <x-lucide-shopping-bag wire:loading.remove class="w-5 h-5 relative z-10 transition-transform group-hover:rotate-12" />
+                            <span wire:loading class="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent relative z-10"></span>
+                            <span class="relative z-10">Commit to Archive</span>
+                        </button>
+                    @else
+                        {{-- Out of Stock State --}}
+                        <div class="bg-destructive/10 border-2 border-destructive/30 rounded-[2rem] p-8 text-center">
+                            <div class="w-16 h-16 bg-destructive/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <x-lucide-package-x class="w-8 h-8 text-destructive" />
+                            </div>
+                            <h3 class="text-xl font-black italic text-destructive mb-2">Currently Unavailable</h3>
+                            <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">This piece is temporarily out of stock. Please check back soon.</p>
+                        </div>
                         
-                        <x-lucide-shopping-bag wire:loading.remove class="w-5 h-5 relative z-10 transition-transform group-hover:rotate-12" />
-                        <span wire:loading class="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent relative z-10"></span>
-                        <span class="relative z-10">Commit to Archive</span>
-                    </button>
+                        <livewire:wishlist-button :product-id="$product->id" />
+                        
+                        <button disabled
+                            class="w-full bg-muted text-muted-foreground py-8 rounded-[2rem] font-black uppercase tracking-[0.5em] text-[11px] cursor-not-allowed flex items-center justify-center gap-6 opacity-50">
+                            <x-lucide-shopping-bag class="w-5 h-5" />
+                            <span>Notify When Available</span>
+                        </button>
+                    @endif
                 </div>
 
                 {{-- Authenticity Protocol --}}

@@ -15,7 +15,50 @@ class Product extends Model implements HasMedia
 
     protected $fillable = ['category_id', 'brand_id', 'name', 'slug', 'images', 'description', 'price', 'is_active', 'is_featured', 'in_stock', 'on_sale', 'stock'];
 
-    protected $casts = ['images' => 'array'];
+    protected $casts = [
+        'images' => 'array',
+        'is_active' => 'boolean',
+        'in_stock' => 'boolean',
+        'on_sale' => 'boolean',
+    ];
+
+    protected static function booted(): void
+    {
+        static::saving(function (Product $product) {
+            $totalStock = $product->variants()->exists()
+                ? $product->variants()->sum('stock')
+                : (int) $product->stock;
+
+            $hasStock = $totalStock > 0;
+
+            $product->in_stock = $hasStock;
+            $product->is_active = $hasStock;
+
+            if (! $hasStock) {
+                $product->on_sale = false;
+            }
+        });
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true)->where('in_stock', true);
+    }
+
+    public function scopeVisible($query)
+    {
+        return $query->where('is_active', true)->where('in_stock', true);
+    }
+
+    public function scopeOnSale($query)
+    {
+        return $query->where('on_sale', true)->where('is_active', true)->where('in_stock', true);
+    }
+
+    public function scopeFeatured($query)
+    {
+        return $query->where('is_featured', true)->where('is_active', true)->where('in_stock', true);
+    }
 
     public function category()
     {
@@ -119,5 +162,74 @@ class Product extends Model implements HasMedia
             ->width(800)
             ->height(800)
             ->withResponsiveImages();
+    }
+
+    public static function deductStockForOrderItem(int $productId, int $quantity): bool
+    {
+        $product = static::find($productId);
+
+        if (! $product) {
+            return false;
+        }
+
+        if ($product->variants()->exists()) {
+            $variant = $product->variants()->first();
+            if ($variant && $variant->stock >= $quantity) {
+                $variant->decrement('stock', $quantity);
+                $product->refreshStockStatus();
+
+                return true;
+            }
+
+            return false;
+        }
+
+        if ($product->stock >= $quantity) {
+            $product->decrement('stock', $quantity);
+            $product->refreshStockStatus();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function refreshStockStatus(): void
+    {
+        $totalStock = $this->variants()->exists()
+            ? $this->variants()->sum('stock')
+            : (int) $this->stock;
+
+        $hasStock = $totalStock > 0;
+
+        $this->update([
+            'in_stock' => $hasStock,
+            'is_active' => $hasStock,
+            'on_sale' => $hasStock ? $this->on_sale : false,
+        ]);
+    }
+
+    public static function restoreStockForOrderItem(int $productId, int $quantity): bool
+    {
+        $product = static::find($productId);
+
+        if (! $product) {
+            return false;
+        }
+
+        if ($product->variants()->exists()) {
+            $variant = $product->variants()->first();
+            if ($variant) {
+                $variant->increment('stock', $quantity);
+                $product->refreshStockStatus();
+
+                return true;
+            }
+        }
+
+        $product->increment('stock', $quantity);
+        $product->refreshStockStatus();
+
+        return true;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Helpers\CartManagement;
 use App\Livewire\Partials\Navbar;
+use App\Models\Product;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -11,6 +12,8 @@ use Livewire\Component;
 class CartPage extends Component
 {
     public $cart_items = [];
+
+    public $cart_items_with_stock = [];
 
     public $grand_total;
 
@@ -32,7 +35,21 @@ class CartPage extends Component
     public function loadCart()
     {
         $this->cart_items = CartManagement::getCartItemsFromCookie();
+        $this->loadCartItemsWithStock();
         $this->calculateTotals();
+    }
+
+    public function loadCartItemsWithStock()
+    {
+        $this->cart_items_with_stock = [];
+
+        foreach ($this->cart_items as $item) {
+            $product = Product::find($item['product_id']);
+            $this->cart_items_with_stock[] = [
+                ...$item,
+                'available_stock' => $product ? $product->total_stock : 0,
+            ];
+        }
     }
 
     public function calculateTotals()
@@ -47,19 +64,19 @@ class CartPage extends Component
         $this->grand_total = $this->total;
     }
 
-    protected function dispatchUpdate($action = 'recalibrated')
+    protected function dispatchUpdate($action = 'recalibrated', $message = null)
     {
         $this->dispatch('update-cart-count', total_count: count($this->cart_items))->to(Navbar::class);
 
         $title = $action === 'removed' ? 'Collection Updated' : 'Manifest Recalibrated';
-        $message = $action === 'removed'
+        $defaultMessage = $action === 'removed'
             ? 'The item has been withdrawn from your selection.'
             : 'Your quantities have been successfully adjusted.';
 
         $this->dispatch('swal:alert',
             icon: 'success',
             title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">'.$title.'</span>',
-            html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">'.$message.'</p>',
+            html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">'.($message ?? $defaultMessage).'</p>',
             position: 'bottom-end',
             timer: 3000,
             toast: true,
@@ -75,7 +92,16 @@ class CartPage extends Component
 
     public function increaseQty($product_id)
     {
+        $item = collect($this->cart_items_with_stock)->firstWhere('product_id', $product_id);
+
+        if ($item && $item['quantity'] >= $item['available_stock']) {
+            $this->dispatchUpdate('max', 'Maximum stock reached for this item');
+
+            return;
+        }
+
         $this->cart_items = CartManagement::incrementQuantity($product_id);
+        $this->loadCartItemsWithStock();
         $this->calculateTotals();
         $this->dispatchUpdate('increased');
     }
@@ -83,6 +109,7 @@ class CartPage extends Component
     public function decreaseQty($product_id)
     {
         $this->cart_items = CartManagement::decrementQuantity($product_id);
+        $this->loadCartItemsWithStock();
         $this->calculateTotals();
         $this->dispatchUpdate('decreased');
     }
@@ -90,6 +117,7 @@ class CartPage extends Component
     public function removeItem($product_id)
     {
         $this->cart_items = CartManagement::removeCartItem($product_id);
+        $this->loadCartItemsWithStock();
         $this->calculateTotals();
         $this->dispatchUpdate('removed');
     }

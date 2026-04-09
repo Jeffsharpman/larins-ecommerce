@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Mail\OrderPlaced;
 use App\Mail\OrderStatusUpdated;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -12,6 +13,8 @@ class OrderObserver
 {
     public function created(Order $order): void
     {
+        $this->deductStock($order);
+
         try {
             if ($order->user && $order->user->email) {
                 Mail::to($order->user->email)->send(new OrderPlaced($order));
@@ -58,6 +61,40 @@ class OrderObserver
                     'error' => $e->getMessage(),
                 ]);
             }
+
+            if ($newStatus === 'refunded' && $previousStatus !== 'refunded') {
+                $this->restoreStock($order);
+            }
+        }
+    }
+
+    protected function deductStock(Order $order): void
+    {
+        $order->load('items');
+
+        foreach ($order->items as $item) {
+            Product::deductStockForOrderItem($item->product_id, $item->quantity);
+
+            Log::info('Stock deducted for order item', [
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+            ]);
+        }
+    }
+
+    protected function restoreStock(Order $order): void
+    {
+        $order->load('items');
+
+        foreach ($order->items as $item) {
+            Product::restoreStockForOrderItem($item->product_id, $item->quantity);
+
+            Log::info('Stock restored for order item', [
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+            ]);
         }
     }
 }

@@ -44,8 +44,7 @@ class HomePage extends Component
                 ];
             });
 
-        $featuredProducts = Product::where('is_active', 1)
-            ->where('is_featured', 1)
+        $featuredProducts = Product::featured()
             ->with(['reviews', 'brand', 'category'])
             ->latest()
             ->take(4)

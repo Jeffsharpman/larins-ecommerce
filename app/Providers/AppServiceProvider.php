@@ -5,10 +5,12 @@ namespace App\Providers;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVariant;
 use App\Observers\BrandObserver;
 use App\Observers\CategoryObserver;
+use App\Observers\OrderItemObserver;
 use App\Observers\OrderObserver;
 use App\Observers\ProductObserver;
 use App\Observers\ProductVariantObserver;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         ProductVariant::observe(ProductVariantObserver::class);
         Order::observe(OrderObserver::class);
+        OrderItem::observe(OrderItemObserver::class);
         Gate::before(function ($user, $ability) {
             return $user->hasRole('super_admin') ? true : null;
         });

@@ -37,28 +37,38 @@ class ProductsPage extends Component
 
     public function addToCart($product_id)
     {
-        $total_count = CartManagement::addItemToCart($product_id);
+        $result = CartManagement::addItemToCart($product_id);
 
-        // Dispatch to Navbar with clean count
-        $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
+        $this->dispatch('update-cart-count', total_count: $result['count'])->to(Navbar::class);
 
-        // Boutique Style Alert
-        $this->dispatch('swal:alert',
-            icon: 'success',
-            title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Acquisition Confirmed</span>',
-            html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">The item has been added to your curated collection.</p>',
-            position: 'bottom-end',
-            timer: 4000,
-            toast: true,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            // Custom classes for your global CSS
-            customClass: [
-                'popup' => 'border border-primary/20 bg-background/95 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-primary/5',
-                'timerProgressBar' => 'bg-primary/40',
-                'icon' => 'border-primary text-primary scale-75',
-            ]
-        );
+        if ($result['success']) {
+            $this->dispatch('swal:alert',
+                icon: 'success',
+                title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Acquisition Confirmed</span>',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">The item has been added to your curated collection.</p>',
+                position: 'bottom-end',
+                timer: 4000,
+                toast: true,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: [
+                    'popup' => 'border border-primary/20 bg-background/95 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-primary/5',
+                    'timerProgressBar' => 'bg-primary/40',
+                    'icon' => 'border-primary text-primary scale-75',
+                ]
+            );
+        } else {
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Unable to Add</span>',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">'.$result['message'].'</p>',
+                position: 'bottom-end',
+                timer: 4000,
+                toast: true,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            );
+        }
     }
 
     public function resetFilters()
@@ -70,7 +80,7 @@ class ProductsPage extends Component
 
     public function render()
     {
-        $productQuery = Product::query()->where('is_active', 1);
+        $productQuery = Product::active();
 
         if (! empty($this->selected_categories)) {
             $productQuery->whereIn('category_id', $this->selected_categories);
@@ -81,11 +91,11 @@ class ProductsPage extends Component
         }
 
         if ($this->is_featured) {
-            $productQuery->where('is_featured', $this->is_featured);
+            $productQuery->where('is_featured', true);
         }
 
         if ($this->on_sale) {
-            $productQuery->where('on_sale', $this->on_sale);
+            $productQuery->where('on_sale', true);
         }
 
         if ($this->price_range) {

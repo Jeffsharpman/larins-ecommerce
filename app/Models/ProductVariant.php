@@ -18,10 +18,19 @@ class ProductVariant extends Model
         return $this->belongsTo(Product::class);
     }
 
+    protected static function booted(): void
+    {
+        static::saved(function (ProductVariant $variant) {
+            if ($variant->product) {
+                $variant->product->refreshStockStatus();
+            }
+        });
+    }
+
     public static function getLowStockReport()
     {
         return static::where('stock', '<=', 5)
-            ->with('product') // Eager load the parent product for the email
+            ->with('product')
             ->get();
     }
 }

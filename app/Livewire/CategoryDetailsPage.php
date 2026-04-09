@@ -25,7 +25,7 @@ class CategoryDetailsPage extends Component
         $category = Category::where('slug', $this->slug)->where('is_active', true)->firstOrFail();
 
         $products = Product::where('category_id', $category->id)
-            ->where('is_active', true)
+            ->active()
             ->paginate(12);
 
         return view('livewire.category-details-page', [

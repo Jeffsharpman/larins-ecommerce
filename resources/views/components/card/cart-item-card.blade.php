@@ -1,4 +1,10 @@
-@props(['item'])
+@props(['item', 'availableStock' => 0])
+
+@php
+    $isLowStock = $availableStock > 0 && $availableStock <= 5;
+    $isOutOfStock = $availableStock <= 0;
+    $isMaxQuantity = $item['quantity'] >= $availableStock;
+@endphp
 
 <div wire:key="cart-item-{{ $item['product_id'] }}"
     class="group relative bg-card dark:bg-card rounded-[3rem] p-8 border border-border dark:border-border transition-all duration-700 hover:border-primary/30 shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(var(--primary-rgb),0.08)] overflow-hidden mb-8">
@@ -9,10 +15,19 @@
         <div class="relative w-44 h-44 bg-muted dark:bg-black rounded-[2.5rem] overflow-hidden flex-shrink-0 border border-border dark:border-border shadow-inner">
             <img src="{{ url('storage', $item['image']) }}" 
                  alt="{{ $item['name'] }}" 
-                 class="w-full h-full object-contain p-8 transition-transform duration-1000 ease-expo group-hover:scale-110">
-            
+                 class="w-full h-full object-contain p-8 transition-transform duration-1000 ease-expo group-hover:scale-110 {{ $isOutOfStock ? 'opacity-50' : '' }}">
+             
             {{-- Gradient Overlay on Hover --}}
             <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+            
+            {{-- Out of Stock Overlay --}}
+            @if($isOutOfStock)
+                <div class="absolute inset-0 bg-destructive/20 flex items-center justify-center">
+                    <span class="px-3 py-1.5 bg-destructive text-destructive-foreground text-[8px] font-black uppercase tracking-widest rounded-full">
+                        Out of Stock
+                    </span>
+                </div>
+            @endif
         </div>
 
         {{-- Product Details --}}
@@ -37,10 +52,22 @@
                         <span class="text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2 bg-muted dark:bg-muted rounded-full border border-border dark:border-border text-muted-foreground">
                             {{ $item['variant'] ?? 'Original Edition' }}
                         </span>
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                            <p class="text-[9px] text-emerald-600 dark:text-emerald-500 font-black uppercase tracking-[0.3em]">In Stock</p>
-                        </div>
+                        @if($isOutOfStock)
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-destructive animate-pulse"></span>
+                                <p class="text-[9px] text-destructive font-black uppercase tracking-[0.3em]">Out of Stock</p>
+                            </div>
+                        @elseif($isLowStock)
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                                <p class="text-[9px] text-amber-600 dark:text-amber-500 font-black uppercase tracking-[0.3em]">Only {{ $availableStock }} left</p>
+                            </div>
+                        @else
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <p class="text-[9px] text-emerald-600 dark:text-emerald-500 font-black uppercase tracking-[0.3em]">In Stock</p>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 
@@ -54,20 +81,26 @@
 
             <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end mt-12 md:mt-0 gap-8">
                 {{-- Quantity Architecture --}}
-                <div class="flex items-center bg-muted dark:bg-muted rounded-full p-2 border border-border dark:border-border shadow-sm backdrop-blur-md">
-                    <button wire:click="decreaseQty({{ $item['product_id'] }})" 
-                            class="w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-card dark:hover:bg-card rounded-full transition-all duration-500 shadow-none hover:shadow-xl">
-                        <x-lucide-minus class="w-5 h-5 stroke-[2.5]" />
-                    </button>
-                    
-                    <span class="w-16 text-center font-black text-lg tracking-widest text-foreground">
-                        {{ str_pad($item['quantity'], 2, '0', STR_PAD_LEFT) }}
-                    </span>
-                    
-                    <button wire:click="increaseQty({{ $item['product_id'] }})" 
-                            class="w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-card dark:hover:bg-card rounded-full transition-all duration-500 shadow-none hover:shadow-xl">
-                        <x-lucide-plus class="w-5 h-5 stroke-[2.5]" />
-                    </button>
+                <div class="flex flex-col items-center gap-2">
+                    <div class="flex items-center bg-muted dark:bg-muted rounded-full p-2 border border-border dark:border-border shadow-sm backdrop-blur-md">
+                        <button wire:click="decreaseQty({{ $item['product_id'] }})" wire:loading.attr="disabled"
+                                class="w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-card dark:hover:bg-card rounded-full transition-all duration-500 shadow-none hover:shadow-xl disabled:opacity-50">
+                            <x-lucide-minus class="w-5 h-5 stroke-[2.5]" />
+                        </button>
+                        
+                        <span class="w-16 text-center font-black text-lg tracking-widest text-foreground">
+                            {{ str_pad($item['quantity'], 2, '0', STR_PAD_LEFT) }}
+                        </span>
+                        
+                        <button wire:click="increaseQty({{ $item['product_id'] }})" wire:loading.attr="disabled"
+                                @if($isMaxQuantity || $isOutOfStock) disabled @endif
+                                class="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-500 shadow-none hover:shadow-xl {{ $isMaxQuantity || $isOutOfStock ? 'text-muted-foreground/30 cursor-not-allowed' : 'text-muted-foreground hover:text-primary hover:bg-card dark:hover:bg-card' }}">
+                            <x-lucide-plus class="w-5 h-5 stroke-[2.5]" />
+                        </button>
+                    </div>
+                    @if($isMaxQuantity && !$isOutOfStock)
+                        <span class="text-[8px] text-amber-500 font-black uppercase tracking-widest">Max reached</span>
+                    @endif
                 </div>
 
                 {{-- Valuation / Pricing --}}

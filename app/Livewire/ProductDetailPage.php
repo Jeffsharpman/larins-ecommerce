@@ -44,6 +44,11 @@ class ProductDetailPage extends Component
     public function loadProduct()
     {
         $this->product = Product::where('slug', $this->slug)->firstOrFail();
+
+        if (! $this->product->is_active) {
+            return redirect('/products')->with('error', 'This product is no longer available.');
+        }
+
         $this->loadReviews();
     }
 
@@ -65,7 +70,10 @@ class ProductDetailPage extends Component
 
     public function increaseQty()
     {
-        $this->quantity++;
+        $maxStock = $this->product->total_stock;
+        if ($this->quantity < $maxStock) {
+            $this->quantity++;
+        }
     }
 
     public function decreaseQty()
@@ -77,23 +85,38 @@ class ProductDetailPage extends Component
 
     public function addToCart($product_id)
     {
-        $total_count = CartManagement::addItemToCartWithQty($product_id, $this->quantity);
-        $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
-        $this->dispatch('swal:alert',
-            icon: 'success',
-            title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Selection Logged</span>',
-            html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">'.$this->quantity.' units have been added to your curated collection.</p>',
-            position: 'bottom-end',
-            timer: 4000,
-            toast: true,
-            timerProgressBar: true,
-            showConfirmButton: false,
-            customClass: [
-                'popup' => 'border border-primary/20 bg-background/95 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-primary/5',
-                'timerProgressBar' => 'bg-primary/40',
-                'icon' => 'border-primary text-primary scale-75',
-            ]
-        );
+        $result = CartManagement::addItemToCartWithQty($product_id, $this->quantity);
+
+        $this->dispatch('update-cart-count', total_count: $result['count'])->to(Navbar::class);
+
+        if ($result['success']) {
+            $this->dispatch('swal:alert',
+                icon: 'success',
+                title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Selection Logged</span>',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">'.$this->quantity.' units have been added to your curated collection.</p>',
+                position: 'bottom-end',
+                timer: 4000,
+                toast: true,
+                timerProgressBar: true,
+                showConfirmButton: false,
+                customClass: [
+                    'popup' => 'border border-primary/20 bg-background/95 backdrop-blur-xl rounded-[2rem] shadow-2xl shadow-primary/5',
+                    'timerProgressBar' => 'bg-primary/40',
+                    'icon' => 'border-primary text-primary scale-75',
+                ]
+            );
+        } else {
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: '<span class="text-[10px] font-black uppercase tracking-[0.3em] font-sans">Unable to Add</span>',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest text-muted-foreground">'.$result['message'].'</p>',
+                position: 'bottom-end',
+                timer: 4000,
+                toast: true,
+                timerProgressBar: true,
+                showConfirmButton: false,
+            );
+        }
     }
 
     public function submitReview()

@@ -38,7 +38,7 @@ class ReviewsPage extends Component
 
         $reviews = $reviewsQuery->paginate(12);
 
-        $products = Product::where('is_active', 1)
+        $products = Product::active()
             ->has('reviews')
             ->withCount('approvedReviews')
             ->orderBy('approved_reviews_count', 'desc')

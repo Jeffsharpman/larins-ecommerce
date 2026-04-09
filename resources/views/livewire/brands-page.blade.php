@@ -57,7 +57,7 @@
                         <div class="mt-6 text-center px-2">
                             <h3 class="text-lg font-black uppercase italic tracking-tighter text-foreground group-hover:text-primary transition-colors">{{ $brand->name }}</h3>
                             <p class="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-1">
-                                {{ $brand->products_count ?? '0' }} Curated Pieces
+                                {{ $brand->products_count }} Curated Pieces
                             </p>
                         </div>
                     </a>
