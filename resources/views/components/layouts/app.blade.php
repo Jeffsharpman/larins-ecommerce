@@ -40,8 +40,12 @@
             --color-primary: {{ $site->primary_color ?? '#cca050' }};
             --color-secondary: {{ $site->secondary_color ?? '#1e293b' }};
             
-            /* Helper for Tailwind v4/v3 opacity support with Hex */
+            /* Helper for Tailwind v4 opacity support with Hex */
             --primary-rgb: {{ implode(',', sscanf($site->primary_color ?? '#cca050', "#%02x%02x%02x")) }};
+            
+            /* Extract Hue values for oklch theme derivation */
+            --primary-hue: {{ $site->getPrimaryHue() }};
+            --secondary-hue: {{ $site->getSecondaryHue() }};
         }
 
         /* Smooth UI Transitions */
@@ -195,8 +199,8 @@
                 toast: event.detail.toast || false,
                 timerProgressBar: true,
                 showConfirmButton: !event.detail.toast,
-                background: isDark ? '#121212' : '#ffffff',
-                color: isDark ? '#f8fafc' : '#0f172a',
+                background: isDark ? getComputedStyle(document.documentElement).getPropertyValue('--color-background').trim() || '#121212' : '#ffffff',
+                color: isDark ? getComputedStyle(document.documentElement).getPropertyValue('--color-foreground').trim() || '#f8fafc' : '#0f172a',
                 confirmButtonColor: primaryColor,
                 customClass: {
                     popup: 'rounded-[2.5rem] border border-slate-200 dark:border-white/5 shadow-2xl backdrop-blur-xl',

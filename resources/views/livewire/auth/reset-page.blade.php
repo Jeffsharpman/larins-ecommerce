@@ -85,12 +85,12 @@
                     {{-- Action Button --}}
                     <div class="pt-6">
                         <button type="submit"
-                                class="w-full py-6 px-4 flex justify-center items-center gap-4 text-[11px] font-black uppercase tracking-[0.5em] rounded-full bg-foreground text-background hover:bg-primary hover:text-white transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)] group relative overflow-hidden">
+                                class="w-full py-6 px-4 flex justify-center items-center gap-4 text-[11px] font-black uppercase tracking-[0.5em] rounded-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)] group relative overflow-hidden">
                             
                             <span wire:loading.remove>Update Credentials</span>
-                            <div wire:loading class="h-1 w-12 bg-white/40 animate-pulse rounded-full"></div>
+                            <div wire:loading class="h-1 w-12 bg-primary-foreground/40 animate-pulse rounded-full"></div>
                             
-                            <x-lucide-lock-keyhole wire:loading.remove class="w-4 h-4 transition-transform duration-500 group-hover:scale-110 text-primary group-hover:text-white" />
+                            <x-lucide-lock-keyhole wire:loading.remove class="w-4 h-4 transition-transform duration-500 group-hover:scale-110" />
                         </button>
                     </div>
                 </form>

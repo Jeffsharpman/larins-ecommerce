@@ -71,4 +71,23 @@ class GeneralSettings extends Settings
     {
         return 'site';
     }
+
+    public function getPrimaryHue(): float
+    {
+        return $this->extractHue($this->primary_color);
+    }
+
+    public function getSecondaryHue(): float
+    {
+        return $this->extractHue($this->secondary_color);
+    }
+
+    protected function extractHue(string $hsl): float
+    {
+        if (preg_match('/hsl\(\s*(\d+)\s*,/', $hsl, $matches)) {
+            return (float) $matches[1];
+        }
+
+        return 220;
+    }
 }

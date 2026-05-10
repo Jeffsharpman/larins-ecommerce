@@ -10,9 +10,9 @@
             <div class="relative inline-block mb-12">
                 {{-- Main Animated Icon with Glow --}}
                 <div class="relative group">
-                    <div class="absolute -inset-4 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition duration-1000"></div>
-                    <div class="relative w-32 h-32 bg-card border border-emerald-500/20 rounded-full flex items-center justify-center shadow-[0_0_50px_-12px_rgba(16,185,129,0.3)] animate-bounce-slow">
-                        <x-lucide-check-circle class="w-16 h-16 text-emerald-500" />
+                    <div class="absolute -inset-4 bg-success/20 rounded-full blur-2xl group-hover:bg-success/30 transition duration-1000"></div>
+                    <div class="relative w-32 h-32 bg-card border border-success/20 rounded-full flex items-center justify-center shadow-[0_0_50px_-12px_rgba(var(--primary-rgb), 0.15)] animate-bounce-slow">
+                        <x-lucide-check-circle class="w-16 h-16 text-success" />
                     </div>
                 </div>
                 

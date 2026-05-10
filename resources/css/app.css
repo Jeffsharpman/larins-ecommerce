@@ -12,37 +12,66 @@
 /* Enable dark mode using .dark class */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ==================== LARINS CUSTOM THEME ==================== */
+/* ==================== LARINS DYNAMIC THEME ==================== */
 @theme {
-  /* Master Seeds */
-  --color-primary: var(--primary-color);
-  --color-secondary: var(--secondary-color);
+  /* Master Seeds - defined in :root CSS variables (set by Blade) */
+  --primary-rgb: var(--primary-rgb);
 
   /* Fonts */
   --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
   --font-heading: 'Montserrat', system-ui, sans-serif;
   --font-body: 'Roboto', system-ui, sans-serif;
 
-  /* Automatic Derivations (Light Mode) */
-  --color-background: color-mix(in srgb, var(--color-secondary), white 95%);
-  --color-foreground: color-mix(in srgb, var(--color-secondary), black 80%);
-  --color-card: white;
+  /* ==================== LIGHT MODE (Default) ==================== */
+  /* Background & Surface - Derived from secondary color */
+  --color-background: oklch(0.98 0.01 var(--secondary-hue, 220));
+  --color-foreground: oklch(0.15 0.03 var(--secondary-hue, 220));
+  --color-card: oklch(1 0 0);
   --color-card-foreground: var(--color-foreground);
-  --color-border: color-mix(in srgb, var(--color-secondary), black 10%);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: var(--color-foreground);
   
+  /* Borders & Dividers */
+  --color-border: oklch(0.9 0.01 var(--secondary-hue, 220));
+  --color-ring: var(--color-primary);
+  
+  /* Muted / Secondary */
+  --color-muted: oklch(0.96 0.005 var(--secondary-hue, 220));
+  --color-muted-foreground: oklch(0.45 0.03 var(--secondary-hue, 220));
+  
+  /* Primary Accent - Derived from primary color */
   --color-gold: var(--color-primary);
-  --color-gold-light: color-mix(in srgb, var(--color-primary), white 40%);
-  --color-gold-dark: color-mix(in srgb, var(--color-primary), black 30%);
-
-  --color-navy: color-mix(in srgb, var(--color-secondary), black 40%);
-  --color-blush: color-mix(in srgb, var(--color-secondary), white 80%);
-  --color-cream: color-mix(in srgb, var(--color-secondary), white 90%);
-
-  --color-muted: color-mix(in srgb, var(--color-secondary), black 5%);
-  --color-muted-foreground: color-mix(in srgb, var(--color-secondary), black 40%);
+  --color-gold-light: color-mix(in srgb, var(--color-primary) 50%, white);
+  --color-gold-dark: color-mix(in srgb, var(--color-primary) 70%, black);
+  --color-gold-muted: color-mix(in srgb, var(--color-primary) 15%, white);
   
+  /* Secondary Tones - Derived from secondary color */
+  --color-navy: color-mix(in srgb, var(--color-secondary) 60%, black);
+  --color-blush: color-mix(in srgb, var(--color-secondary) 10%, white);
+  --color-cream: color-mix(in srgb, var(--color-secondary) 5%, white);
+  --color-slate: color-mix(in srgb, var(--color-secondary) 20%, white);
+  
+  /* Input */
+  --color-input: var(--color-border);
+  
+  /* Primary Variants - Derived from primary color */
+  --color-primary-foreground: oklch(0.98 0.02 var(--primary-hue, 45));
+  
+  /* Secondary Variants */
+  --color-secondary: oklch(0.94 0.01 var(--secondary-hue, 220));
+  --color-secondary-foreground: var(--color-foreground);
+  
+  /* Semantic Colors - Derived from secondary hue */
+  --color-destructive: oklch(0.55 0.2 var(--secondary-hue, 0));
+  --color-destructive-foreground: oklch(0.98 0 0);
+  --color-success: oklch(0.55 0.18 var(--secondary-hue, 145));
+  --color-success-foreground: oklch(0.98 0 0);
+  --color-warning: oklch(0.75 0.18 var(--secondary-hue, 45));
+  --color-warning-foreground: oklch(0.2 0 0);
+  
+  /* Radius */
   --radius-larins: 0.75rem;
-
+  
   /* Animations */
   --animate-float: float 6s ease-in-out infinite;
   --animate-bounce-slow: bounce-slow 3s infinite;
@@ -62,20 +91,53 @@
   }
 }
 
-/* Dark Mode Overrides */
-@layer theme {
-  .dark {
-    --color-background: hsl(220 25% 10%);
-    --color-foreground: hsl(30 30% 95%);
-    --color-card: hsl(220 25% 15%);
-    --color-border: hsl(220 25% 30%);
-    --color-muted: hsl(220 20% 25%);
-    --color-muted-foreground: hsl(220 15% 70%);
-    
-    --color-gold: hsl(40 70% 60%);
-    --color-gold-dark: hsl(40 75% 45%);
-    --color-navy: hsl(220 60% 30%);
-  }
+/* ==================== DARK MODE - Derived from Primary/Secondary ==================== */
+.dark {
+  /* Background & Surface */
+  --color-background: oklch(0.12 0.03 var(--secondary-hue, 220));
+  --color-foreground: oklch(0.95 0.01 var(--secondary-hue, 220));
+  --color-card: oklch(0.15 0.03 var(--secondary-hue, 220));
+  --color-card-foreground: var(--color-foreground);
+  --color-popover: oklch(0.12 0.03 var(--secondary-hue, 220));
+  --color-popover-foreground: var(--color-foreground);
+  
+  /* Borders & Dividers */
+  --color-border: oklch(0.25 0.02 var(--secondary-hue, 220));
+  --color-ring: var(--color-primary);
+  
+  /* Muted / Secondary */
+  --color-muted: oklch(0.2 0.02 var(--secondary-hue, 220));
+  --color-muted-foreground: oklch(0.65 0.02 var(--secondary-hue, 220));
+  
+  /* Primary Accent - Slightly brighter in dark mode */
+  --color-gold: color-mix(in srgb, var(--color-primary) 85%, white);
+  --color-gold-light: color-mix(in srgb, var(--color-primary) 35%, white);
+  --color-gold-dark: color-mix(in srgb, var(--color-primary) 65%, black);
+  --color-gold-muted: color-mix(in srgb, var(--color-primary) 25%, black);
+  
+  /* Secondary Tones */
+  --color-navy: oklch(0.35 0.05 var(--secondary-hue, 220));
+  --color-blush: oklch(0.18 0.015 var(--secondary-hue, 220));
+  --color-cream: oklch(0.15 0.01 var(--secondary-hue, 220));
+  --color-slate: oklch(0.22 0.02 var(--secondary-hue, 220));
+  
+  /* Input */
+  --color-input: var(--color-border);
+  
+  /* Primary Variants */
+  --color-primary-foreground: oklch(0.15 0.03 var(--primary-hue, 45));
+  
+  /* Secondary Variants */
+  --color-secondary: oklch(0.25 0.02 var(--secondary-hue, 220));
+  --color-secondary-foreground: var(--color-foreground);
+  
+  /* Semantic Colors - Brighter in dark mode */
+  --color-destructive: oklch(0.65 0.22 var(--secondary-hue, 0));
+  --color-destructive-foreground: oklch(0.15 0 0);
+  --color-success: oklch(0.65 0.2 var(--secondary-hue, 145));
+  --color-success-foreground: oklch(0.15 0 0);
+  --color-warning: oklch(0.75 0.18 var(--secondary-hue, 45));
+  --color-warning-foreground: oklch(0.15 0 0);
 }
 
 @layer base {
@@ -83,7 +145,7 @@
     padding-top: 64px;
   }
 
-  /* Custom Thin Scrollbar */
+  /* Custom Scrollbar */
   .custom-scrollbar::-webkit-scrollbar { width: 4px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   .custom-scrollbar::-webkit-scrollbar-thumb { 
@@ -95,18 +157,20 @@
 @layer components {
   /* Navigation */
   .nav-link.active, .mobile-nav-link.active {
-    @apply text-primary font-semibold;
+    font-weight: 600;
+    color: var(--color-primary);
   }
   .nav-link.active {
-    @apply border-b-2 border-primary pb-0.5;
+    border-bottom: 2px solid var(--color-primary);
+    padding-bottom: 2px;
   }
 
   /* Editorial Text Strokes */
   .text-stroke-sm {
     -webkit-text-stroke: 1.5px var(--color-foreground);
   }
-  .dark .dark\:text-stroke-white {
-    -webkit-text-stroke: 1.5px #ffffff;
+  .dark .text-stroke-white {
+    -webkit-text-stroke: 1.5px var(--color-foreground);
   }
 
   .font-outline-2 { -webkit-text-stroke: 2px var(--color-navy); }
@@ -114,19 +178,58 @@
 
   /* Premium Selection Badge Component */
   .badge-premium {
-    @apply inline-flex items-center gap-3 px-5 py-2 rounded-full 
-           bg-white/5 backdrop-blur-md border border-primary/20 
-           shadow-[0_0_15px_-3px_rgba(212,175,55,0.3)]
-           text-primary text-[9px] font-black uppercase tracking-[0.4em] 
-           transition-all hover:border-primary/40 hover:shadow-primary/20 cursor-default;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--color-foreground) 5%, transparent);
+    backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+    box-shadow: 0 0 15px -3px rgba(var(--primary-rgb), 0.3);
+    color: var(--color-primary);
+    font-size: 9px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    transition: all 0.2s;
+  }
+  .badge-premium:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+    box-shadow: 0 0 20px -3px rgba(var(--primary-rgb), 0.2);
+    cursor: default;
   }
 
   .badge-premium-dot {
-    @apply relative flex items-center justify-center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .badge-premium-dot .dot-pulse { @apply absolute h-3 w-3 rounded-full bg-primary/40 animate-pulse; }
-  .badge-premium-dot .dot-ping { @apply absolute h-5 w-5 rounded-full border border-primary/30 animate-[ping_2s_cubic-bezier(0,0,0.2,1)_infinite]; }
-  .badge-premium-dot .dot-core { @apply relative h-1.5 w-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(212,175,55,0.8)]; }
+  .badge-premium-dot .dot-pulse {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--color-primary) 40%, transparent);
+    animation: pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .badge-premium-dot .dot-ping {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+    animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+  .badge-premium-dot .dot-core {
+    position: relative;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.8);
+  }
 }
 
 @layer utilities {
@@ -142,12 +245,12 @@
 }
 
 .swal2-icon.swal2-success {
-    border-color: theme('colors.primary.DEFAULT') !important;
-    color: theme('colors.primary.DEFAULT') !important;
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary) !important;
 }
 
 .swal2-icon.swal2-success [class^='swal2-success-line'] {
-    background-color: theme('colors.primary.DEFAULT') !important;
+    background-color: var(--color-primary) !important;
 }
 
 .swal2-icon.swal2-success .swal2-success-ring {

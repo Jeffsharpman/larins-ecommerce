@@ -33,7 +33,7 @@
   {{-- Refresh Action --}}
   <div class="mt-16 flex flex-col items-center gap-8">
     <button wire:click="$refresh"
-      class="group relative inline-flex items-center gap-x-6 px-14 py-6 text-[11px] font-black uppercase tracking-[0.4em] rounded-full bg-foreground dark:bg-background text-card dark:text-foreground hover:bg-primary dark:hover:bg-primary hover:text-white transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)]">
+      class="group relative inline-flex items-center gap-x-6 px-14 py-6 text-[11px] font-black uppercase tracking-[0.4em] rounded-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)]">
       <span>Re-Sync Gallery</span>
       <x-lucide-refresh-cw wire:loading.class="animate-spin"
         class="w-5 h-5 transition-transform duration-700 group-hover:rotate-180" />

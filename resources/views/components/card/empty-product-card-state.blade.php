@@ -27,7 +27,7 @@
     {{-- Action Button --}}
     <div class="mt-20">
         <button onclick="window.location.href='/products'"
-            class="group relative inline-flex items-center gap-x-6 px-16 py-6 text-[11px] font-black uppercase tracking-[0.4em] rounded-full bg-foreground dark:bg-background text-card dark:text-foreground hover:bg-primary dark:hover:bg-primary hover:text-white transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)]">
+            class="group relative inline-flex items-center gap-x-6 px-16 py-6 text-[11px] font-black uppercase tracking-[0.4em] rounded-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)]">
             <span>Reset Collection</span>
             <x-lucide-rotate-ccw class="w-5 h-5 transition-transform duration-700 group-hover:rotate-[-360deg] stroke-[2]" />
         </button>

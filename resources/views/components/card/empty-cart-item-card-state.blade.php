@@ -35,9 +35,9 @@
       {{-- Action Button --}}
       <div class="mt-14">
         <a href="/products" wire:navigate
-          class="group relative inline-flex items-center gap-x-6 px-14 py-6 text-[11px] font-black uppercase tracking-[0.4em] rounded-full bg-foreground dark:bg-background text-card dark:text-foreground hover:bg-primary dark:hover:bg-primary hover:text-white transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)]">
+          class="group relative inline-flex items-center gap-x-6 px-14 py-6 text-[11px] font-black uppercase tracking-[0.4em] rounded-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.3)]">
           <span>Enter the Gallery</span>
-          <x-lucide-arrow-right class="w-5 h-5 transition-transform duration-500 group-hover:translate-x-3 text-primary group-hover:text-white" />
+          <x-lucide-arrow-right class="w-5 h-5 transition-transform duration-500 group-hover:translate-x-3" />
         </a>
       </div>
 

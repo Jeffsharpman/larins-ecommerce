@@ -767,7 +767,7 @@ public function panel(Panel $panel): Panel
         ->default()
         ->id('admin')
         ->path('admin')
-        ->colors([
+        ->colors([ 
             'primary' => Color::Orange, // Choices: Blue, Indigo, Rose, Amber, Emerald, etc.
             'danger' => Color::Red,
             'gray' => Color::Slate,

@@ -77,7 +77,7 @@
                     </p>
                     
                     <a href="/shop" wire:navigate
-                        class="inline-flex items-center gap-5 px-16 py-7 bg-foreground text-background dark:bg-primary dark:text-background rounded-full font-black uppercase tracking-[0.4em] text-[10px] transition-all duration-700 hover:scale-105 hover:shadow-[0_20px_50px_rgba(var(--primary),0.3)] active:scale-95 group">
+                        class="inline-flex items-center gap-5 px-16 py-7 bg-foreground text-background rounded-full font-black uppercase tracking-[0.4em] text-[10px] transition-all duration-700 hover:scale-105 hover:shadow-[0_20px_50px_rgba(var(--primary-rgb),0.3)] hover:bg-primary hover:text-primary-foreground active:scale-95 group">
                         <x-lucide-sparkles class="w-4 h-4 group-hover:rotate-[30deg] transition-transform duration-500" />
                         Explore Archive
                     </a>

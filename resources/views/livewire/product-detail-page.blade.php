@@ -183,7 +183,7 @@
                         </div>
 
                         <button wire:click="addToCart({{ $product->id }})" wire:loading.attr="disabled"
-                            class="w-full bg-foreground text-background dark:bg-primary dark:text-background py-8 rounded-[2rem] font-black uppercase tracking-[0.5em] text-[11px] hover:scale-[1.02] active:scale-[0.98] transition-all duration-700 shadow-[0_30px_60px_-15px_rgba(var(--primary),0.3)] flex items-center justify-center gap-6 group overflow-hidden relative disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="w-full bg-foreground text-background py-8 rounded-[2rem] font-black uppercase tracking-[0.5em] text-[11px] hover:scale-[1.02] active:scale-[0.98] transition-all duration-700 shadow-[0_30px_60px_-15px_rgba(var(--primary-rgb),0.3)] flex items-center justify-center gap-6 group overflow-hidden relative disabled:opacity-50 disabled:cursor-not-allowed">
                             <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
                             
                             <x-lucide-shopping-bag wire:loading.remove class="w-5 h-5 relative z-10 transition-transform group-hover:rotate-12" />

@@ -65,7 +65,7 @@
 
                     <div class="space-y-8 pt-4">
                         <button type="submit"
-                                class="w-full py-6 px-4 flex justify-center items-center gap-4 text-[11px] font-black uppercase tracking-[0.5em] rounded-full bg-foreground text-background hover:bg-primary hover:text-white transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.2)] group relative overflow-hidden">
+                                class="w-full py-6 px-4 flex justify-center items-center gap-4 text-[11px] font-black uppercase tracking-[0.5em] rounded-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground transition-all duration-700 shadow-[0_20px_50px_-10px_rgba(var(--primary-rgb),0.2)] group relative overflow-hidden">
                             
                             {{-- Sophisticated Loading --}}
                             <div wire:loading class="absolute inset-0 bg-primary flex items-center justify-center">
@@ -73,7 +73,7 @@
                             </div>
                             
                             <span wire:loading.remove>Initialize Recovery</span>
-                            <x-lucide-send wire:loading.remove class="w-4 h-4 transition-transform duration-500 group-hover:translate-x-2 group-hover:-translate-y-2 text-primary group-hover:text-white" />
+                            <x-lucide-send wire:loading.remove class="w-4 h-4 transition-transform duration-500 group-hover:translate-x-2 group-hover:-translate-y-2" />
                         </button>
 
                         <div class="text-center pt-2">
