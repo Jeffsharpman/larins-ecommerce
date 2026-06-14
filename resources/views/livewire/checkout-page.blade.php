@@ -138,7 +138,7 @@
                     <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden group hover:border-secondary/20 transition-colors duration-500">
                         <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl"></div>
                         <div class="absolute -left-10 -top-10 w-32 h-32 bg-secondary/5 rounded-full blur-3xl dark:bg-secondary/[0.03]"></div>
-                        
+                    
                         <div class="flex items-center gap-5 mb-8 pb-6 border-b border-border">
                             <div class="w-14 h-14 rounded-2xl bg-primary text-background flex items-center justify-center shadow-lg shadow-primary/20">
                                 <x-lucide-credit-card class="w-7 h-7" />
@@ -150,21 +150,31 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
                             {{-- Paystack Option --}}
-                            <label class="checkout-card relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer group">
+                            <label class="checkout-card relative flex flex-col p-8 border-2 rounded-[2rem] cursor-pointer transition-all duration-500 
+                                        {{ $payment_method === 'paystack' ? 'border-primary bg-primary/5 shadow-md scale-[1.02]' : 'border-border hover:border-primary/30' }}">
+                                
                                 <input wire:model.live="payment_method" type="radio" value="paystack" class="sr-only">
+                                
                                 <div class="flex justify-between items-start mb-6">
-                                    <div class="checkout-card-icon w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center transition-all duration-500">
-                                        <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                                    <div class="checkout-card-icon w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center transition-all duration-500 
+                                                {{ $payment_method === 'paystack' ? 'bg-primary/20 scale-110' : '' }}">
+                                        <svg class="w-8 h-8 text-primary transition-colors" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                                         </svg>
                                     </div>
-                                    <div class="checkout-card-radio w-6 h-6 rounded-full border-2 border-border flex items-center justify-center transition-all duration-500">
-                                        <div class="checkout-card-radio-dot w-2.5 h-2.5 rounded-full bg-white opacity-0 transition-all duration-300"></div>
+                                    
+                                    <div class="checkout-card-radio w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300
+                                                {{ $payment_method === 'paystack' ? 'border-primary bg-primary' : 'border-border' }}">
+                                        <div class="checkout-card-radio-dot w-2.5 h-2.5 rounded-full bg-white transition-all duration-300
+                                                    {{ $payment_method === 'paystack' ? 'opacity-100 scale-100' : 'opacity-0 scale-0' }}"></div>
                                     </div>
                                 </div>
+                                
                                 <span class="checkout-card-name font-black italic uppercase tracking-tighter text-xl mb-2">Paystack</span>
                                 <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">Nigerian Banks</span>
+                                
                                 <div class="mt-4 pt-4 border-t border-border/50">
                                     <div class="flex items-center gap-2 text-[9px] text-emerald-500 font-black uppercase tracking-wider">
                                         <x-lucide-check-circle class="w-3 h-3" />
@@ -174,20 +184,29 @@
                             </label>
 
                             {{-- Stripe Option --}}
-                            <label class="checkout-card relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer group">
+                            <label class="checkout-card relative flex flex-col p-8 border-2 rounded-[2rem] cursor-pointer transition-all duration-500 
+                                        {{ $payment_method === 'stripe' ? 'border-[#635BFF] bg-[#635BFF]/5 shadow-md scale-[1.02]' : 'border-border hover:border-[#635BFF]/30' }}">
+                                
                                 <input wire:model.live="payment_method" type="radio" value="stripe" class="sr-only">
+                                
                                 <div class="flex justify-between items-start mb-6">
-                                    <div class="checkout-card-icon w-16 h-16 bg-[#635BFF]/10 rounded-2xl flex items-center justify-center transition-all duration-500">
-                                        <svg class="w-8 h-8 text-[#635BFF]" viewBox="0 0 24 24" fill="currentColor">
+                                    <div class="checkout-card-icon w-16 h-16 bg-[#635BFF]/10 rounded-2xl flex items-center justify-center transition-all duration-500
+                                                {{ $payment_method === 'stripe' ? 'bg-[#635BFF]/20 scale-110' : '' }}">
+                                        <svg class="w-8 h-8 text-[#635BFF] transition-colors" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
                                         </svg>
                                     </div>
-                                    <div class="checkout-card-radio w-6 h-6 rounded-full border-2 border-border flex items-center justify-center transition-all duration-500">
-                                        <div class="checkout-card-radio-dot w-2.5 h-2.5 rounded-full bg-white opacity-0 transition-all duration-300"></div>
+                                    
+                                    <div class="checkout-card-radio w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-300
+                                                {{ $payment_method === 'stripe' ? 'border-[#635BFF] bg-[#635BFF]' : 'border-border' }}">
+                                        <div class="checkout-card-radio-dot w-2.5 h-2.5 rounded-full bg-white transition-all duration-300
+                                                    {{ $payment_method === 'stripe' ? 'opacity-100 scale-100' : 'opacity-0 scale-0' }}"></div>
                                     </div>
                                 </div>
+                                
                                 <span class="checkout-card-name font-black italic uppercase tracking-tighter text-xl mb-2">Stripe</span>
                                 <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">International Cards</span>
+                                
                                 <div class="mt-4 pt-4 border-t border-border/50">
                                     <div class="flex items-center gap-2 text-[9px] text-[#635BFF] font-black uppercase tracking-wider">
                                         <x-lucide-check-circle class="w-3 h-3" />
@@ -210,6 +229,7 @@
                             </div>
                         </div>
                     </div>
+                    
                 </div>
 
                 {{-- Right Column: Summary --}}
