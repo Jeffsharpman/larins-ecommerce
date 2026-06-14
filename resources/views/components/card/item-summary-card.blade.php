@@ -1,12 +1,15 @@
 @props(['item'])
 
-<li class="py-6 border-b border-border dark:border-border last:border-0 group"
+<li class="py-6 border-b border-border dark:border-border last:border-0 group relative"
   wire:key="summary-{{ $item['product_id'] }}">
+
+  {{-- Secondary Decorative Dot --}}
+  <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-secondary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
   <div class="flex items-center gap-6">
 
     {{-- Circular Miniature Frame --}}
     <div
-      class="relative flex-shrink-0 w-16 h-16 bg-muted dark:bg-black rounded-full overflow-hidden border border-border dark:border-border p-2.5 transition-all duration-700 group-hover:scale-110 group-hover:border-primary/30">
+      class="relative flex-shrink-0 w-16 h-16 bg-muted dark:bg-black rounded-full overflow-hidden border border-border dark:border-border p-2.5 transition-all duration-700 group-hover:scale-110 group-hover:border-primary/30 group-hover:border-secondary/30">
       <img src="{{ url('storage', $item['image']) }}" alt="{{ $item['name'] }}"
         class="w-full h-full object-contain filter grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700">
       <div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
@@ -24,6 +27,7 @@
           Units: {{ str_pad($item['quantity'], 2, '0', STR_PAD_LEFT) }}
         </span>
         <span class="h-1 w-1 rounded-full bg-border"></span>
+        <span class="h-1 w-1 rounded-full bg-secondary/40"></span>
         <span class="text-[9px] font-black uppercase tracking-[0.4em] text-primary/80">
           {{ $item['variant'] ?? 'Original Edition' }}
         </span>

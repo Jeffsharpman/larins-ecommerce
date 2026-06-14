@@ -25,11 +25,12 @@
         <div class="lg:col-span-8 space-y-12">
             
             {{-- Order Header Archive Card --}}
-            <div class="bg-card/40 backdrop-blur-sm rounded-[3rem] border border-border/60 p-12 shadow-card relative overflow-hidden group">
+            <div class="bg-card/40 backdrop-blur-sm rounded-[3rem] border border-border/60 p-12 shadow-card relative overflow-hidden group hover:border-secondary/20 transition-all duration-500">
+                <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-secondary/10 blur-[80px] rounded-full opacity-30 group-hover:opacity-50 transition-opacity duration-1000"></div>
                 <div class="absolute top-0 right-0 p-10">
                     <div class="flex flex-col items-end gap-2">
                         <span class="text-[9px] font-black uppercase tracking-[0.3em] opacity-40 mb-1">Status Protocol</span>
-                        <span class="px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] {{ $order->payment_status === 'paid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-primary/10 text-primary border-primary/20' }} border shadow-sm">
+                        <span class="badge {{ $order->payment_status === 'paid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' : 'bg-primary/10 text-primary border-primary/20' }} shadow-sm">
                             {{ strtoupper($order->payment_status) }}
                         </span>
                     </div>
@@ -60,7 +61,8 @@
 
             {{-- The Selection (Items List) --}}
             <div class="bg-card rounded-[3.5rem] border border-border/60 shadow-card overflow-hidden">
-                <div class="px-12 py-10 border-b border-border/60 flex justify-between items-end bg-muted/5">
+                <div class="px-12 py-10 border-b border-border/60 flex justify-between items-end bg-muted/5 relative">
+                    <div class="absolute bottom-0 left-0 w-12 h-[2px] bg-gradient-to-r from-secondary/30 to-transparent rounded-full"></div>
                     <div>
                         <h3 class="font-black uppercase text-[11px] tracking-[0.5em] text-foreground">Archive Selection</h3>
                         <p class="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-1 opacity-50 italic">Verified Inventory Units</p>
@@ -71,7 +73,8 @@
                 </div>
                 <div class="divide-y divide-border/40">
                     @foreach ($order_items as $item)
-                        <div class="p-10 hover:bg-muted/10 transition-all duration-500 group">
+                        <div class="p-10 hover:bg-muted/10 hover:bg-secondary/[0.02] dark:hover:bg-secondary/[0.01] transition-all duration-500 group relative">
+                            <div class="absolute left-0 top-2 bottom-2 w-[2px] bg-secondary/20 rounded-full scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top"></div>
                             <x-card.my-order-item-card :item="$item" />
                         </div>
                     @endforeach
@@ -80,8 +83,9 @@
 
             {{-- Shipping Intel --}}
             @if ($address)
-            <div class="bg-card rounded-[3.5rem] border border-border/60 p-12 shadow-card relative group">
+            <div class="bg-card rounded-[3.5rem] border border-border/60 p-12 shadow-card relative group hover:border-secondary/20 transition-all duration-500">
                 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/5 rounded-full blur-[60px] group-hover:bg-primary/10 transition-colors duration-1000"></div>
+                <div class="absolute top-0 right-0 w-24 h-24 bg-secondary/[0.03] dark:bg-secondary/[0.02] rounded-full blur-[50px]"></div>
                 
                 <div class="flex items-center gap-6 mb-12">
                     <div class="w-16 h-16 rounded-3xl bg-primary text-background flex items-center justify-center shadow-lg shadow-primary/20 transition-transform group-hover:rotate-12">
@@ -107,7 +111,7 @@
                             <p class="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground mb-1">Direct Priority Line</p>
                             <p class="font-black text-foreground text-xl tracking-tighter">{{ $address->phone }}</p>
                         </div>
-                        <div class="h-[2px] w-12 bg-primary/30"></div>
+                        <div class="h-[2px] w-12 bg-gradient-to-r from-primary/30 via-secondary/20 to-transparent"></div>
                         <p class="text-[9px] text-muted-foreground uppercase font-black tracking-widest leading-relaxed opacity-60">
                             Protocol: Official signature required upon arrival of logistics carrier.
                         </p>
@@ -119,10 +123,11 @@
 
         {{-- Sidebar: Financial Manifest & Actions --}}
         <aside class="lg:col-span-4 lg:sticky lg:top-32 space-y-10">
-            <div class="bg-foreground text-background dark:bg-card dark:text-foreground rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden border border-primary/10">
+            <div class="bg-foreground text-background dark:bg-card dark:text-foreground rounded-[3.5rem] p-12 shadow-2xl relative overflow-hidden border border-primary/10 group">
                 <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-[100px]"></div>
+                <div class="absolute -left-20 bottom-0 w-48 h-48 bg-secondary/[0.05] dark:bg-secondary/[0.03] rounded-full blur-[80px]"></div>
                 
-                <h3 class="font-black uppercase text-[10px] tracking-[0.5em] mb-12 pb-6 border-b border-background/10 dark:border-border/60 text-primary italic">Financial Manifest</h3>
+                <h3 class="font-black uppercase text-[10px] tracking-[0.5em] mb-12 pb-6 border-b border-background/10 dark:border-border/60 text-primary italic relative z-10">Financial Manifest</h3>
                 
                 <div class="space-y-8 mb-12 relative z-10">
                     <div class="flex justify-between text-[11px] font-black uppercase tracking-[0.3em]">
@@ -155,7 +160,7 @@
             </div>
 
             {{-- Concierge Assistance --}}
-            <div class="bg-card/40 backdrop-blur-sm rounded-[2.5rem] p-10 border border-border group hover:border-primary/20 transition-all duration-700">
+            <div class="bg-card/40 backdrop-blur-sm rounded-[2.5rem] p-10 border border-border group hover:border-primary/20 hover:border-secondary/20 transition-all duration-700">
                 <div class="flex items-center gap-5 mb-6">
                     <div class="w-12 h-12 rounded-2xl bg-background border border-border group-hover:bg-primary group-hover:text-background transition-all duration-700 flex items-center justify-center">
                         <x-lucide-help-circle class="w-6 h-6 stroke-[1.5]" />

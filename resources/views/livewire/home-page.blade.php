@@ -11,25 +11,48 @@
     {{-- Hero Section --}}
     <section class="relative w-full min-h-[80vh] flex items-center pt-20 pb-32 px-6 lg:px-12 overflow-hidden bg-background">
 
-        {{-- Background Texture & Glow (Derived from Primary) --}}
-        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/[0.05] dark:bg-primary/[0.03] blur-[150px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
+        {{-- Ambient Glow Orbs --}}
+        <div class="absolute top-1/4 -left-32 w-[500px] h-[500px] bg-primary/[0.06] dark:bg-primary/[0.04] blur-[120px] rounded-full pointer-events-none animate-pulse-slow"></div>
+        <div class="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-primary/[0.04] dark:bg-primary/[0.02] blur-[150px] rounded-full pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/4 w-[450px] h-[450px] bg-secondary/[0.06] dark:bg-secondary/[0.04] blur-[140px] rounded-full pointer-events-none animate-pulse-slow"></div>
+        <div class="absolute top-1/3 right-0 w-[300px] h-[300px] bg-secondary/[0.05] dark:bg-secondary/[0.03] blur-[100px] rounded-full pointer-events-none"></div>
+
+        {{-- Decorative Grid Pattern --}}
+        <div class="absolute inset-0 pointer-events-none opacity-[0.015] dark:opacity-[0.03]"
+             style="background-image: linear-gradient(var(--color-border) 1px, transparent 1px), linear-gradient(90deg, var(--color-border) 1px, transparent 1px); background-size: 80px 80px;">
+        </div>
+
+        {{-- Floating Decorative Elements --}}
+        <div class="absolute top-[15%] left-[8%] w-3 h-3 rounded-full bg-primary/20 dark:bg-primary/10 animate-ping pointer-events-none" style="animation-duration: 4s;"></div>
+        <div class="absolute top-[25%] right-[12%] w-2 h-2 rounded-full bg-secondary/30 dark:bg-secondary/20 animate-ping pointer-events-none" style="animation-duration: 6s; animation-delay: 1s;"></div>
+        <div class="absolute bottom-[30%] left-[15%] w-1.5 h-1.5 rounded-full bg-primary/20 dark:bg-primary/10 animate-ping pointer-events-none" style="animation-duration: 5s; animation-delay: 2s;"></div>
+        <div class="absolute bottom-[20%] right-[25%] w-2.5 h-2.5 rounded-full bg-secondary/20 dark:bg-secondary/10 animate-ping pointer-events-none" style="animation-duration: 7s; animation-delay: 0.5s;"></div>
+
+        {{-- Diagonal Accent Line --}}
+        <div class="absolute top-0 right-0 w-96 h-[1px] bg-gradient-to-r from-transparent via-primary/20 dark:via-primary/10 to-transparent rotate-45 translate-y-32 pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-[1px] bg-gradient-to-r from-transparent via-primary/20 dark:via-primary/10 to-transparent -rotate-45 -translate-y-32 pointer-events-none"></div>
 
         <div class="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
             {{-- Column 1: Editorial Copy --}}
             <div class="relative z-10 space-y-10 order-2 lg:order-1">
+                {{-- Decorative Corner Accent --}}
+                <div class="absolute -top-12 -left-12 w-24 h-24 border-l-2 border-t-2 border-primary/10 dark:border-primary/5 rounded-tl-[3rem] pointer-events-none hidden lg:block"></div>
+                <div class="absolute -top-10 -left-10 w-20 h-20 border-r-2 border-b-2 border-secondary/20 dark:border-secondary/10 rounded-br-[2rem] pointer-events-none hidden lg:block"></div>
+
                 <div class="space-y-4">
                     <div class="flex items-center gap-4 animate-fade-in">
-                        <span class="h-[1px] w-12 bg-primary"></span>
-                        <span class="text-[11px] font-black uppercase tracking-[0.5em] text-primary">
-                            Established {{ date('Y') }}
+                        <span class="h-[1px] w-16 bg-gradient-to-r from-primary to-primary/20"></span>
+                        <span class="relative text-[11px] font-black uppercase tracking-[0.5em] text-primary drop-shadow-[0_0_8px_rgba(var(--primary-rgb),0.3)]">
+                            <span class="absolute -inset-4 bg-secondary/[0.08] dark:bg-secondary/[0.04] blur-2xl rounded-full"></span>
+                            <span class="relative z-10">Established {{ date('Y') }}</span>
                         </span>
                     </div>
 
                     <h1 class="text-6xl md:text-8xl font-black italic tracking-tighter text-foreground leading-[0.85]">
-                        L’Art de <br>
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground">
-                            L’Acquisition
+                        L'Art de <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-foreground via-primary to-foreground drop-shadow-[0_0_12px_rgba(var(--primary-rgb),0.15)] dark:drop-shadow-[0_0_20px_rgba(var(--primary-rgb),0.1)]">
+                            L'Acquisition
                         </span>
                     </h1>
 
@@ -40,8 +63,7 @@
 
                 {{-- Action Group --}}
                 <div class="flex flex-wrap items-center gap-6 pt-6">
-                    <a wire:navigate href="/shop"
-                        class="group relative px-10 py-6 bg-foreground text-background rounded-full text-[11px] font-black uppercase tracking-[0.3em] overflow-hidden transition-all duration-500 hover:scale-105 shadow-card">
+                    <a wire:navigate href="/shop" class="btn btn-dark btn-xl group overflow-hidden relative shadow-[0_8px_32px_rgba(var(--primary-rgb),0.15)] dark:shadow-[0_8px_32px_rgba(var(--primary-rgb),0.08)] hover:shadow-[0_12px_48px_rgba(var(--primary-rgb),0.25)] dark:hover:shadow-[0_12px_48px_rgba(var(--primary-rgb),0.15)] transition-shadow duration-500">
                         <span class="relative z-10">Explore Collection</span>
                         <div class="absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
                     </a>
@@ -54,27 +76,52 @@
                 </div>
 
                 {{-- Trust Indicators --}}
-                <div class="pt-12 border-t border-border flex items-center gap-12 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+                <div class="pt-12 border-t border-border/60 dark:border-border/30 flex items-center gap-12 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
                     <span class="text-[9px] font-black uppercase tracking-widest text-foreground">Global Logistics</span>
-                    <span class="text-[9px] font-black uppercase tracking-widest text-primary italic font-bold">{{ $site->currency_code }} SECURED</span>
+                    <span class="w-2 h-2 rounded-full bg-secondary/30 dark:bg-secondary/20 hidden sm:block"></span>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-primary italic font-bold drop-shadow-[0_0_4px_rgba(var(--primary-rgb),0.3)]">{{ $site->currency_code }} SECURED</span>
+                    <span class="w-2 h-2 rounded-full bg-secondary/30 dark:bg-secondary/20 hidden sm:block"></span>
                     <span class="text-[9px] font-black uppercase tracking-widest text-foreground">Concierge Support</span>
                 </div>
             </div>
 
             {{-- Column 2: The Visual Archive --}}
             <div class="relative order-1 lg:order-2 group">
-                <div class="absolute inset-0 bg-primary/10 blur-[120px] rounded-full scale-75 group-hover:scale-100 transition-transform duration-1000"></div>
+                {{-- Multi-layer Glow Effect --}}
+                <div class="absolute inset-0 bg-gradient-to-br from-primary/[0.08] to-transparent dark:from-primary/[0.05] blur-[120px] rounded-full scale-75 group-hover:scale-110 transition-transform duration-1000"></div>
+                <div class="absolute -inset-4 bg-gradient-to-tr from-secondary/[0.05] to-transparent dark:from-secondary/[0.03] blur-[80px] rounded-full scale-50 group-hover:scale-100 transition-transform duration-1000 delay-150"></div>
+
+                {{-- Decorative Ring Behind Image --}}
+                <div class="absolute -inset-8 border border-primary/5 dark:border-primary/[0.03] rounded-[6rem] -rotate-6 group-hover:rotate-0 transition-transform duration-1000 pointer-events-none"></div>
+                <div class="absolute -inset-12 border border-primary/[0.03] dark:border-primary/[0.015] rounded-[7rem] -rotate-12 group-hover:rotate-0 transition-transform duration-1000 delay-200 pointer-events-none"></div>
 
                 {{-- Image Container --}}
-                <div class="relative aspect-square rounded-[4rem] overflow-hidden border border-border bg-card p-8 transition-transform duration-700 group-hover:rotate-1 shadow-card">
+                <div class="relative aspect-square rounded-[4rem] overflow-hidden border border-border/80 dark:border-border/40 bg-gradient-to-br from-card via-card to-primary/[0.02] dark:from-card dark:via-card dark:to-primary/[0.01] p-8 transition-all duration-700 group-hover:rotate-1 shadow-[0_20px_60px_-20px_rgba(var(--primary-rgb),0.15)] dark:shadow-[0_20px_60px_-20px_rgba(var(--primary-rgb),0.08)] group-hover:shadow-[0_30px_80px_-20px_rgba(var(--primary-rgb),0.25)] dark:group-hover:shadow-[0_30px_80px_-20px_rgba(var(--primary-rgb),0.15)]">
+                    {{-- Gradient Overlay Top --}}
+                    <div class="absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-primary/[0.03] dark:to-primary/[0.02] pointer-events-none z-10"></div>
+
                     <img src="https://static.vecteezy.com/system/resources/previews/011/993/278/non_2x/3d-render-online-shopping-bag-using-credit-card-or-cash-for-future-use-credit-card-money-financial-security-on-mobile-3d-application-3d-shop-purchase-basket-retail-store-on-e-commerce-free-png.png" 
                         alt="{{ $site->site_name }} Collection"
-                        class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-1000 ease-out">
+                        class="w-full h-full object-contain transform group-hover:scale-110 transition-transform duration-1000 ease-out relative z-5 drop-shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:drop-shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
 
-                    {{-- Floating Stat Badge --}}
-                    <div class="absolute bottom-12 right-12 bg-card/80 backdrop-blur-xl border border-border p-6 rounded-3xl shadow-card opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 delay-300">
+                    {{-- Always-Visible Stats Badge --}}
+                    <div class="absolute top-6 left-6 bg-background/90 dark:bg-background/80 backdrop-blur-xl border border-border/60 dark:border-border/40 px-5 py-3 rounded-2xl shadow-card z-20">
+                        <p class="text-[7px] font-black uppercase tracking-[0.3em] text-primary">Curated</p>
+                        <p class="text-xs font-black italic text-foreground">{{ $site->currency_symbol }}24.5M+</p>
+                    </div>
+
+                    {{-- Trust Badge --}}
+                    <div class="absolute top-6 right-6 bg-primary/10 dark:bg-primary/20 backdrop-blur-xl border border-primary/20 dark:border-primary/30 px-4 py-2 rounded-2xl z-20">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-[7px] font-black uppercase tracking-[0.2em] text-primary">Live</span>
+                        </div>
+                    </div>
+
+                    {{-- Floating Stat Badge (hover reveal) --}}
+                    <div class="absolute bottom-8 right-8 bg-card/80 dark:bg-card/90 backdrop-blur-xl border border-border/60 dark:border-border/40 p-5 rounded-2xl shadow-card opacity-0 translate-y-10 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-700 delay-300 z-20">
                         <p class="text-[8px] font-black uppercase tracking-widest text-primary mb-1">Live Inventory</p>
-                        <p class="text-2xl font-black italic tracking-tighter text-foreground">{{ $site->currency_symbol }}24.5M+</p>
+                        <p class="text-lg font-black italic tracking-tighter text-foreground">{{ $site->currency_symbol }}24.5M+</p>
                     </div>
                 </div>
             </div>
@@ -84,12 +131,13 @@
     {{-- Brand Section --}}
     <section class="py-32 bg-background relative overflow-hidden">
         <div class="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -z-10"></div>
+        <div class="absolute bottom-0 left-0 w-80 h-80 bg-secondary/[0.06] dark:bg-secondary/[0.04] rounded-full blur-[120px] -z-10"></div>
 
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid lg:grid-cols-3 gap-16 items-center">
                 <div class="lg:sticky lg:top-32 h-fit">
                     <div class="flex items-center gap-3 text-primary mb-6">
-                        <div class="w-10 h-[1px] bg-primary"></div>
+                        <div class="w-10 h-[1px] bg-gradient-to-r from-primary to-secondary"></div>
                         <span class="text-[10px] font-black uppercase tracking-[0.4em]">Elite Partners</span>
                     </div>
 
@@ -130,13 +178,15 @@
     @if($featuredProducts->count() > 0)
         <section class="py-32 bg-background relative overflow-hidden">
             <div class="absolute top-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] -z-10"></div>
+            <div class="absolute bottom-0 right-0 w-80 h-80 bg-secondary/[0.06] dark:bg-secondary/[0.04] rounded-full blur-[120px] -z-10"></div>
             
             <div class="max-w-7xl mx-auto px-4">
                 <div class="flex items-end justify-between mb-16">
                     <div>
                         <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-[1px] bg-primary"></div>
+                            <div class="w-10 h-[1px] bg-gradient-to-r from-primary to-secondary"></div>
                             <span class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Featured Collection</span>
+                            <div class="w-4 h-[1px] bg-secondary/30"></div>
                         </div>
                         <h2 class="text-5xl md:text-6xl font-black italic tracking-tighter uppercase leading-[0.9] text-foreground">
                             Editor's <span class="text-primary">Picks</span>
@@ -155,7 +205,7 @@
                     @endforeach
                 </div>
 
-                <a wire:navigate href="/products" class="md:hidden flex items-center justify-center gap-4 mt-12 py-6 bg-primary text-primary-foreground rounded-3xl font-black uppercase tracking-[0.3em] text-[10px]">
+                <a wire:navigate href="/products" class="btn btn-primary btn-lg md:hidden w-full">
                     View All Products
                     <x-lucide-arrow-right class="w-4 h-4" />
                 </a>
@@ -164,7 +214,8 @@
     @endif
 
     {{-- Reviews Section --}}
-    <section class="py-24 bg-background">
+    <section class="py-24 bg-background relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-secondary/[0.04] dark:bg-secondary/[0.02] rounded-full blur-[120px] pointer-events-none"></div>
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid lg:grid-cols-3 gap-12">
                 <div class="lg:sticky lg:top-24 h-fit">
@@ -173,14 +224,14 @@
                     </h2>
                     <div class="flex items-center gap-2 mb-4">
                         @for ($i = 0; $i < 5; $i++)
-                            <x-lucide-star class="w-5 h-5 fill-primary text-primary" />
+                            <x-lucide-star class="w-5 h-5 {{ $i % 2 == 0 ? 'fill-primary text-primary' : 'fill-secondary text-secondary' }}" />
                         @endfor
                     </div>
                     <p class="text-muted-foreground font-medium mb-8">
                         Join the thousands who have transformed their routine with {{ $site->site_name }}.
                     </p>
                     <a wire:navigate href="/reviews"
-                        class="w-full py-4 rounded-xl border-2 border-border font-bold hover:bg-muted text-foreground transition-all text-center block">
+                        class="btn btn-outline btn-lg w-full">
                         View All Reviews
                     </a>
                 </div>

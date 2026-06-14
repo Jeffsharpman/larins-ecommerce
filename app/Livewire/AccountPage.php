@@ -7,7 +7,6 @@ use App\Livewire\Partials\Navbar;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -238,7 +237,7 @@ class AccountPage extends Component
 
         $fullName = trim($this->first_name.' '.$this->last_name);
 
-        User::where('id', auth()->id())->update([
+        auth()->user()->update([
             'name' => $fullName ?: auth()->user()->name,
             'phone' => $this->phone,
         ]);
@@ -390,6 +389,32 @@ class AccountPage extends Component
         }
     }
 
+    public function setActiveAddress(Address $address)
+    {
+        try {
+            $address->setAsActive();
+            $this->addresses = $this->user->addresses()->orderBy('created_at', 'desc')->get()->toArray();
+
+            $this->dispatch('swal:alert',
+                icon: 'success',
+                title: 'Default Updated',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Default address has been changed</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        } catch (\Exception $e) {
+            $this->dispatch('swal:alert',
+                icon: 'error',
+                title: 'Error',
+                html: '<p class="text-[9px] font-medium uppercase tracking-widest">Unable to set default address</p>',
+                position: 'bottom-end',
+                timer: 3000,
+                toast: true,
+            );
+        }
+    }
+
     public function removeFromWishlist(Product $product)
     {
         CartManagement::removeFromWishlist($product->id);
@@ -410,10 +435,11 @@ class AccountPage extends Component
 
     public function addToCart($productId)
     {
-        $count = CartManagement::addItemToCart($productId);
+        $result = CartManagement::addItemToCart($productId);
+        $count = is_array($result) ? ($result['count'] ?? 0) : (int) $result;
         $this->dispatch('cartUpdated', count: $count);
         $this->dispatch('update-cart-count', total_count: $count)->to(Navbar::class);
-        $this->dispatchBrowserEvent('cart-count-updated', ['count' => $count]);
+        $this->dispatch('cart-count-updated', count: $count);
 
         $this->dispatch('swal:alert',
             icon: 'success',

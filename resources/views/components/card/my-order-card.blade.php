@@ -1,12 +1,16 @@
 @props(['order'])
 
 <tr wire:key="order-{{ $order->id }}" 
-    class="group border-b border-slate-100 dark:border-white/5 hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-500">
+    class="group border-b border-slate-100 dark:border-white/5 hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors duration-500 relative">
+
+    {{-- Secondary Decorative Dot --}}
+    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-secondary/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
     
     {{-- Order Identifier --}}
     <td class="px-8 py-7 whitespace-nowrap">
         <div class="flex flex-col">
             <span class="text-[9px] font-black uppercase tracking-[0.4em] text-primary mb-1.5">Reference</span>
+            <span class="text-[9px] font-black uppercase tracking-[0.4em] text-secondary/40 mb-1.5 ml-0.5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">✦</span>
             <span class="text-sm font-black italic tracking-tighter text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors duration-500">
                 #{{ $order->order_number }}
             </span>

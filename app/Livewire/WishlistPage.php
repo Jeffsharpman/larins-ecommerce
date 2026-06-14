@@ -58,7 +58,7 @@ class WishlistPage extends Component
             $this->dispatch('wishlistUpdated');
             $this->dispatch('update-cart-count', total_count: $total_count)->to(Navbar::class);
 
-            $this->dispatchBrowserEvent('cart-count-updated', ['count' => $total_count]);
+            $this->dispatch('cart-count-updated', count: $total_count);
 
             $this->dispatch('swal:alert',
                 icon: 'success',

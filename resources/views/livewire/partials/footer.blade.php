@@ -1,14 +1,16 @@
 <footer class="bg-background text-foreground font-body border-t border-border/40 transition-colors duration-500 relative overflow-hidden">
-    {{-- Decorative subtle glow: Uses your dynamic primary color --}}
+    {{-- Decorative subtle glows: Primary + Secondary ambient --}}
     <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none"></div>
+    <div class="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-secondary/5 dark:from-secondary/[0.03] to-transparent pointer-events-none"></div>
+    <div class="absolute bottom-20 left-1/4 w-96 h-96 bg-secondary/3 dark:bg-secondary/[0.02] blur-3xl rounded-full pointer-events-none"></div>
 
     {{-- VIP Newsletter Section --}}
     <div class="bg-card/50 border-b border-border/40 relative">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col lg:flex-row lg:justify-between items-center gap-12 py-20">
                 <div class="text-center lg:text-left space-y-4 max-w-xl">
-                    {{-- Badge --}}
-                    <div class="badge-premium mb-2">
+                    {{-- Badge with Secondary Outline Variant --}}
+                    <div class="badge-premium mb-2 border-secondary/20 dark:border-secondary/10 shadow-secondary/5">
                         <div class="badge-premium-dot">
                             <span class="dot-pulse"></span>
                             <span class="dot-ping"></span>
@@ -26,20 +28,27 @@
                 </div>
 
                 {{-- Newsletter Form --}}
-                <form class="flex w-full md:w-auto gap-0 max-w-md group relative shadow-2xl shadow-primary/5">
+                <form class="flex w-full md:w-auto gap-0 max-w-md group relative shadow-2xl shadow-primary/5 ring-secondary/0 transition-all duration-300 rounded-[2rem] focus-within:ring-2 focus-within:ring-secondary/30">
                     <input 
                         type="email" 
                         placeholder="SIGNATURE@EMAIL.COM"
-                        class="flex-1 py-5 px-8 bg-background border border-border rounded-l-[2rem] text-foreground text-[10px] font-black tracking-widest uppercase placeholder:text-muted-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all"
+                        class="form-input rounded-r-none text-[10px] font-black tracking-widest uppercase placeholder:text-muted-foreground/30 focus:border-secondary/40 focus:ring-secondary/20"
                         required
                     />
                     <button 
                         type="submit"
-                        class="px-10 bg-primary text-primary-foreground font-black uppercase tracking-[0.2em] text-[10px] rounded-r-[2rem] hover:opacity-90 transition-all duration-500 active:scale-95 shadow-xl shadow-primary/20">
+                        class="btn btn-primary rounded-l-none rounded-r-[2rem] px-10 shadow-xl shadow-primary/20">
                         Subscribe
                     </button>
                 </form>
             </div>
+        </div>
+    </div>
+
+    {{-- Decorative Secondary Divider --}}
+    <div class="flex justify-center py-1 relative">
+        <div class="w-full max-w-7xl px-6">
+            <div class="h-px bg-gradient-to-r from-transparent via-secondary/20 dark:via-secondary/10 to-transparent"></div>
         </div>
     </div>
 
@@ -147,6 +156,12 @@
             </div>
 
         </div>
+    </div>
+
+    {{-- Decorative Secondary Divider with Center Accent --}}
+    <div class="flex justify-center items-center py-2 relative">
+        <div class="absolute inset-x-0 top-1/2 h-px bg-gradient-to-r from-transparent via-secondary/15 dark:via-secondary/8 to-transparent"></div>
+        <div class="relative z-10 w-2 h-2 rounded-full bg-secondary/40 dark:bg-secondary/20 shadow-sm shadow-secondary/10"></div>
     </div>
 
     {{-- Bottom Bar --}}

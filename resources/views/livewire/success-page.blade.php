@@ -11,6 +11,7 @@
                 {{-- Main Animated Icon with Glow --}}
                 <div class="relative group">
                     <div class="absolute -inset-4 bg-success/20 rounded-full blur-2xl group-hover:bg-success/30 transition duration-1000"></div>
+                    <div class="absolute -inset-2 bg-secondary/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition duration-1000 dark:bg-secondary/[0.05]"></div>
                     <div class="relative w-32 h-32 bg-card border border-success/20 rounded-full flex items-center justify-center shadow-[0_0_50px_-12px_rgba(var(--primary-rgb), 0.15)] animate-bounce-slow">
                         <x-lucide-check-circle class="w-16 h-16 text-success" />
                     </div>
@@ -19,6 +20,8 @@
                 {{-- Boutique Particles --}}
                 <x-lucide-sparkles class="absolute -top-4 -right-6 w-8 h-8 text-primary animate-pulse" />
                 <x-lucide-star class="absolute top-12 -left-10 w-6 h-6 text-primary/40 animate-spin-slow" />
+                <div class="absolute -bottom-2 left-0 w-2 h-2 rounded-full bg-secondary/20 dark:bg-secondary/10"></div>
+                <div class="absolute top-0 -left-4 w-1 h-1 rounded-full bg-secondary/30 dark:bg-secondary/15"></div>
             </div>
 
             <div class="space-y-4">
@@ -50,7 +53,7 @@
 
         {{-- Order Details Card --}}
         @if($order)
-            <div class="bg-card/40 backdrop-blur-2xl rounded-[3rem] border border-border shadow-2xl overflow-hidden mb-16 transition-all duration-700 hover:shadow-primary/5 group">
+            <div class="bg-card/40 backdrop-blur-2xl rounded-[3rem] border border-border shadow-2xl overflow-hidden mb-16 transition-all duration-700 hover:shadow-primary/5 hover:border-secondary/20 group">
                 <div class="bg-muted/30 px-10 py-6 border-b border-border/60 flex justify-between items-center">
                     <div class="flex flex-col">
                         <span class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-1">Transaction Ref</span>

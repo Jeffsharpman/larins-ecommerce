@@ -2,7 +2,8 @@
     {{-- Collection Header --}}
     <header class="relative pt-40 pb-24 px-6 lg:px-12 border-b border-border/60 overflow-hidden">
         {{-- High-Fashion Gradient Glow --}}
-        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[150px] rounded-full -z-10 animate-pulse-slow"></div>
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[150px] rounded-full -z-10"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-secondary/5 via-secondary/5 to-transparent blur-[150px] rounded-full -z-10"></div>
 
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end">
@@ -11,8 +12,8 @@
                 <div class="space-y-6">
                     <div class="flex items-center gap-4 animate-in fade-in slide-in-from-left-4 duration-1000">
                         <span class="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Collection</span>
-                        <span class="w-8 h-[1px] bg-border"></span>
-                        <span class="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/50">VOL. 01</span>
+                        <span class="w-8 h-[1px] bg-gradient-to-r from-primary to-secondary"></span>
+                        <span class="text-[10px] font-black uppercase tracking-[0.5em] text-secondary/80">VOL. 01</span>
                     </div>
                     
                     <h1 class="text-6xl md:text-8xl font-black italic tracking-tighter text-foreground leading-[0.8] uppercase">
@@ -55,7 +56,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-24">
             @forelse($products as $product)
                 <div wire:key="collection-item-{{ $product->id }}" class="group">
-                    <a href="/products/{{ $product->slug }}" class="block relative overflow-hidden rounded-[3rem] bg-card border border-border transition-all duration-700 hover:shadow-card group-hover:border-primary/20">
+                    <a href="/products/{{ $product->slug }}" class="block relative overflow-hidden rounded-[3rem] bg-card border border-border transition-all duration-700 hover:shadow-card group-hover:border-secondary/20">
                         
                         {{-- Acquisition Tag --}}
                         <div class="absolute top-8 left-8 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
@@ -88,7 +89,7 @@
 
                     {{-- Metadata --}}
                     <div class="mt-8 space-y-2 text-center px-4">
-                        <h4 class="text-xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors uppercase leading-none">
+                        <h4 class="text-xl font-black italic tracking-tighter text-foreground group-hover:text-secondary transition-colors uppercase leading-none">
                             {{ $product->name }}
                         </h4>
                         <div class="flex items-center justify-center gap-3 pt-1">

@@ -2,6 +2,7 @@
     {{-- Ambient Luxury Backgrounds --}}
     <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full -z-10 animate-pulse-slow"></div>
     <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/5 blur-[100px] rounded-full -z-10"></div>
+    <div class="absolute top-1/2 right-1/4 w-[350px] h-[350px] bg-secondary/5 blur-[100px] rounded-full -z-10 dark:bg-secondary/[0.03]"></div>
 
     <div class="max-w-7xl mx-auto px-6 py-20 relative z-10">
         {{-- Header Section --}}
@@ -34,14 +35,15 @@
                             </div>
                         </div>
                         <p class="text-muted-foreground text-xs mb-6">You need to set a default shipping address in your account before proceeding to checkout.</p>
-                        <a href="/account?tab=addresses" class="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary/90 transition-all">
+                        <a href="/account?tab=addresses" class="btn btn-primary btn-md">
                             <x-lucide-plus class="w-4 h-4" />
                             Add Default Address
                         </a>
                     </div>
                     @else
-                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden group">
+                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden group hover:border-secondary/20 transition-colors duration-500">
                         <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-700"></div>
+                        <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-colors duration-700 dark:bg-secondary/[0.03]"></div>
                         
                         @if($active_address)
                         <div class="mb-8 p-4 bg-primary/5 border border-primary/20 rounded-2xl">
@@ -88,8 +90,9 @@
                     </div>
 
                     {{-- Shipping Method Card --}}
-                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden group">
+                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden group hover:border-secondary/20 transition-colors duration-500">
                         <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl group-hover:bg-primary/10 transition-colors duration-700"></div>
+                        <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover:bg-secondary/10 transition-colors duration-700 dark:bg-secondary/[0.03]"></div>
                         
                         <div class="flex items-center gap-5 mb-8 pb-6 border-b border-border">
                             <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
@@ -103,15 +106,14 @@
 
                         <div class="space-y-4">
                             @foreach($shipping_methods as $method)
-                                <label class="relative flex items-start gap-6 p-6 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5 @error('selected_shipping_method_id') border-red-500 @enderror">
-                                    <input wire:model.live="selected_shipping_method_id" type="radio" value="{{ $method->id }}" class="sr-only peer">
+                                <label class="checkout-card relative flex items-start gap-6 p-6 border-2 border-border rounded-[2rem] cursor-pointer group @error('selected_shipping_method_id') border-red-500 @enderror">
                                     <div class="flex justify-between items-start flex-1">
                                         <div class="flex items-start gap-4">
-                                            <div class="w-12 h-12 bg-muted rounded-2xl flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-colors duration-500 @if($method->is_default) ring-2 ring-primary ring-offset-4 ring-offset-background @endif">
+                                            <div class="checkout-card-icon w-12 h-12 bg-muted rounded-2xl flex items-center justify-center transition-all duration-500">
                                                 <x-lucide-truck class="w-6 h-6" />
                                             </div>
                                             <div class="space-y-1">
-                                                <span class="font-black italic uppercase tracking-tighter text-lg block">{{ $method->name }}</span>
+                                                <span class="checkout-card-name font-black italic uppercase tracking-tighter text-lg block">{{ $method->name }}</span>
                                                 <span class="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-70">{{ $method->delivery_time }}</span>
                                                 @if($method->description)
                                                     <p class="text-[9px] text-muted-foreground font-medium uppercase tracking-wider mt-2">{{ $method->description }}</p>
@@ -120,13 +122,11 @@
                                         </div>
                                         <div class="text-right">
                                             @if($method->base_cost == 0)
-                                                <span class="text-[10px] font-black uppercase tracking-widest text-primary">Complimentary</span>
+                                                <span class="checkout-card-cost text-[10px] font-black uppercase tracking-widest text-primary">Complimentary</span>
                                             @else
-                                                <span class="text-lg font-black italic tracking-tighter">{{ Number::currency($method->base_cost, 'NGN') }}</span>
+                                                <span class="checkout-card-cost text-lg font-black italic tracking-tighter">{{ Number::currency($method->base_cost, 'NGN') }}</span>
                                             @endif
-                                            <div class="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary transition-all duration-500 mt-2 ml-auto">
-                                                <div class="w-2.5 h-2.5 rounded-full bg-background opacity-0 peer-checked:opacity-100"></div>
-                                            </div>
+                                            <input wire:model.live="selected_shipping_method_id" type="radio" value="{{ $method->id }}" class="mt-2 ml-auto">
                                         </div>
                                     </div>
                                 </label>
@@ -135,8 +135,9 @@
                     </div>
 
                     {{-- Payment Method Card --}}
-                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden">
+                    <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 shadow-card relative overflow-hidden group hover:border-secondary/20 transition-colors duration-500">
                         <div class="absolute -right-10 -top-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl"></div>
+                        <div class="absolute -left-10 -top-10 w-32 h-32 bg-secondary/5 rounded-full blur-3xl dark:bg-secondary/[0.03]"></div>
                         
                         <div class="flex items-center gap-5 mb-8 pb-6 border-b border-border">
                             <div class="w-14 h-14 rounded-2xl bg-primary text-background flex items-center justify-center shadow-lg shadow-primary/20">
@@ -150,19 +151,19 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {{-- Paystack Option --}}
-                            <label class="relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                                <input wire:model.live="payment_method" type="radio" value="paystack" class="sr-only peer">
+                            <label class="checkout-card relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer group">
+                                <input wire:model.live="payment_method" type="radio" value="paystack" class="sr-only">
                                 <div class="flex justify-between items-start mb-6">
-                                    <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                                    <div class="checkout-card-icon w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center transition-all duration-500">
                                         <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                                         </svg>
                                     </div>
-                                    <div class="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center peer-checked:border-primary peer-checked:bg-primary transition-all duration-500">
-                                        <div class="w-2.5 h-2.5 rounded-full bg-background opacity-0 peer-checked:opacity-100"></div>
+                                    <div class="checkout-card-radio w-6 h-6 rounded-full border-2 border-border flex items-center justify-center transition-all duration-500">
+                                        <div class="checkout-card-radio-dot w-2.5 h-2.5 rounded-full bg-white opacity-0 transition-all duration-300"></div>
                                     </div>
                                 </div>
-                                <span class="font-black italic uppercase tracking-tighter text-xl mb-2">Paystack</span>
+                                <span class="checkout-card-name font-black italic uppercase tracking-tighter text-xl mb-2">Paystack</span>
                                 <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">Nigerian Banks</span>
                                 <div class="mt-4 pt-4 border-t border-border/50">
                                     <div class="flex items-center gap-2 text-[9px] text-emerald-500 font-black uppercase tracking-wider">
@@ -173,19 +174,19 @@
                             </label>
 
                             {{-- Stripe Option --}}
-                            <label class="relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer transition-all duration-500 hover:border-primary/40 group has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                                <input wire:model.live="payment_method" type="radio" value="stripe" class="sr-only peer">
+                            <label class="checkout-card relative flex flex-col p-8 border-2 border-border rounded-[2rem] cursor-pointer group">
+                                <input wire:model.live="payment_method" type="radio" value="stripe" class="sr-only">
                                 <div class="flex justify-between items-start mb-6">
-                                    <div class="w-16 h-16 bg-[#635BFF]/10 rounded-2xl flex items-center justify-center group-hover:bg-[#635BFF]/20 transition-colors">
+                                    <div class="checkout-card-icon w-16 h-16 bg-[#635BFF]/10 rounded-2xl flex items-center justify-center transition-all duration-500">
                                         <svg class="w-8 h-8 text-[#635BFF]" viewBox="0 0 24 24" fill="currentColor">
                                             <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
                                         </svg>
                                     </div>
-                                    <div class="w-6 h-6 rounded-full border-2 border-border flex items-center justify-center peer-checked:border-[#635BFF] peer-checked:bg-[#635BFF] transition-all duration-500">
-                                        <div class="w-2.5 h-2.5 rounded-full bg-background opacity-0 peer-checked:opacity-100"></div>
+                                    <div class="checkout-card-radio w-6 h-6 rounded-full border-2 border-border flex items-center justify-center transition-all duration-500">
+                                        <div class="checkout-card-radio-dot w-2.5 h-2.5 rounded-full bg-white opacity-0 transition-all duration-300"></div>
                                     </div>
                                 </div>
-                                <span class="font-black italic uppercase tracking-tighter text-xl mb-2">Stripe</span>
+                                <span class="checkout-card-name font-black italic uppercase tracking-tighter text-xl mb-2">Stripe</span>
                                 <span class="text-[9px] text-muted-foreground font-black uppercase tracking-[0.2em] opacity-60">International Cards</span>
                                 <div class="mt-4 pt-4 border-t border-border/50">
                                     <div class="flex items-center gap-2 text-[9px] text-[#635BFF] font-black uppercase tracking-wider">
@@ -213,8 +214,9 @@
 
                 {{-- Right Column: Summary --}}
                 <aside class="col-span-12 lg:col-span-5 lg:sticky lg:top-24 space-y-8">
-                    <div class="bg-card rounded-[3rem] p-10 shadow-card relative overflow-hidden border border-border">
+                    <div class="bg-card rounded-[3rem] p-10 shadow-card relative overflow-hidden border border-border group hover:border-secondary/20 transition-colors duration-500">
                         <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl opacity-50"></div>
+                        <div class="absolute -left-10 -top-10 w-40 h-40 bg-secondary/5 rounded-full blur-3xl opacity-30 dark:bg-secondary/[0.03]"></div>
                         
                         <h3 class="text-[10px] font-black uppercase tracking-[0.5em] mb-8 opacity-40 text-center lg:text-left">Order Manifest</h3>
                         
@@ -244,9 +246,8 @@
                             @else
                                 <div class="flex gap-3">
                                     <input wire:model="coupon_code" type="text" placeholder="Enter coupon code"
-                                        class="flex-1 bg-background/50 border-border rounded-2xl px-5 py-4 text-[10px] font-bold uppercase tracking-widest focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:opacity-30">
-                                    <button wire:click="applyCoupon" type="button"
-                                        class="px-6 py-4 bg-primary text-background rounded-2xl font-black uppercase tracking-widest text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                        class="form-input text-[10px] font-bold uppercase tracking-widest placeholder:opacity-30">
+                                    <button wire:click="applyCoupon" type="button" class="btn btn-primary">
                                         Apply
                                     </button>
                                 </div>
@@ -292,8 +293,7 @@
                         </div>
 
                         <button type="submit" wire:loading.attr="disabled" wire:target="processPayment"
-                            class="w-full py-7 bg-primary text-background rounded-[2rem] font-black uppercase tracking-[0.4em] text-[11px] shadow-2xl shadow-primary/30 transition-all duration-700 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-4 group disabled:opacity-70">
-                            
+                            class="btn btn-primary btn-xl w-full shadow-2xl shadow-primary/30 disabled:opacity-70 group/cta">
                             <span wire:loading.remove wire:target="processPayment" class="flex items-center gap-4">
                                 <x-lucide-lock class="w-4 h-4" />
                                 @if($payment_method === 'stripe')
@@ -301,9 +301,8 @@
                                 @else
                                     Proceed to Paystack
                                 @endif
-                                <x-lucide-arrow-right class="w-4 h-4 group-hover:translate-x-2 transition-transform duration-500" />
+                                <x-lucide-arrow-right class="w-4 h-4 group-hover/cta:translate-x-2 transition-transform duration-500" />
                             </span>
-
                             <div wire:loading.flex wire:target="processPayment" class="items-center gap-3">
                                 <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>

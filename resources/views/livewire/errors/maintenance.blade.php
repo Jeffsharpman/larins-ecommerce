@@ -39,7 +39,11 @@
         :root {
             --color-primary: {{ $site->primary_color ?? '#cca050' }};
             --color-secondary: {{ $site->secondary_color ?? '#1e293b' }};
-            --primary-rgb: {{ implode(',', sscanf($site->primary_color ?? '#cca050', "#%02x%02x%02x")) }};
+            @php
+                $primaryHex = ltrim($site->primary_color ?? '#cca050', '#');
+                $primaryRgb = strlen($primaryHex) === 6 ? implode(',', [hexdec(substr($primaryHex, 0, 2)), hexdec(substr($primaryHex, 2, 2)), hexdec(substr($primaryHex, 4, 2))]) : '204,160,80';
+            @endphp
+            --primary-rgb: {{ $primaryRgb }};
             --secondary-hue: {{ $site->getSecondaryHue() }};
             --primary-hue: {{ $site->getPrimaryHue() }};
         }

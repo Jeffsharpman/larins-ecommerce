@@ -1,9 +1,6 @@
-<div class="max-w-7xl mx-auto px-6 py-16 selection:bg-primary/20 selection:text-primary bg-background"
-  x-data="{ activeTab: 'profile', init() { this.$el.querySelectorAll('[data-hs-tab]').forEach(tab => { tab.addEventListener('click', () => { this.activeTab = tab.dataset.hsTab.replace('#', '').replace('-tab', '') }); }); } }">
+<div class="max-w-7xl mx-auto px-6 py-16 selection:bg-primary/20 selection:text-primary bg-background">
   <style>
-    [x-cloak] {
-      display: none !important;
-    }
+    [x-cloak] { display: none !important; }
   </style>
 
   {{-- Error Display --}}
@@ -42,9 +39,12 @@
           <div class="flex items-center gap-8">
             <div class="relative group">
               {{-- Animated Aura follows primary --}}
-              <div
-                class="absolute -inset-2 bg-gradient-to-tr from-primary via-primary/30 to-primary rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-700">
-              </div>
+                <div
+                  class="absolute -inset-2 bg-gradient-to-tr from-primary via-primary/30 to-primary rounded-full blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-700">
+                </div>
+                <div
+                  class="absolute -inset-1 bg-gradient-to-tr from-secondary/30 via-secondary/10 to-transparent rounded-full blur-2xl opacity-30 group-hover:opacity-50 transition-opacity duration-700">
+                </div>
               <div
                 class="relative w-28 h-28 bg-card border border-border rounded-full flex items-center justify-center overflow-hidden shadow-card">
                 @if ($temp_profile_picture)
@@ -115,11 +115,9 @@
             @endphp
 
             @foreach ($tabs as $index => $tab)
-              <button
-                class="flex items-center gap-3 pb-6 text-[11px] font-black uppercase tracking-[0.3em] transition-all relative -mb-px"
-                :class="activeTab === '{{ $tab['id'] }}' ? 'text-primary border-b-2 border-primary' :
-                    'text-muted-foreground hover:text-foreground'"
-                data-hs-tab="#{{ $tab['id'] }}-tab" role="tab" wire:click="setActiveTab('{{ $tab['id'] }}')">
+              <button wire:key="tab-{{ $tab['id'] }}"
+                class="flex items-center gap-3 pb-6 text-[11px] font-black uppercase tracking-[0.3em] transition-all relative -mb-px {{ $activeTab === $tab['id'] ? 'text-primary border-b-2 border-primary' : 'text-muted-foreground hover:text-foreground' }}"
+                role="tab" wire:click="setActiveTab('{{ $tab['id'] }}')">
                 <x-dynamic-component :component="'lucide-' . $tab['icon']" class="w-4 h-4" />
                 {{ $tab['label'] }}
               </button>
@@ -127,13 +125,14 @@
           </nav>
           <div class="mt-10">
             {{-- Profile Tab --}}
-            <div id="profile-tab" role="tabpanel" x-show="activeTab === 'profile'" x-cloak
+            @if ($activeTab === 'profile')
+            <div id="profile-tab" role="tabpanel" wire:key="tab-profile"
               class="animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div class="grid gap-12 lg:grid-cols-3">
 
                 {{-- Main Profile Form --}}
                 <div class="lg:col-span-2 space-y-10">
-                  <div class="bg-card border border-border rounded-[3rem] p-10 md:p-14 backdrop-blur-sm">
+                  <div class="bg-card border border-border rounded-[3rem] p-10 md:p-14 backdrop-blur-sm hover:border-secondary/20 transition-all duration-500">
                     <div class="flex items-center gap-4 mb-12">
                       <div
                         class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
@@ -204,6 +203,9 @@
                     <div
                       class="absolute top-0 right-0 w-40 h-40 bg-primary/20 blur-[60px] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:bg-primary/40 transition-colors duration-1000">
                     </div>
+                    <div
+                      class="absolute bottom-0 left-0 w-48 h-48 bg-secondary/10 blur-[80px] rounded-full translate-y-1/3 -translate-x-1/4 group-hover:bg-secondary/20 transition-colors duration-1000">
+                    </div>
 
                     <div class="relative z-10 space-y-12">
                       <div class="flex justify-between items-start">
@@ -234,7 +236,8 @@
                   {{-- Quick Stats --}}
                   <div class="grid grid-cols-2 gap-6">
                     <div
-                      class="bg-card border border-border p-8 rounded-[2rem] text-center hover:border-primary/40 transition-all group">
+                      class="bg-card border border-border p-8 rounded-[2rem] text-center hover:border-primary/40 hover:shadow-secondary/5 transition-all group relative">
+                      <div class="absolute top-0 right-0 w-2 h-2 bg-secondary/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       <p
                         class="text-3xl font-black italic text-primary group-hover:scale-110 transition-transform duration-500">
                         {{ $totalOrders }}</p>
@@ -242,7 +245,8 @@
                       </p>
                     </div>
                     <div
-                      class="bg-card border border-border p-8 rounded-[2rem] text-center hover:border-primary/40 transition-all group">
+                      class="bg-card border border-border p-8 rounded-[2rem] text-center hover:border-primary/40 hover:shadow-secondary/5 transition-all group relative">
+                      <div class="absolute top-0 right-0 w-2 h-2 bg-secondary/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       <p
                         class="text-3xl font-black italic text-primary group-hover:scale-110 transition-transform duration-500">
                         {{ $totalWishlist }}</p>
@@ -278,9 +282,11 @@
                 </div>
               </div>
             </div>
+            @endif
 
             {{-- Addresses Tab --}}
-            <div id="addresses-tab" role="tabpanel" x-show="activeTab === 'addresses'" x-cloak
+            @if ($activeTab === 'addresses')
+            <div id="addresses-tab" role="tabpanel" wire:key="tab-addresses"
               class="animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div class="bg-card border border-border rounded-[3rem] p-10 md:p-14">
                 <div class="flex items-center justify-between mb-12">
@@ -297,7 +303,7 @@
                     </div>
                   </div>
                   <button wire:click="openAddressModal()"
-                    class="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary/90 transition-all">
+                    class="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary/90 transition-all btn btn-primary btn-sm shadow-lg">
                     <x-lucide-plus class="w-4 h-4" />
                     Add Address
                   </button>
@@ -307,7 +313,7 @@
                   <div class="grid gap-6 md:grid-cols-2">
                     @foreach ($addresses as $address)
                       <div
-                        class="bg-background border {{ $address['is_active'] ? 'border-primary' : 'border-border' }} rounded-2xl p-6 hover:border-primary/40 transition-all group relative">
+                        class="bg-background border {{ $address['is_active'] ? 'border-primary' : 'border-border' }} rounded-2xl p-6 hover:border-primary/40 hover:shadow-secondary/5 transition-all group relative">
                         @if ($address['is_active'])
                           <span
                             class="absolute -top-2 -right-2 text-[8px] font-black uppercase tracking-[0.2em] px-3 py-1 bg-primary text-primary-foreground rounded-full">Default</span>
@@ -341,11 +347,13 @@
                           <button wire:click="confirmDeleteAddress({{ $address['id'] }})"
                             class="text-[9px] font-black uppercase tracking-widest text-muted-foreground hover:text-destructive">Delete</button>
                         </div>
+                        <div class="absolute bottom-2 right-2 w-2 h-2 bg-secondary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
                     @endforeach
                   </div>
                 @else
-                  <div class="text-center py-16">
+                  <div class="text-center py-16 relative">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[3px] bg-gradient-to-r from-transparent via-secondary/30 to-transparent rounded-full"></div>
                     <x-lucide-map-pin class="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
                     <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">No shipping
                       addresses yet</p>
@@ -354,6 +362,7 @@
                 @endif
               </div>
             </div>
+            @endif
 
             {{-- Address Modal --}}
             @if ($showAddressModal)
@@ -375,18 +384,21 @@
                     </button>
                   </div>
 
-                  <form wire:submit="saveAddress" class="space-y-6">
+                  <form wire:submit.prevent="saveAddress" class="space-y-6">
                     <div class="space-y-3">
                       <label
                         class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Address
                         Title</label>
                       <select wire:model="addressTitle"
-                        class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                        class="w-full bg-background border {{ $errors->has('addressTitle') ? 'border-destructive' : 'border-border' }} focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
                         <option value="">Select Type</option>
                         <option value="home">Home</option>
                         <option value="work_place">Work Place</option>
                         <option value="other">Other</option>
                       </select>
+                      @error('addressTitle')
+                        <p class="text-[8px] font-bold text-destructive uppercase tracking-widest mt-1">{{ $message }}</p>
+                      @enderror
                     </div>
 
                     <div class="space-y-3">
@@ -394,7 +406,10 @@
                         class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Street
                         Address</label>
                       <input type="text" wire:model="addressStreet" placeholder="123 Example Street"
-                        class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                        class="w-full bg-background border {{ $errors->has('addressStreet') ? 'border-destructive' : 'border-border' }} focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                      @error('addressStreet')
+                        <p class="text-[8px] font-bold text-destructive uppercase tracking-widest mt-1">{{ $message }}</p>
+                      @enderror
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
@@ -402,13 +417,19 @@
                         <label
                           class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">City</label>
                         <input type="text" wire:model="addressCity" placeholder="Lagos"
-                          class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                          class="w-full bg-background border {{ $errors->has('addressCity') ? 'border-destructive' : 'border-border' }} focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                        @error('addressCity')
+                          <p class="text-[8px] font-bold text-destructive uppercase tracking-widest mt-1">{{ $message }}</p>
+                        @enderror
                       </div>
                       <div class="space-y-3">
                         <label
                           class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">State</label>
                         <input type="text" wire:model="addressState" placeholder="Lagos"
-                          class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                          class="w-full bg-background border {{ $errors->has('addressState') ? 'border-destructive' : 'border-border' }} focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                        @error('addressState')
+                          <p class="text-[8px] font-bold text-destructive uppercase tracking-widest mt-1">{{ $message }}</p>
+                        @enderror
                       </div>
                     </div>
 
@@ -417,22 +438,28 @@
                         <label class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Zip
                           Code</label>
                         <input type="text" wire:model="addressZip" placeholder="100001"
-                          class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                          class="w-full bg-background border {{ $errors->has('addressZip') ? 'border-destructive' : 'border-border' }} focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                        @error('addressZip')
+                          <p class="text-[8px] font-bold text-destructive uppercase tracking-widest mt-1">{{ $message }}</p>
+                        @enderror
                       </div>
                       <div class="space-y-3">
                         <label
                           class="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground ml-1">Phone
                           (NGN)</label>
                         <input type="tel" wire:model="addressPhone" placeholder="8012345678"
-                          class="w-full bg-background border border-border focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                          class="w-full bg-background border {{ $errors->has('addressPhone') ? 'border-destructive' : 'border-border' }} focus:border-primary focus:ring-4 focus:ring-primary/10 rounded-2xl px-6 py-4 text-xs font-bold tracking-widest text-foreground transition-all outline-none">
+                        @error('addressPhone')
+                          <p class="text-[8px] font-bold text-destructive uppercase tracking-widest mt-1">{{ $message }}</p>
+                        @enderror
                       </div>
                     </div>
 
                     <div class="flex gap-4 pt-4">
                       <button type="button" wire:click="closeAddressModal"
-                        class="flex-1 px-6 py-4 bg-muted text-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-muted/80 transition-all">Cancel</button>
+                        class="flex-1 px-6 py-4 bg-muted text-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-muted/80 transition-all  btn btn-ghost btn-md flex-1">Cancel</button>
                       <button type="submit"
-                        class="flex-1 px-6 py-4 bg-primary text-primary-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary/90 transition-all">Save
+                        class="flex-1 px-6 py-4 bg-primary text-primary-foreground rounded-full text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary/90 transition-all btn btn-primary btn-md flex-1 shadow-lg">Save
                         Address</button>
                     </div>
                   </form>
@@ -468,7 +495,8 @@
             @endif
 
             {{-- Orders Tab --}}
-            <div id="orders-tab" role="tabpanel" x-show="activeTab === 'orders'" x-cloak
+            @if ($activeTab === 'orders')
+            <div id="orders-tab" role="tabpanel" wire:key="tab-orders"
               class="animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div class="bg-card border border-border rounded-[3rem] p-10 md:p-14">
                 <div class="flex items-center gap-4 mb-12">
@@ -476,7 +504,8 @@
                     class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
                     <x-lucide-shopping-bag class="w-6 h-6 text-primary" />
                   </div>
-                  <div>
+                  <div class="relative">
+                    <div class="absolute -top-1 -right-2 w-2 h-2 bg-secondary/30 rounded-full"></div>
                     <h2 class="text-2xl font-black uppercase tracking-tighter italic text-foreground">Archive Ledger
                     </h2>
                     <p class="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Your acquisition
@@ -488,7 +517,8 @@
                   <div class="space-y-6">
                     @foreach ($orders as $order)
                       <div
-                        class="bg-background border border-border rounded-2xl p-6 hover:border-primary/30 transition-all">
+                        class="bg-background border border-border rounded-2xl p-6 hover:border-primary/30 hover:border-secondary/20 hover:shadow-secondary/5 transition-all relative">
+                        <div class="absolute top-0 left-0 w-1 h-0 bg-gradient-to-b from-secondary/40 to-transparent rounded-full group-hover:h-full transition-all duration-500"></div>
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
                           <div class="flex items-center gap-6">
                             <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
@@ -507,10 +537,10 @@
                             <p class="text-2xl font-black italic text-foreground">
                               ₦{{ number_format($order->grand_total ?? $order->total, 2) }}</p>
                             <span
-                              class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full mt-2 inline-block
-                                    @if ($order->status === 'delivered') bg-emerald-500/10 text-emerald-500
-                                    @elseif($order->status === 'shipped') bg-blue-500/10 text-blue-500
-                                    @else bg-primary/10 text-primary @endif">
+                              class="badge mt-2
+                                    @if ($order->status === 'delivered') bg-emerald-500/10 text-emerald-500 border-emerald-500/20
+                                    @elseif($order->status === 'shipped') bg-blue-500/10 text-blue-500 border-blue-500/20
+                                    @else bg-primary/10 text-primary border-primary/20 @endif">
                               {{ ucfirst($order->status) }}
                             </span>
                           </div>
@@ -519,7 +549,8 @@
                     @endforeach
                   </div>
                 @else
-                  <div class="text-center py-16">
+                  <div class="text-center py-16 relative">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[3px] bg-gradient-to-r from-transparent via-secondary/30 to-transparent rounded-full"></div>
                     <x-lucide-shopping-bag class="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
                     <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">No orders yet
                     </p>
@@ -532,9 +563,11 @@
                 @endif
               </div>
             </div>
+            @endif
 
             {{-- Wishlist Tab --}}
-            <div id="wishlist-tab" role="tabpanel" x-show="activeTab === 'wishlist'" x-cloak
+            @if ($activeTab === 'wishlist')
+            <div id="wishlist-tab" role="tabpanel" wire:key="tab-wishlist"
               class="animate-in fade-in slide-in-from-bottom-4 duration-700">
               <div class="bg-card border border-border rounded-[3rem] p-10 md:p-14">
                 <div class="flex items-center gap-4 mb-12">
@@ -542,7 +575,8 @@
                     class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/20">
                     <x-lucide-heart class="w-6 h-6 text-primary" />
                   </div>
-                  <div>
+                  <div class="relative">
+                    <div class="absolute -top-1 -right-2 w-2 h-2 bg-secondary/30 rounded-full"></div>
                     <h2 class="text-2xl font-black uppercase tracking-tighter italic text-foreground">Favorites</h2>
                     <p class="text-[9px] font-bold text-muted-foreground uppercase tracking-widest">Your wishlist
                       curation</p>
@@ -560,7 +594,8 @@
                     @endforeach
                   </div>
                 @else
-                  <div class="text-center py-16">
+                  <div class="text-center py-16 relative">
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-[3px] bg-gradient-to-r from-transparent via-secondary/30 to-transparent rounded-full"></div>
                     <x-lucide-heart class="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
                     <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">No favorites yet
                     </p>
@@ -573,6 +608,8 @@
                 @endif
               </div>
             </div>
+            @endif
+          </div>
     @endif
   @endif
 </div>

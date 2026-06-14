@@ -4,6 +4,7 @@
     <div class="fixed top-20 right-[-10%] opacity-[0.03] dark:opacity-[0.05] pointer-events-none select-none">
         <h2 class="text-[25rem] font-black uppercase tracking-tighter rotate-12 text-foreground">DECREE</h2>
     </div>
+    <div class="fixed bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-secondary/5 blur-[140px] rounded-full pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto px-6 py-24 relative z-10">
         
@@ -40,8 +41,8 @@
             {{-- Navigation: The Index --}}
             <aside class="hidden lg:block">
                 <div class="sticky top-32 space-y-2">
-                    <div class="mb-10 pl-6 border-l border-primary/20">
-                        <p class="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground">Digital Index</p>
+                    <div class="mb-10 pl-6 border-l border-primary/20 dark:border-secondary/20">
+                        <p class="text-[11px] font-black uppercase tracking-[0.4em] text-muted-foreground dark:text-secondary/60">Digital Index</p>
                     </div>
                     
                     @php
@@ -55,8 +56,8 @@
                     <nav class="space-y-1">
                         @foreach($nav as $index => $item)
                             <a href="#section-{{ $index + 1 }}" 
-                               class="group flex items-center gap-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary transition-all">
-                                <span class="w-6 h-[1px] bg-border group-hover:w-10 group-hover:bg-primary transition-all"></span>
+                               class="group flex items-center gap-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground hover:text-primary dark:hover:text-secondary transition-all">
+                                <span class="w-6 h-[1px] bg-border group-hover:w-10 group-hover:bg-primary dark:group-hover:bg-secondary transition-all"></span>
                                 {{ $item }}
                             </a>
                         @endforeach
@@ -67,7 +68,7 @@
             {{-- Content: The Decree --}}
             <div class="space-y-32">
                 <div class="prose prose-2xl dark:prose-invert max-w-none">
-                    <p class="text-2xl md:text-3xl leading-snug italic font-medium text-muted-foreground border-l-[6px] border-primary pl-12 py-4 tracking-tight">
+                    <p class="text-2xl md:text-3xl leading-snug italic font-medium text-muted-foreground border-l-[6px] border-primary dark:border-secondary/50 pl-12 py-4 tracking-tight">
                         {{ $site->site_name }} is a collective of prestige. By accessing our interface, you enter into a binding ritual of commerce, governed by the following protocols.
                     </p>
                 </div>
@@ -75,18 +76,19 @@
                 {{-- Section 01: Usage --}}
                 <section id="section-1" class="group scroll-mt-32">
                     <div class="flex items-baseline gap-6 mb-12">
-                        <span class="text-6xl font-black text-muted group-hover:text-primary/20 transition-colors duration-700">01</span>
+                        <span class="text-6xl font-black text-muted group-hover:text-primary/20 dark:group-hover:text-secondary/20 transition-colors duration-700">01</span>
+                        <span class="hidden md:block w-8 h-[2px] bg-secondary/30"></span>
                         <h2 class="text-3xl font-black uppercase tracking-tighter italic text-foreground">Usage & Eligibility</h2>
                     </div>
                     <div class="grid gap-8 md:grid-cols-2">
-                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl transition-all duration-700">
-                            <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-6">Maturity Clause</h3>
+                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl dark:hover:border-secondary/20 transition-all duration-700">
+                            <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary dark:text-secondary mb-6">Maturity Clause</h3>
                             <p class="text-sm text-muted-foreground leading-relaxed font-medium">
                                 Interaction with the {{ $site->site_name }} ecosystem is reserved for individuals 18 years of age or older. We assume legal capacity for all transactions performed under your identity.
                             </p>
                         </div>
-                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl transition-all duration-700">
-                            <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-6">Identity Security</h3>
+                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl dark:hover:border-secondary/20 transition-all duration-700">
+                            <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-primary dark:text-secondary mb-6">Identity Security</h3>
                             <p class="text-sm text-muted-foreground leading-relaxed font-medium">
                                 Your login credentials are the keys to your private archive. You are the sole custodian of their secrecy. {{ $site->site_name }} is not liable for breaches resulting from custodial negligence.
                             </p>
@@ -104,7 +106,7 @@
                         
                         <div class="flex items-center gap-6 mb-12">
                             <span class="text-5xl font-black opacity-20">07</span>
-                            <h2 class="text-3xl font-black uppercase tracking-tighter italic">Liability Thresholds</h2>
+                            <h2 class="text-3xl font-black uppercase tracking-tighter italic">Liability <span class="text-secondary/50">Thresholds</span></h2>
                         </div>
                         
                         <div class="grid md:grid-cols-2 gap-16 relative z-10">

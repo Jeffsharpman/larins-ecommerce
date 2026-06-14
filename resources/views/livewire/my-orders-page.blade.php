@@ -7,6 +7,8 @@
     {{-- Ambient Background Atmosphere --}}
     <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 blur-[150px] rounded-full -z-10"></div>
     <div class="absolute bottom-0 left-1/4 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full -z-10 animate-pulse"></div>
+    <div class="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-secondary/5 blur-[120px] rounded-full -z-10 animate-pulse" style="animation-delay: 1s"></div>
+    <div class="absolute bottom-1/3 left-1/3 w-[350px] h-[350px] bg-secondary/[0.03] dark:bg-secondary/[0.02] blur-[100px] rounded-full -z-10"></div>
 
     <div class="max-w-6xl mx-auto px-6 py-24 relative z-10">
         
@@ -59,7 +61,7 @@
                 </div>
             @empty
                 {{-- Empty State: The Aspirational Discovery --}}
-                <div class="relative overflow-hidden bg-card/20 backdrop-blur-md rounded-[4rem] p-20 md:p-32 border border-dashed border-border/80 text-center shadow-inner group">
+                <div class="relative overflow-hidden bg-card/20 backdrop-blur-md rounded-[4rem] p-20 md:p-32 border border-dashed border-border/80 text-center shadow-inner group hover:border-secondary/20 transition-all duration-500">
                     <div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
                     
                     <div class="relative inline-flex items-center justify-center w-40 h-40 mb-12">
@@ -72,6 +74,7 @@
                     <h3 class="text-4xl md:text-6xl font-black italic tracking-tighter uppercase mb-6 leading-none">
                         Archive <span class="text-primary" style="-webkit-text-stroke: 1px currentColor; -webkit-text-fill-color: transparent;">Pending</span>
                     </h3>
+                    <div class="w-14 h-[3px] bg-gradient-to-r from-secondary/40 via-secondary/20 to-transparent rounded-full mx-auto mb-10"></div>
                     <p class="text-[12px] text-muted-foreground mb-16 max-w-md mx-auto font-black uppercase tracking-[0.3em] opacity-60 leading-loose">
                         Your personal wardrobe is awaiting its first acquisition. Start your journey into the modern aesthetic today.
                     </p>

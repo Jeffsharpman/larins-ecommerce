@@ -41,7 +41,11 @@
             --color-secondary: {{ $site->secondary_color ?? '#1e293b' }};
             
             /* Helper for Tailwind v4 opacity support with Hex */
-            --primary-rgb: {{ implode(',', sscanf($site->primary_color ?? '#cca050', "#%02x%02x%02x")) }};
+            @php
+                $primaryHex = ltrim($site->primary_color ?? '#cca050', '#');
+                $primaryRgb = strlen($primaryHex) === 6 ? implode(',', [hexdec(substr($primaryHex, 0, 2)), hexdec(substr($primaryHex, 2, 2)), hexdec(substr($primaryHex, 4, 2))]) : '204,160,80';
+            @endphp
+            --primary-rgb: {{ $primaryRgb }};
             
             /* Extract Hue values for oklch theme derivation */
             --primary-hue: {{ $site->getPrimaryHue() }};
@@ -124,62 +128,7 @@
     {{-- Footer --}}
     <livewire:partials.footer />
 
-    {{-- Floating Announcements (Bottom Left) --}}
-    <div x-data="{ 
-        announcements: {{ json_encode($announcements ?? []) }},
-        dismissed: {{ json_encode($dismissedAnnouncements ?? []) }}
-    }">
-        <template x-if="announcements.length > 0">
-            <div class="fixed bottom-8 left-8 z-[100] space-y-3 max-w-sm">
-                <template x-for="announcement in announcements.filter(a => !dismissed.includes(a.id))" :key="announcement.id">
-                    <div x-show="!dismissed.includes(announcement.id)"
-                        x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="translate-x-full opacity-0"
-                        x-transition:enter-end="translate-x-0 opacity-100"
-                        x-transition:leave="transition ease-in duration-200"
-                        x-transition:leave-start="translate-x-0 opacity-100"
-                        x-transition:leave-end="translate-x-full opacity-0"
-                        class="relative backdrop-blur-xl bg-card/90 border border-border shadow-2xl rounded-2xl p-4 pr-12"
-                        :class="{
-                            'border-primary/30 bg-primary/5': announcement.type === 'info',
-                            'border-amber-500/30 bg-amber-500/5': announcement.type === 'warning',
-                            'border-red-500/30 bg-red-500/5': announcement.type === 'danger',
-                            'border-green-500/30 bg-green-500/5': announcement.type === 'success',
-                        }">
-                        
-                        <div class="flex items-start gap-3">
-                            <template x-if="announcement.type === 'warning'">
-                                <x-lucide-alert-triangle class="w-5 h-5 text-amber-500 flex-shrink-0" />
-                            </template>
-                            <template x-if="announcement.type === 'danger'">
-                                <x-lucide-alert-circle class="w-5 h-5 text-red-500 flex-shrink-0" />
-                            </template>
-                            <template x-if="announcement.type === 'success'">
-                                <x-lucide-check-circle class="w-5 h-5 text-green-500 flex-shrink-0" />
-                            </template>
-                            <template x-if="announcement.type === 'info' || !announcement.type">
-                                <x-lucide-info class="w-5 h-5 text-primary flex-shrink-0" />
-                            </template>
-                            
-                            <div class="flex-1 min-w-0">
-                                <p class="text-[10px] font-black uppercase tracking-wider" x-text="announcement.title"></p>
-                                <p class="text-[9px] text-muted-foreground mt-1" x-text="announcement.content"></p>
-                                <a x-show="announcement.link" :href="announcement.link" 
-                                    class="text-[9px] text-primary font-black uppercase tracking-wider mt-2 inline-block hover:underline">
-                                    Learn More
-                                </a>
-                            </div>
-                        </div>
-                        
-                        <button @click="dismissed.push(announcement.id); $wire.dismissAnnouncement(announcement.id)"
-                            class="absolute top-2 right-2 p-1 text-muted-foreground hover:text-foreground transition-colors">
-                            <x-lucide-x class="w-4 h-4" />
-                        </button>
-                    </div>
-                </template>
-            </div>
-        </template>
-    </div>
+    {{-- Floating Announcements handled inside <livewire:partials.navbar /> --}}
 
     @livewireScripts
 

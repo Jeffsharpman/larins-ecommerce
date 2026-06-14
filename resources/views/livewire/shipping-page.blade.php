@@ -4,6 +4,7 @@
     <div class="fixed top-20 right-[-10%] opacity-[0.03] dark:opacity-[0.05] pointer-events-none select-none">
         <h2 class="text-[25rem] font-black uppercase tracking-tighter rotate-12 text-foreground">DELIVERY</h2>
     </div>
+    <div class="fixed bottom-0 left-0 w-[400px] h-[400px] bg-secondary/5 blur-[120px] rounded-full -z-10 dark:bg-secondary/[0.03] pointer-events-none"></div>
 
     <div class="max-w-7xl mx-auto px-6 py-24 relative z-10">
         
@@ -79,7 +80,7 @@
                         <h2 class="text-3xl font-black uppercase tracking-tighter italic text-foreground">Delivery Zones</h2>
                     </div>
                     <div class="grid gap-8 md:grid-cols-3">
-                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl transition-all duration-700">
+                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl hover:border-secondary/20 transition-all duration-700">
                             <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                                 <x-lucide-map-pin class="w-6 h-6 text-primary" />
                             </div>
@@ -88,7 +89,7 @@
                                 Same-day delivery available for orders placed before 12:00 PM within Lagos Island and Victoria Island.
                             </p>
                         </div>
-                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl transition-all duration-700">
+                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl hover:border-secondary/20 transition-all duration-700">
                             <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                                 <x-lucide-truck class="w-6 h-6 text-primary" />
                             </div>
@@ -97,7 +98,7 @@
                                 3-5 business days delivery to all 36 states in Nigeria via our trusted logistics partners.
                             </p>
                         </div>
-                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl transition-all duration-700">
+                        <div class="p-10 bg-card border border-border rounded-[3rem] hover:shadow-2xl hover:border-secondary/20 transition-all duration-700">
                             <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-6">
                                 <x-lucide-globe class="w-6 h-6 text-primary" />
                             </div>
@@ -115,7 +116,9 @@
                         <span class="text-6xl font-black text-muted group-hover:text-primary/20 transition-colors duration-700">03</span>
                         <h2 class="text-3xl font-black uppercase tracking-tighter italic text-foreground">Shipping Rates</h2>
                     </div>
-                    <div class="p-10 bg-card border border-border rounded-[3rem]">
+                    <div class="p-10 bg-card border border-border rounded-[3rem] relative overflow-hidden group">
+                            <div class="absolute -top-2 -right-2 w-4 h-4 border-t-2 border-r-2 border-secondary/20 rounded-tr-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                            <div class="absolute -bottom-2 -left-2 w-4 h-4 border-b-2 border-l-2 border-secondary/20 rounded-bl-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                         <div class="overflow-x-auto">
                             <table class="w-full">
                                 <thead>

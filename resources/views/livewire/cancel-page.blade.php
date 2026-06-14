@@ -1,15 +1,19 @@
 <div class="min-h-[80vh] flex items-center justify-center selection:bg-destructive/20 selection:text-destructive">
     {{-- Background Ambient Shadow --}}
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-destructive/[0.03] via-transparent to-transparent pointer-events-none"></div>
+    <div class="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-secondary/5 blur-[100px] rounded-full pointer-events-none dark:bg-secondary/[0.03]"></div>
 
     <div class="w-full max-w-4xl px-6 mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000">
         <section class="relative overflow-hidden">
             {{-- Decorative Glassmorphism Container --}}
-            <div class="relative bg-card border border-border rounded-[4rem] p-12 md:p-24 shadow-card text-center">
+            <div class="relative bg-card border border-border rounded-[4rem] p-12 md:p-24 shadow-card text-center group hover:border-secondary/20 transition-colors duration-500">
+                <div class="absolute top-8 right-8 w-3 h-3 rounded-full bg-secondary/10 dark:bg-secondary/[0.05]"></div>
+                <div class="absolute bottom-8 left-8 w-2 h-2 rounded-full bg-secondary/15 dark:bg-secondary/[0.08]"></div>
                 
                 {{-- Status Icon: The Interrupted Circle --}}
                 <div class="relative w-24 h-24 mx-auto mb-12">
                     <div class="absolute inset-0 bg-destructive/10 rounded-full animate-ping duration-[3000ms]"></div>
+                    <div class="absolute inset-4 bg-secondary/10 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 dark:bg-secondary/[0.05]"></div>
                     <div class="relative w-full h-full bg-muted border border-destructive/20 rounded-full flex items-center justify-center">
                         <x-lucide-shield-alert class="w-10 h-10 text-destructive" />
                     </div>
@@ -21,6 +25,12 @@
                         <div class="h-[1px] w-8 bg-foreground"></div>
                         <h2 class="text-[10px] font-black uppercase tracking-[0.6em]">Transaction Status</h2>
                         <div class="h-[1px] w-8 bg-foreground"></div>
+                    </div>
+
+                    <div class="flex justify-center gap-3">
+                        <div class="w-1.5 h-1.5 rounded-full bg-secondary/20 dark:bg-secondary/10"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-secondary/10 dark:bg-secondary/5"></div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-secondary/20 dark:bg-secondary/10"></div>
                     </div>
 
                     <h1 class="text-4xl md:text-6xl font-black italic tracking-tighter uppercase leading-none text-foreground">

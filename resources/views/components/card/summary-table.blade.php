@@ -3,7 +3,8 @@
 <div {{ $attributes->merge(['class' => 'space-y-16']) }}>
     {{-- Items Manifest --}}
     <div class="space-y-8">
-        <div class="flex items-center justify-between border-b-2 border-border dark:border-border pb-6">
+        <div class="flex items-center justify-between border-b-2 border-border dark:border-border pb-6 relative">
+            <div class="absolute bottom-0 left-0 w-16 h-[2px] bg-secondary/30"></div>
             <h4 class="text-[11px] font-black uppercase tracking-[0.5em] text-primary">
                 Selected Acquisitions
             </h4>
@@ -17,7 +18,7 @@
                 <div class="py-8 flex justify-between items-center group">
                     <div class="flex gap-8 items-center">
                         {{-- Product Preview --}}
-                        <div class="relative w-20 h-20 rounded-[1.5rem] bg-muted dark:bg-black overflow-hidden border border-border dark:border-border p-3 flex-shrink-0 transition-all duration-700 group-hover:border-primary/30 group-hover:scale-105">
+                        <div class="relative w-20 h-20 rounded-[1.5rem] bg-muted dark:bg-black overflow-hidden border border-border dark:border-border p-3 flex-shrink-0 transition-all duration-700 group-hover:border-primary/30 group-hover:border-secondary/30 group-hover:scale-105">
                             @if(isset($item->product->images[0]))
                                 <img src="{{ asset('storage/' . $item->product->images[0]) }}" 
                                      class="w-full h-full object-contain filter grayscale-[0.4] group-hover:grayscale-0 transition-all duration-700">
@@ -58,6 +59,8 @@
         {{-- Ambient Branding Glow --}}
         <div class="absolute top-0 right-0 w-80 h-80 bg-primary/5 blur-[120px] pointer-events-none"></div>
         <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-primary/5 blur-[100px] pointer-events-none"></div>
+        <div class="absolute -top-10 -left-10 w-48 h-48 bg-secondary/5 blur-[100px] rounded-full pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-40 h-40 bg-secondary/5 blur-[80px] rounded-full pointer-events-none"></div>
         
         <div class="relative z-10 space-y-6">
             <div class="flex justify-between items-center">
@@ -85,12 +88,16 @@
     </div>
 
     {{-- Details Grid --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 pt-12 border-t-2 border-border dark:border-border">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 pt-12 border-t-2 border-border dark:border-border relative">
+        <div class="absolute top-0 left-0 w-16 h-[2px] bg-secondary/30"></div>
         {{-- Delivery --}}
         <div class="space-y-6">
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                     <x-lucide-map-pin class="w-5 h-5 text-primary" />
+                </div>
+                <div class="w-10 h-10 rounded-full bg-secondary/5 flex items-center justify-center -ml-3">
+                    <x-lucide-map-pin class="w-4 h-4 text-secondary/60" />
                 </div>
                 <p class="text-[11px] font-black uppercase tracking-[0.4em] text-foreground">Acquisition Destination</p>
             </div>

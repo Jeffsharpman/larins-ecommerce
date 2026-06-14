@@ -2,10 +2,11 @@
     
     {{-- Hero Section: The Statement --}}
     <div class="relative text-center mb-32">
-        <div class="absolute inset-0 -z-10 overflow-hidden">
-            {{-- Glow follows primary color --}}
-            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[140px] opacity-60"></div>
-        </div>
+            <div class="absolute inset-0 -z-10 overflow-hidden">
+                {{-- Glow follows primary color --}}
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[140px] opacity-60"></div>
+                <div class="absolute bottom-0 right-[-10%] w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[120px] opacity-50"></div>
+            </div>
         
         <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-10 animate-fade-in">
             <span class="relative flex h-2 w-2">
@@ -41,10 +42,11 @@
         </div>
 
         <div class="lg:col-span-5 space-y-10">
-            <div class="inline-flex items-center gap-4">
-                <div class="h-[1px] w-12 bg-primary"></div>
-                <span class="text-primary text-[10px] font-black uppercase tracking-[0.4em]">Our Genesis</span>
-            </div>
+                <div class="inline-flex items-center gap-4">
+                    <div class="h-[1px] w-12 bg-primary"></div>
+                    <div class="h-[1px] w-6 bg-secondary/40"></div>
+                    <span class="text-primary dark:text-secondary text-[10px] font-black uppercase tracking-[0.4em]">Our Genesis</span>
+                </div>
             <h2 class="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-none">Crafted from <br>Pure Passion</h2>
             <div class="space-y-8 text-muted-foreground text-lg leading-relaxed font-medium">
                 <p>
@@ -86,8 +88,9 @@
             @endphp
 
             @foreach($values as $value)
-            <div class="p-10 rounded-[3rem] border border-border/40 bg-card hover:bg-background hover:shadow-card transition-all duration-500 group relative overflow-hidden">
+            <div class="p-10 rounded-[3rem] border border-border/40 bg-card hover:bg-background hover:shadow-card dark:hover:border-secondary/20 transition-all duration-500 group relative overflow-hidden">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors"></div>
+                <div class="absolute -left-4 -bottom-4 w-20 h-20 bg-secondary/10 rounded-full blur-2xl group-hover:bg-secondary/20 transition-colors"></div>
                 <div class="w-14 h-14 bg-muted rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:rotate-12 transition-transform duration-500">
                     <x-dynamic-component :component="'lucide-' . $value['icon']" class="w-6 h-6 text-primary" />
                 </div>
@@ -101,6 +104,7 @@
     {{-- Stats Bar --}}
     <div class="relative overflow-hidden rounded-[4rem] bg-foreground text-background py-24 px-12 mb-40">
         <div class="absolute -bottom-20 -left-20 w-96 h-96 bg-primary/30 rounded-full blur-[120px] opacity-40"></div>
+        <div class="absolute -top-20 -right-20 w-72 h-72 bg-secondary/30 rounded-full blur-[120px] opacity-40"></div>
         
         <div class="grid gap-16 md:grid-cols-4 relative z-10">
             @foreach([
@@ -110,7 +114,7 @@
                 ['stat' => '24h', 'label' => 'Concierge Care']
             ] as $item)
             <div class="text-center group">
-                <div class="text-6xl font-black tracking-tighter mb-4 text-primary italic transition-transform group-hover:scale-110 duration-500">{{ $item['stat'] }}</div>
+                <div class="text-6xl font-black tracking-tighter mb-4 text-primary dark:text-secondary italic transition-transform group-hover:scale-110 duration-500">{{ $item['stat'] }}</div>
                 <div class="text-[10px] font-black uppercase tracking-[0.4em] opacity-50 group-hover:opacity-100 transition-opacity">{{ $item['label'] }}</div>
             </div>
             @endforeach
@@ -121,9 +125,10 @@
     <div class="relative group">
         {{-- Border follows primary gradient --}}
         <div class="absolute -inset-1 bg-gradient-to-r from-primary via-primary/50 to-primary rounded-[3.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-        <div class="relative bg-card border border-border rounded-[3rem] p-16 md:p-24 text-center space-y-10 backdrop-blur-sm">
+        <div class="absolute -inset-1 bg-gradient-to-r from-secondary/30 via-secondary/10 to-secondary/30 rounded-[3.5rem] blur opacity-10 group-hover:opacity-30 transition duration-1000 delay-300"></div>
+        <div class="relative bg-card border border-border rounded-[3rem] p-16 md:p-24 text-center space-y-10 backdrop-blur-sm dark:border-secondary/10">
             <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none text-foreground">
-                Join the <br> <span class="text-primary not-italic">Inner Circle</span>
+                Join the <br> <span class="text-primary dark:text-secondary not-italic">Inner Circle</span>
             </h2>
             <p class="text-muted-foreground max-w-2xl mx-auto text-xl font-medium leading-relaxed">
                 Step into the world of Maison {{ $site->site_name }}. Receive exclusive access to limited drops and private concierge events.

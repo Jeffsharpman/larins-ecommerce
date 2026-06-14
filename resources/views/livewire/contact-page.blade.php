@@ -3,6 +3,7 @@
     <div class="absolute top-40 left-1/2 -translate-x-1/2 -z-10 opacity-[0.03] dark:opacity-[0.02]">
         <h2 class="text-[15rem] font-black uppercase tracking-tighter select-none italic">Concierge</h2>
     </div>
+    <div class="absolute bottom-0 right-[-5%] w-[500px] h-[500px] bg-secondary/5 blur-[120px] rounded-full pointer-events-none"></div>
 
     {{-- Header Section --}}
     <div class="text-center mb-32 relative">
@@ -33,7 +34,7 @@
         @endphp
 
         @foreach($methods as $method)
-        <div class="group bg-card/40 backdrop-blur-sm border border-border/60 p-12 rounded-[3rem] text-center hover:border-primary/40 transition-all duration-700 hover:shadow-card">
+        <div class="group bg-card/40 backdrop-blur-sm border border-border/60 p-12 rounded-[3rem] text-center hover:border-primary/40 dark:hover:border-secondary/40 transition-all duration-700 hover:shadow-card dark:hover:shadow-secondary/5">
             <div class="w-14 h-14 bg-muted rounded-[1.25rem] flex items-center justify-center mx-auto mb-8 group-hover:bg-primary group-hover:text-background transition-all duration-500">
                 @svg('lucide-' . $method['icon'], 'w-6 h-6')
             </div>
@@ -47,8 +48,9 @@
     <div class="grid gap-16 lg:grid-cols-5 items-start">
         {{-- Message Form --}}
         <div class="lg:col-span-3">
-            <div class="bg-card border border-border rounded-[3.5rem] p-10 md:p-16 shadow-card relative overflow-hidden group">
+            <div class="bg-card border border-border rounded-[3.5rem] p-10 md:p-16 shadow-card relative overflow-hidden group dark:border-secondary/10">
                 <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/5 rounded-full blur-[100px] transition-all duration-1000 group-hover:bg-primary/10"></div>
+                <div class="absolute -left-20 -bottom-20 w-56 h-56 bg-secondary/5 rounded-full blur-[100px] transition-all duration-1000 group-hover:bg-secondary/10"></div>
                 
                 <div class="flex items-center gap-5 mb-16 relative z-10">
                     <div class="w-12 h-12 bg-primary text-background rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
@@ -99,6 +101,7 @@
         <div class="lg:col-span-2 space-y-10">
             <div class="bg-foreground text-background dark:bg-card dark:text-foreground rounded-[3rem] p-12 relative overflow-hidden border border-border shadow-2xl">
                 <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-primary/10 rounded-full blur-[60px]"></div>
+                <div class="absolute -left-10 -top-10 w-32 h-32 bg-secondary/10 rounded-full blur-[60px]"></div>
                 
                 <h3 class="text-[10px] font-black uppercase tracking-[0.5em] opacity-40 mb-12">Concierge Intel</h3>
                 
@@ -118,7 +121,7 @@
                 </div>
             </div>
 
-            <div class="flex justify-between items-center p-8 bg-card border border-border rounded-full px-12 group transition-all hover:border-primary/20">
+            <div class="flex justify-between items-center p-8 bg-card border border-border rounded-full px-12 group transition-all hover:border-primary/20 dark:hover:border-secondary/20">
                 <span class="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground/60">Follow {{ $site->site_name }}</span>
                 <div class="flex gap-8">
                     <a href="#" class="text-muted-foreground hover:text-primary transition-all hover:scale-125"><x-lucide-instagram class="w-4.5 h-4.5" /></a>

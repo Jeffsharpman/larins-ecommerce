@@ -1,4 +1,5 @@
-<div class="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-gold/20">
+<div class="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-gold/20 relative overflow-hidden">
+  <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-secondary/5 via-secondary/5 to-transparent blur-[150px] rounded-full pointer-events-none -z-10"></div>
   <div class="max-w-7xl mx-auto px-6 py-16">
 
     {{-- Header Section: Editorial Title --}}
@@ -35,7 +36,7 @@
 
       {{-- Filter Sidebar --}}
       <aside class="hidden lg:block w-80 flex-shrink-0">
-    <div class="sticky top-28 space-y-10 bg-card/40 backdrop-blur-xl p-10 rounded-[3rem] border border-border shadow-2xl shadow-primary/5 transition-colors duration-500">
+    <div class="sticky top-28 space-y-10 bg-card/40 backdrop-blur-xl p-10 rounded-[3rem] border border-border hover:border-secondary/20 shadow-2xl shadow-primary/5 transition-colors duration-500">
 
         {{-- Header: Refine --}}
         <div class="flex items-center justify-between pb-6 border-b border-border/60">
@@ -43,10 +44,10 @@
                 <x-lucide-sliders-horizontal class="w-4 h-4 text-primary" />
                 <h3 class="text-[11px] font-black uppercase tracking-[0.2em] italic">Refine</h3>
             </div>
-            <button wire:click="resetFilters"
-                class="text-[9px] font-black uppercase text-muted-foreground hover:text-primary transition-all border-b border-transparent hover:border-primary pb-0.5">
-                Reset Archive
-            </button>
+                <button wire:click="resetFilters"
+                    class="btn btn-ghost btn-sm hover:bg-secondary/10 hover:text-secondary transition-colors">
+                    Reset Archive
+                </button>
         </div>
 
         {{-- Status Toggles --}}
@@ -54,16 +55,13 @@
             <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-6">Status Archive</h4>
             <div class="space-y-5">
                 @foreach (['is_featured' => ['Featured', 'primary'], 'on_sale' => ['On Sale', 'primary']] as $model => $meta)
-                    <label class="flex items-center justify-between group cursor-pointer">
+                    <label class="form-toggle flex items-center justify-between group cursor-pointer">
                         <span class="text-sm font-bold text-foreground/70 group-hover:text-foreground transition-all italic tracking-tight">
                             {{ $meta[0] }}
                         </span>
-                        <div class="relative flex items-center">
-                            <input type="checkbox" wire:model.live="{{ $model }}" class="peer sr-only" />
-                            {{-- Dynamic Toggle Background --}}
-                            <div class="w-11 h-6 bg-muted rounded-full peer-checked:bg-primary transition-all duration-500 ease-expo shadow-inner"></div>
-                            {{-- Floating Knob --}}
-                            <div class="absolute left-1 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-all duration-500 ease-expo shadow-md"></div>
+                        <input type="checkbox" wire:model.live="{{ $model }}" />
+                        <div class="toggle-track">
+                            <div class="toggle-thumb"></div>
                         </div>
                     </label>
                 @endforeach
@@ -77,9 +75,9 @@
                 <input type="range" wire:model.live="price_range" min="0" max="5000000" step="10000"
                     class="w-full h-1 bg-muted rounded-lg appearance-none cursor-pointer accent-primary transition-all" />
                 
-                <div class="flex justify-between items-center p-5 bg-background/40 rounded-2xl border border-border/60 shadow-inner group hover:border-primary/30 transition-colors">
+                <div class="flex justify-between items-center p-5 bg-background/40 rounded-2xl border border-border/60 shadow-inner group hover:border-secondary/30 transition-colors">
                     <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Limit</span>
-                    <span class="text-lg font-black italic tracking-tighter text-primary">
+                    <span class="text-lg font-black italic tracking-tighter text-primary dark:text-secondary">
                         ₦{{ number_format($price_range) }}
                     </span>
                 </div>
@@ -95,12 +93,10 @@
                 <div class="space-y-3 max-h-56 overflow-y-auto custom-scrollbar pr-4">
                     @forelse ($collection as $item)
                         <label class="flex items-center group cursor-pointer">
-                            <div class="relative flex items-center">
-                                <input type="checkbox" value="{{ $item->id }}"
-                                    wire:model.live="selected_{{ strtolower($label) }}"
-                                    class="w-5 h-5 rounded-lg border-border text-primary focus:ring-primary/20 bg-background transition-all shadow-sm cursor-pointer" />
-                            </div>
-                            <span class="ml-4 text-[11px] font-bold text-foreground/60 group-hover:text-primary transition-all uppercase tracking-widest">
+                            <input type="checkbox" value="{{ $item->id }}"
+                                wire:model.live="selected_{{ strtolower($label) }}"
+                                class="form-checkbox" />
+                            <span class="ml-4 text-[11px] font-bold text-foreground/60 group-hover:text-secondary transition-all uppercase tracking-widest">
                                 {{ $item->name }}
                             </span>
                         </label>
@@ -127,7 +123,7 @@
 
           <div class="flex items-center gap-4 w-full sm:w-auto">
             <button
-              class="lg:hidden flex-1 flex items-center justify-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-2xl shadow-primary/20">
+              class="btn btn-primary btn-lg lg:hidden flex-1">
               <x-lucide-sliders-horizontal class="w-4 h-4" />
               Filters
             </button>
@@ -162,7 +158,7 @@
               <p class="text-muted-foreground mt-2 font-medium italic opacity-70 mb-10">Your current search parameters
                 yielded no results in our vault.</p>
               <button wire:click="resetFilters"
-                class="px-12 py-5 bg-foreground text-background rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-primary hover:text-white transition-all shadow-2xl">
+                class="btn btn-dark btn-lg">
                 Re-initialize Vault
               </button>
             </div>

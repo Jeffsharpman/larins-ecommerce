@@ -3,13 +3,15 @@
     {{-- High-Fashion Ambient Backgrounds --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[700px] bg-primary/5 blur-[150px] rounded-full -z-10 animate-pulse-slow"></div>
     <div class="absolute bottom-0 right-[-10%] w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full -z-10"></div>
+    <div class="absolute top-1/3 right-[-5%] w-[500px] h-[500px] bg-secondary/5 blur-[120px] rounded-full -z-10"></div>
 
     <div class="max-w-7xl mx-auto px-6 lg:px-12 py-32">
         
         {{-- Header Section: The Manifesto --}}
         <div class="text-center mb-40 relative">
-            <div class="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-primary/5 border border-primary/10 text-primary text-[9px] font-black uppercase tracking-[0.5em] mb-12 animate-in fade-in slide-in-from-top-4 duration-1000">
+            <div class="inline-flex items-center gap-4 px-6 py-2 rounded-full bg-primary/5 dark:bg-secondary/[0.03] border border-primary/10 dark:border-secondary/10 text-primary text-[9px] font-black uppercase tracking-[0.5em] mb-12 animate-in fade-in slide-in-from-top-4 duration-1000">
                 <span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping delay-500"></span>
                 The 2026 Collection
             </div>
             
@@ -21,6 +23,7 @@
             <div class="flex justify-center items-center gap-6 mb-12">
                 <div class="h-[1px] w-12 bg-primary/50"></div>
                 <x-lucide-crown class="w-5 h-5 text-primary" />
+                <div class="h-[1px] w-12 bg-secondary/40"></div>
                 <div class="h-[1px] w-12 bg-primary/50"></div>
             </div>
             
@@ -36,8 +39,9 @@
                 <div class="group {{ $index % 2 == 1 ? 'md:translate-y-20' : '' }} transition-all duration-1000 ease-out">
                     <a href="/brands/{{ $brand->slug }}" class="block relative group">
                         <div class="absolute -inset-2 bg-gradient-to-b from-primary/20 to-transparent rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-100 transition duration-700"></div>
+                        <div class="absolute -inset-2 bg-gradient-to-b from-secondary/10 to-transparent rounded-[3rem] blur-2xl opacity-0 group-hover:opacity-60 transition duration-700 delay-150"></div>
                         
-                        <div class="relative aspect-[4/5] bg-card rounded-[2.5rem] border border-border overflow-hidden flex flex-col items-center justify-center p-10 group-hover:border-primary/30 transition-all duration-500 shadow-sm group-hover:shadow-2xl">
+                        <div class="relative aspect-[4/5] bg-card rounded-[2.5rem] border border-border overflow-hidden flex flex-col items-center justify-center p-10 group-hover:border-primary/30 group-hover:border-secondary/20 transition-all duration-500 shadow-sm group-hover:shadow-2xl">
                             
                             {{-- Brand Logo / Identity --}}
                             <div class="w-full h-full flex items-center justify-center group-hover:scale-110 transition-transform duration-700 grayscale group-hover:grayscale-0">
@@ -77,6 +81,7 @@
                 {{-- Decorative Background Glows --}}
                 <div class="absolute -right-20 -top-20 w-96 h-96 bg-primary/10 rounded-full blur-[100px] group-hover:scale-125 transition-transform duration-1000"></div>
                 <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-primary/5 rounded-full blur-[100px] group-hover:scale-125 transition-transform duration-1000"></div>
+                <div class="absolute right-40 -bottom-10 w-72 h-72 bg-secondary/10 rounded-full blur-[100px] group-hover:scale-125 transition-transform duration-1000 delay-300"></div>
 
                 <div class="relative z-10 max-w-2xl mx-auto space-y-10">
                     <x-lucide-help-circle class="w-12 h-12 text-primary mx-auto opacity-50" />
@@ -91,7 +96,7 @@
                     
                     <div class="pt-8">
                         <a wire:navigate href="/contact" 
-                           class="inline-flex items-center gap-6 bg-foreground text-background dark:bg-primary dark:text-primary-foreground px-16 py-7 rounded-3xl font-black uppercase tracking-[0.3em] text-[10px] transition-all duration-700 hover:shadow-card active:scale-95 group">
+                           class="inline-flex items-center gap-6 bg-foreground text-background dark:bg-primary dark:text-primary-foreground px-16 py-7 rounded-3xl font-black uppercase tracking-[0.3em] text-[10px] transition-all duration-700 hover:shadow-card hover:shadow-secondary/10 active:scale-95 group">
                             <span class="relative">
                                 <x-lucide-send class="w-5 h-5 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform duration-500" />
                             </span>

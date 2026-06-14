@@ -5,11 +5,13 @@
         {{-- Ambient Branding Glow: Follows Primary --}}
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[140px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/[0.02] blur-[100px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none"></div>
+        <div class="absolute top-1/2 right-[-5%] w-[450px] h-[450px] bg-secondary/5 blur-[120px] rounded-full pointer-events-none"></div>
         
         <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center lg:items-end gap-16 relative z-10">
             {{-- Brand Portrait Archive --}}
             <div class="relative group">
                 <div class="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-transparent rounded-[3.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+                <div class="absolute -inset-4 bg-gradient-to-tr from-secondary/10 to-transparent rounded-[3.5rem] blur-2xl opacity-0 group-hover:opacity-60 transition duration-1000 delay-300"></div>
                 <div class="relative w-56 h-56 md:w-72 md:h-72 bg-card rounded-[3rem] border border-border p-10 flex items-center justify-center shadow-card backdrop-blur-sm">
                     @if($brand->image)
                         <img src="{{ url('storage', $brand->image) }}" alt="{{ $brand->name }}" class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000">
@@ -29,7 +31,8 @@
                 <div class="space-y-4">
                     <div class="inline-flex items-center gap-4 group cursor-default">
                         <div class="h-[1px] w-10 bg-primary group-hover:w-16 transition-all duration-500"></div>
-                        <h2 class="text-[10px] font-black uppercase tracking-[0.6em] text-primary">The Maison Series</h2>
+                        <div class="h-[1px] w-6 bg-secondary/40 group-hover:w-10 transition-all duration-500"></div>
+                        <h2 class="text-[10px] font-black uppercase tracking-[0.6em] text-primary dark:text-secondary">The Maison Series</h2>
                     </div>
                     
                     <h1 class="text-6xl md:text-8xl font-black italic tracking-tighter text-foreground leading-[0.85] uppercase">
@@ -73,7 +76,7 @@
             @forelse($products as $product)
                 <div wire:key="product-{{ $product->id }}" class="group">
                     <div class="relative mb-8">
-                        <a href="/products/{{ $product->slug }}" class="block relative aspect-[3/4] bg-muted rounded-[2.5rem] overflow-hidden border border-border group-hover:border-primary/30 transition-all duration-700">
+                        <a href="/products/{{ $product->slug }}" class="block relative aspect-[3/4] bg-muted rounded-[2.5rem] overflow-hidden border border-border group-hover:border-primary/30 group-hover:border-secondary/20 transition-all duration-700">
                             @php $images = is_array($product->images) ? $product->images : json_decode($product->images, true); @endphp
                             @if(!empty($images[0]))
                                 <img src="{{ url('storage', $images[0]) }}" 

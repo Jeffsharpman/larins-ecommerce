@@ -4,9 +4,10 @@
     $isOutOfStock = $stock <= 0;
 @endphp
 
-<div class="min-h-screen bg-background text-foreground transition-colors duration-700" x-data="{ headerHeight: 0 }" x-init="setTimeout(() => { const header = document.querySelector('header.fixed'); if (header) { headerHeight = header.offsetHeight; } else { headerHeight = 80; } }, 50)">
+<div class="min-h-screen bg-background text-foreground transition-colors duration-700 relative overflow-hidden" x-data="{ headerHeight: 0 }" x-init="setTimeout(() => { const header = document.querySelector('header.fixed'); if (header) { headerHeight = header.offsetHeight; } else { headerHeight = 80; } }, 50)">
     {{-- Ambient Light Leak --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
+    <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-gradient-to-br from-secondary/5 via-secondary/5 to-transparent blur-[120px] rounded-full pointer-events-none"></div>
 
     {{-- Minimalist Navigation (directly below header) --}}
     <div class="border-b border-border/40 py-3 backdrop-blur-md sticky z-20 bg-background/80 dark:bg-background/80" :style="`top: ${headerHeight}px`">
@@ -18,23 +19,17 @@
                 <span class="opacity-20 text-[14px] leading-none shrink-0">/</span>
                 <span class="text-foreground tracking-[0.2em] italic truncate max-w-[200px] shrink-0">{{ $product->name }}</span>
             </nav>
-            
+
             <div class="hidden md:flex items-center gap-6 shrink-0">
-                @if($isOutOfStock)
-                    <span class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-destructive-foreground bg-destructive/10 rounded-full animate-pulse">
-                        Out of Stock
-                    </span>
-                @elseif($isLowStock)
-                    <span class="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-white bg-amber-500 rounded-full animate-pulse">
-                        Only {{ $stock }} left
-                    </span>
-                @else
-                    <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500 italic whitespace-nowrap">
-                        In Stock • {{ $stock }} available
-                    </span>
-                @endif
-            </div>
-        </div>
+                            @if($isOutOfStock)
+                                <span class="badge badge-out-of-stock border-secondary/20">Out of Stock</span>
+                            @elseif($isLowStock)
+                                <span class="badge badge-low-stock animate-pulse border-secondary/20">Only {{ $stock }} left</span>
+                            @else
+                                <span class="badge badge-sale border-secondary/20">In Stock &bull; {{ $stock }} available</span>
+                            @endif
+                        </div>
+                    </div>
     </div>
 
     <div class="max-w-7xl mx-auto px-8 py-20">
@@ -42,7 +37,7 @@
 
             {{-- Image Sculpture Gallery --}}
             <div class="lg:col-span-7 space-y-10" x-data="{ mainImage: '{{ url('storage/' . $product->images[0]) }}' }">
-                <div class="relative aspect-[4/5] bg-muted/20 rounded-[3.5rem] overflow-hidden border border-border/60 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] group {{ $isOutOfStock ? 'opacity-60' : '' }}">
+                <div class="relative aspect-[4/5] bg-muted/20 rounded-[3.5rem] overflow-hidden border border-border/60 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] group hover:border-secondary/20 transition-colors {{ $isOutOfStock ? 'opacity-60' : '' }}">
                     <img :src="mainImage" alt="{{ $product->name }}"
                         class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110" />
 
@@ -56,22 +51,14 @@
                     {{-- Badges --}}
                     <div class="absolute top-10 right-10 flex flex-col gap-2">
                         @if($isOutOfStock)
-                            <div class="bg-destructive/90 text-destructive-foreground px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl">
-                                Out of Stock
-                            </div>
+                            <span class="badge badge-out-of-stock">Out of Stock</span>
                         @elseif($isLowStock)
-                            <div class="bg-amber-500/90 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl animate-pulse">
-                                Only {{ $stock }} Left
-                            </div>
+                            <span class="badge badge-low-stock animate-pulse">Only {{ $stock }} Left</span>
                         @else
-                            <div class="bg-emerald-500/90 text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl">
-                                In Stock
-                            </div>
+                            <span class="badge badge-sale">In Stock</span>
                         @endif
                         @if($product->on_sale && !$isOutOfStock)
-                            <div class="bg-primary/90 text-primary-foreground px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.3em] backdrop-blur-md shadow-2xl animate-pulse">
-                                SALE
-                            </div>
+                            <span class="badge badge-primary animate-pulse border-secondary/20">Sale</span>
                         @endif
                     </div>
                 </div>
@@ -112,9 +99,11 @@
                                 <span class="text-[9px] font-black uppercase tracking-widest text-emerald-500">In Stock</span>
                             @endif
                         </div>
-                        <div class="w-full bg-muted rounded-full h-2.5 overflow-hidden">
-                            <div class="h-full rounded-full transition-all duration-700 {{ $isOutOfStock ? 'bg-destructive' : ($isLowStock ? 'bg-amber-500' : 'bg-primary') }}"
-                                 style="width: {{ $isOutOfStock ? '0' : min(100, max(5, ($stock / 20) * 100)) }}%">
+                        <div class="w-full bg-muted/50 dark:bg-white/5 rounded-full h-3 overflow-hidden border border-border/60 dark:border-white/10 shadow-inner">
+                            <div class="h-full rounded-full transition-all duration-700 relative
+                                {{ $isOutOfStock ? 'bg-destructive' : ($isLowStock ? 'bg-amber-500' : 'bg-primary') }}"
+                                style="width: {{ $isOutOfStock ? '0' : min(100, max(5, ($stock / 20) * 100)) }}%">
+                                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
                             </div>
                         </div>
                         <p class="text-[8px] text-muted-foreground uppercase tracking-widest mt-2">
@@ -152,10 +141,8 @@
                     @endif
 
                     <div class="space-y-6">
-                        <div class="flex items-center gap-4">
-                            <div class="h-[1px] flex-1 bg-border/60"></div>
-                            <span class="text-[9px] font-black uppercase tracking-[0.4em] text-muted-foreground">Manifesto</span>
-                            <div class="h-[1px] w-8 bg-border/60"></div>
+                        <div class="divider-label">
+                            <span>Manifesto</span>
                         </div>
                         <div class="text-[12px] text-muted-foreground leading-relaxed font-bold uppercase tracking-[0.2em] opacity-80 border-l-4 border-primary/10 pl-8 italic">
                             {!! str($product->description)->markdown() !!}
@@ -168,13 +155,13 @@
                     @if(!$isOutOfStock)
                         <div class="flex items-center gap-6">
                             {{-- Boutique Qty --}}
-                            <div class="flex items-center bg-muted/20 rounded-full p-2 border border-border shadow-inner">
-                                <button wire:click="decreaseQty" wire:loading.attr="disabled" class="w-14 h-14 flex items-center justify-center hover:text-primary transition-colors group disabled:opacity-50">
-                                    <x-lucide-minus class="w-4 h-4 transition-transform group-active:scale-75" />
+                            <div class="qty-selector">
+                                <button wire:click="decreaseQty" wire:loading.attr="disabled" class="qty-selector-btn">
+                                    <x-lucide-minus class="w-4 h-4" />
                                 </button>
-                                <span class="w-12 text-center font-black text-sm tracking-tighter">{{ $quantity }}</span>
-                                <button wire:click="increaseQty" wire:loading.attr="disabled" class="w-14 h-14 flex items-center justify-center hover:text-primary transition-colors group disabled:opacity-50 {{ $quantity >= $stock ? 'opacity-50 cursor-not-allowed' : '' }}">
-                                    <x-lucide-plus class="w-4 h-4 transition-transform group-active:scale-125" />
+                                <span class="qty-selector-value">{{ $quantity }}</span>
+                                <button wire:click="increaseQty" wire:loading.attr="disabled" class="qty-selector-btn {{ $quantity >= $stock ? 'opacity-30 cursor-not-allowed' : '' }}">
+                                    <x-lucide-plus class="w-4 h-4" />
                                 </button>
                             </div>
 
@@ -183,10 +170,9 @@
                         </div>
 
                         <button wire:click="addToCart({{ $product->id }})" wire:loading.attr="disabled"
-                            class="w-full bg-foreground text-background py-8 rounded-[2rem] font-black uppercase tracking-[0.5em] text-[11px] hover:scale-[1.02] active:scale-[0.98] transition-all duration-700 shadow-[0_30px_60px_-15px_rgba(var(--primary-rgb),0.3)] flex items-center justify-center gap-6 group overflow-hidden relative disabled:opacity-50 disabled:cursor-not-allowed">
-                            <div class="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-700"></div>
-                            
-                            <x-lucide-shopping-bag wire:loading.remove class="w-5 h-5 relative z-10 transition-transform group-hover:rotate-12" />
+                            class="btn btn-dark btn-xl w-full group/cta relative overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed">
+                            <div class="absolute inset-0 bg-white/10 translate-y-full group-hover/cta:translate-y-0 transition-transform duration-700"></div>
+                            <x-lucide-shopping-bag wire:loading.remove class="w-5 h-5 relative z-10 transition-transform group-hover/cta:rotate-12" />
                             <span wire:loading class="animate-spin rounded-full h-5 w-5 border-2 border-current border-t-transparent relative z-10"></span>
                             <span class="relative z-10">Commit to Archive</span>
                         </button>
@@ -199,11 +185,11 @@
                             <h3 class="text-xl font-black italic text-destructive mb-2">Currently Unavailable</h3>
                             <p class="text-[10px] font-black uppercase tracking-widest text-muted-foreground">This piece is temporarily out of stock. Please check back soon.</p>
                         </div>
-                        
+
                         <livewire:wishlist-button :product-id="$product->id" />
-                        
+
                         <button disabled
-                            class="w-full bg-muted text-muted-foreground py-8 rounded-[2rem] font-black uppercase tracking-[0.5em] text-[11px] cursor-not-allowed flex items-center justify-center gap-6 opacity-50">
+                            class="btn btn-secondary btn-xl w-full opacity-50 cursor-not-allowed">
                             <x-lucide-shopping-bag class="w-5 h-5" />
                             <span>Notify When Available</span>
                         </button>
@@ -254,16 +240,16 @@
                         </p>
                     </div>
                 </div>
-                
+
                 @auth
-                    <button wire:click="$toggle('showReviewForm')" 
-                        class="px-8 py-5 bg-primary text-background rounded-[2rem] font-black uppercase tracking-[0.3em] text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-primary/20 flex items-center gap-4">
+                    <button wire:click="$toggle('showReviewForm')"
+                        class="btn btn-primary btn-lg">
                         <x-lucide-plus class="w-4 h-4" />
                         Add Review
                     </button>
                 @else
                     <a href="/login" wire:navigate
-                        class="px-8 py-5 bg-primary text-background rounded-[2rem] font-black uppercase tracking-[0.3em] text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-primary/20 flex items-center gap-4">
+                        class="btn btn-primary btn-lg">
                         <x-lucide-user class="w-4 h-4" />
                         Login to Review
                     </a>
@@ -272,9 +258,9 @@
 
             {{-- Review Form --}}
             @if($showReviewForm)
-                <div class="bg-card/50 backdrop-blur-xl rounded-[2.5rem] border border-border p-8 md:p-12 mb-12">
+                <div class="card-glass p-8 md:p-12 mb-12 border-l-4 border-secondary/20">
                     <h3 class="text-xl font-black italic uppercase tracking-tighter mb-8">Submit Your Dispatch</h3>
-                    
+
                     <form wire:submit="submitReview" class="space-y-8">
                         {{-- Rating Selection --}}
                         <div class="space-y-3">
@@ -292,22 +278,19 @@
                         {{-- Title --}}
                         <div class="space-y-3">
                             <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2">Title</label>
-                            <input wire:model="review_title" type="text" placeholder="Summarize your experience"
-                                class="w-full bg-background/50 border-border rounded-2xl px-6 py-5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-bold">
+                            <input wire:model="review_title" type="text" placeholder="Summarize your experience" class="form-input">
                             @error('review_title') <span class="text-red-500 text-[9px]">{{ $message }}</span> @enderror
                         </div>
 
                         {{-- Comment --}}
                         <div class="space-y-3">
                             <label class="text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 ml-2">Your Review</label>
-                            <textarea wire:model="review_comment" rows="5" placeholder="Share your experience with this piece..."
-                                class="w-full bg-background/50 border-border rounded-2xl px-6 py-5 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-bold resize-none"></textarea>
+                            <textarea wire:model="review_comment" rows="5" placeholder="Share your experience with this piece..." class="form-textarea"></textarea>
                             @error('review_comment') <span class="text-red-500 text-[9px]">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="flex items-center gap-4">
-                            <button type="submit" wire:loading.attr="disabled"
-                                class="px-10 py-5 bg-primary text-background rounded-[2rem] font-black uppercase tracking-[0.3em] text-[10px] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-primary/20">
+                            <button type="submit" wire:loading.attr="disabled" class="btn btn-primary btn-lg">
                                 <span wire:loading.remove>Submit Dispatch</span>
                                 <span wire:loading class="flex items-center gap-2">
                                     <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
@@ -317,8 +300,7 @@
                                     Submitting...
                                 </span>
                             </button>
-                            <button type="button" wire:click="$set('showReviewForm', false)"
-                                class="px-8 py-5 border border-border rounded-[2rem] font-black uppercase tracking-[0.3em] text-[10px] hover:bg-muted transition-all">
+                            <button type="button" wire:click="$set('showReviewForm', false)" class="btn btn-outline btn-lg">
                                 Cancel
                             </button>
                         </div>
@@ -330,7 +312,7 @@
             @if($reviews && $reviews->count() > 0)
                 <div class="space-y-8">
                     {{-- Rating Summary --}}
-                    <div class="bg-card/30 backdrop-blur-md rounded-[2.5rem] border border-border p-8 mb-12">
+                    <div class="card-glass p-8 mb-12">
                         <div class="flex items-center gap-12">
                             <div class="text-center">
                                 <span class="text-7xl font-black italic tracking-tighter text-foreground">{{ $averageRating }}</span>
@@ -341,9 +323,9 @@
                                 </div>
                                 <span class="text-[10px] font-black uppercase tracking-widest text-muted-foreground mt-2 block">{{ $totalReviews }} Reviews</span>
                             </div>
-                            
+
                             <div class="h-24 w-px bg-border"></div>
-                            
+
                             <div class="flex-1 space-y-2">
                                 @for($i = 5; $i >= 1; $i--)
                                     <div class="flex items-center gap-4">
@@ -361,10 +343,10 @@
 
                     {{-- Individual Reviews --}}
                     @foreach($reviews as $review)
-                        <div class="bg-card/30 backdrop-blur-md rounded-[2.5rem] border border-border p-8 md:p-12 hover:border-primary/20 transition-colors">
+                        <div class="card-glass p-8 md:p-12 hover:border-secondary/20 transition-colors">
                             <div class="flex items-start justify-between mb-6">
                                 <div class="flex items-center gap-5">
-                                    <div class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary font-black text-lg uppercase">
+                                    <div class="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary font-black text-lg uppercase">
                                         {{ substr($review->user->name, 0, 1) }}
                                     </div>
                                     <div>
@@ -382,11 +364,11 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             @if($review->title)
                                 <h5 class="font-black italic uppercase tracking-tight text-lg mb-4">{{ $review->title }}</h5>
                             @endif
-                            
+
                             <p class="text-[12px] text-muted-foreground leading-relaxed font-medium uppercase tracking-wider">{{ $review->comment }}</p>
                         </div>
                     @endforeach

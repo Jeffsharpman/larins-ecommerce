@@ -13,7 +13,10 @@
 @endphp
 
 <div wire:key="order-card-{{ $order->id }}"
-    class="group relative bg-card dark:bg-card border border-border dark:border-border rounded-[3rem] shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(var(--primary-rgb),0.1)] transition-all duration-700 overflow-hidden mb-10">
+    class="group relative bg-card dark:bg-card border border-border dark:border-border rounded-[3rem] shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(var(--primary-rgb),0.1)] hover:shadow-secondary/5 hover:border-secondary/30 transition-all duration-700 overflow-hidden mb-10">
+
+    {{-- Secondary Ambient Glow --}}
+    <div class="absolute -top-10 -right-10 w-48 h-48 bg-secondary/5 blur-[100px] rounded-full pointer-events-none z-0"></div>
 
     {{-- Main Header Section --}}
     <div class="p-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
@@ -30,6 +33,7 @@
                         Acquisition
                     </span>
                     <span class="h-[1px] w-6 bg-border"></span>
+                    <span class="h-[1px] w-3 bg-secondary/40"></span>
                     <span class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
                         #{{ $order->order_number ?? $order->id }}
                     </span>
@@ -63,7 +67,7 @@
 
     {{-- Items Preview Manifest --}}
     <div class="px-10 pb-6">
-        <div class="bg-muted dark:bg-muted rounded-[2.5rem] border border-border dark:border-border overflow-hidden transition-all duration-500 hover:border-primary/20">
+        <div class="bg-muted dark:bg-muted rounded-[2.5rem] border border-border dark:border-border overflow-hidden transition-all duration-500 hover:border-primary/20 hover:border-secondary/20">
             <details class="group/details">
                 <summary class="list-none cursor-pointer px-10 py-6 text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground hover:text-primary transition-colors flex items-center justify-between">
                     <span class="flex items-center gap-3">

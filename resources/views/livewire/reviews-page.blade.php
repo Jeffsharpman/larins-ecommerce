@@ -1,10 +1,14 @@
-<div class="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-primary/30">
+<div class="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-primary/30 relative overflow-hidden">
+    {{-- Ambient Glows --}}
+    <div class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary/5 blur-[140px] rounded-full pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-secondary/5 blur-[120px] rounded-full pointer-events-none"></div>
     <div class="max-w-7xl mx-auto px-6 py-16">
         {{-- Header --}}
         <div class="mb-16 border-b border-border/40 pb-12">
             <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-[1px] bg-primary"></div>
-                <span class="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Client Dispatches</span>
+                <div class="w-6 h-[1px] bg-secondary/40"></div>
+                <span class="text-[10px] font-black uppercase tracking-[0.4em] text-primary dark:text-secondary">Client Dispatches</span>
             </div>
             <h1 class="text-5xl md:text-6xl font-black italic tracking-tighter uppercase leading-none">
                 The <span class="text-primary">{{ $site->site_name }}</span> Experience
@@ -15,10 +19,11 @@
             {{-- Stats & Filters Sidebar --}}
             <div class="lg:col-span-4 space-y-8">
                 {{-- Stats Card --}}
-                <div class="bg-card/50 backdrop-blur-md p-8 rounded-[2.5rem] border border-border/50 relative overflow-hidden">
+                <div class="bg-card/50 backdrop-blur-md p-8 rounded-[2.5rem] border border-border/50 relative overflow-hidden hover:border-secondary/20 transition-colors duration-500">
                     <div class="absolute top-0 right-0 p-8 opacity-10">
                         <x-lucide-quote class="w-12 h-12 text-foreground" />
                     </div>
+                    <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-secondary/10 rounded-full blur-[60px]"></div>
                     
                     <div class="flex items-center gap-6 mb-8">
                         <span class="text-6xl font-black tracking-tighter text-foreground">{{ number_format($stats['average'], 1) }}</span>
@@ -51,8 +56,8 @@
 
                 {{-- Product Filter --}}
                 @if($products->count() > 0)
-                    <div class="bg-card/50 backdrop-blur-md p-8 rounded-[2.5rem] border border-border/50">
-                        <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-6">Filter by Product</h3>
+                    <div class="bg-card/50 backdrop-blur-md p-8 rounded-[2.5rem] border border-border/50 hover:border-secondary/20 transition-colors duration-500">
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground dark:text-secondary/60 mb-6">Filter by Product</h3>
                         <div class="space-y-2">
                             <button wire:click="filterByProduct(null)"
                                 class="w-full text-left px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all {{ !$selected_product_id ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted' }}">
@@ -82,7 +87,7 @@
                 @if($reviews->count() > 0)
                     <div class="grid gap-8">
                         @foreach($reviews as $review)
-                            <div class="group p-8 bg-card border border-border/40 rounded-[2rem] hover:border-primary/40 transition-all duration-700 hover:shadow-xl hover:shadow-primary/5">
+                            <div class="group p-8 bg-card border border-border/40 rounded-[2rem] hover:border-primary/40 hover:border-secondary/20 transition-all duration-700 hover:shadow-xl hover:shadow-primary/5 hover:shadow-secondary/5">
                                 <div class="flex items-start justify-between mb-6">
                                     <div class="flex items-center gap-4">
                                         <img src="{{ $review->user?->avatar ? asset('storage/' . $review->user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name ?? 'A') . '&background=random' }}"
@@ -118,7 +123,7 @@
 
                                 @if($review->product)
                                     <a wire:navigate href="/product/{{ $review->product->slug }}" 
-                                        class="inline-flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-full text-[10px] font-black uppercase tracking-wider hover:bg-primary/10 hover:text-primary transition-all">
+                                        class="inline-flex items-center gap-3 px-4 py-2 bg-muted/50 rounded-full text-[10px] font-black uppercase tracking-wider hover:bg-primary/10 hover:bg-secondary/5 hover:text-primary transition-all">
                                         <x-lucide-package class="w-4 h-4" />
                                         {{ $review->product->name }}
                                     </a>

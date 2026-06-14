@@ -2,10 +2,11 @@
     {{-- High-End Ambient Background --}}
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-primary/5 via-primary/[0.02] to-transparent pointer-events-none"></div>
     <div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 blur-[120px] rounded-full opacity-50"></div>
+    <div class="absolute -bottom-32 -left-24 w-80 h-80 bg-secondary/10 blur-[120px] rounded-full opacity-50"></div>
 
     <div class="max-w-7xl mx-auto px-6 pt-32 pb-20 text-center relative z-10">
         {{-- Animated Icon Badge --}}
-        <div class="inline-flex items-center justify-center w-24 h-24 bg-card/50 backdrop-blur-xl border border-primary/20 rounded-[2.5rem] mb-10 shadow-card animate-in fade-in zoom-in duration-1000 group hover:border-primary/50 transition-colors">
+        <div class="inline-flex items-center justify-center w-24 h-24 bg-card/50 backdrop-blur-xl border border-primary/20 dark:border-secondary/20 rounded-[2.5rem] mb-10 shadow-card animate-in fade-in zoom-in duration-1000 group hover:border-primary/50 dark:hover:border-secondary/40 transition-colors">
             <x-lucide-grid-3x3 class="w-10 h-10 text-primary group-hover:scale-110 transition-transform duration-500" />
         </div>
         
@@ -42,8 +43,8 @@
                 ];
             @endphp
             @foreach ($stats as $stat)
-                <div class="bg-card p-10 text-center hover:bg-muted/50 transition-colors group">
-                    <div class="text-4xl font-black italic tracking-tighter text-primary mb-2 font-heading group-hover:scale-110 transition-transform duration-500">
+                <div class="bg-card p-10 text-center hover:bg-muted/50 dark:hover:bg-secondary/[0.02] transition-colors group">
+                    <div class="text-4xl font-black italic tracking-tighter text-primary dark:text-secondary mb-2 font-heading group-hover:scale-110 transition-transform duration-500">
                         {{ $stat['value'] }}
                     </div>
                     <div class="text-[9px] uppercase tracking-[0.4em] text-muted-foreground font-black">
@@ -61,9 +62,9 @@
 
                 {{-- Feature 1 --}}
                 <div class="flex flex-col items-center text-center group">
-                    <div class="w-24 h-24 mb-10 flex items-center justify-center rounded-[2.2rem] border border-primary/10 bg-primary/5 shadow-xl group-hover:border-primary/40 group-hover:-translate-y-3 transition-all duration-700 relative overflow-hidden">
-                        <x-lucide-search class="w-10 h-10 text-primary" />
-                        <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="w-24 h-24 mb-10 flex items-center justify-center rounded-[2.2rem] border border-primary/10 dark:border-secondary/20 bg-primary/5 dark:bg-secondary/[0.03] shadow-xl group-hover:border-primary/40 dark:group-hover:border-secondary/40 group-hover:-translate-y-3 transition-all duration-700 relative overflow-hidden">
+                        <x-lucide-search class="w-10 h-10 text-primary dark:text-secondary" />
+                        <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 dark:from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                     <h3 class="text-2xl font-black italic tracking-tighter uppercase mb-4 text-foreground">
                         Intuitive Discovery
@@ -75,9 +76,9 @@
 
                 {{-- Feature 2 --}}
                 <div class="flex flex-col items-center text-center group">
-                    <div class="w-24 h-24 mb-10 flex items-center justify-center rounded-[2.2rem] border border-primary/10 bg-primary/5 shadow-xl group-hover:border-primary/40 group-hover:-translate-y-3 transition-all duration-700 relative overflow-hidden">
-                        <x-lucide-star class="w-10 h-10 text-primary" />
-                        <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="w-24 h-24 mb-10 flex items-center justify-center rounded-[2.2rem] border border-primary/10 dark:border-secondary/20 bg-primary/5 dark:bg-secondary/[0.03] shadow-xl group-hover:border-primary/40 dark:group-hover:border-secondary/40 group-hover:-translate-y-3 transition-all duration-700 relative overflow-hidden">
+                        <x-lucide-star class="w-10 h-10 text-primary dark:text-secondary" />
+                        <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 dark:from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                     <h3 class="text-2xl font-black italic tracking-tighter uppercase mb-4 text-foreground">
                         Vetted Selection
@@ -89,9 +90,9 @@
                 
                 {{-- Feature 3 --}}
                 <div class="flex flex-col items-center text-center group">
-                    <div class="w-24 h-24 mb-10 flex items-center justify-center rounded-[2.2rem] border border-primary/10 bg-primary/5 shadow-xl group-hover:border-primary/40 group-hover:-translate-y-3 transition-all duration-700 relative overflow-hidden">
-                        <x-lucide-heart class="w-10 h-10 text-primary" />
-                        <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div class="w-24 h-24 mb-10 flex items-center justify-center rounded-[2.2rem] border border-primary/10 dark:border-secondary/20 bg-primary/5 dark:bg-secondary/[0.03] shadow-xl group-hover:border-primary/40 dark:group-hover:border-secondary/40 group-hover:-translate-y-3 transition-all duration-700 relative overflow-hidden">
+                        <x-lucide-heart class="w-10 h-10 text-primary dark:text-secondary" />
+                        <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 dark:from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
                     <h3 class="text-2xl font-black italic tracking-tighter uppercase mb-4 text-foreground">
                         Personalized Care

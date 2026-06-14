@@ -3,6 +3,7 @@
     <div class="absolute top-20 right-0 -z-10 opacity-[0.03] pointer-events-none">
         <h2 class="text-[20rem] font-black uppercase tracking-tighter italic leading-none">HELP</h2>
     </div>
+    <div class="absolute bottom-0 left-[-5%] w-[400px] h-[400px] bg-secondary/5 blur-[120px] rounded-full pointer-events-none"></div>
 
     {{-- Header & Search --}}
     <div class="text-center mb-32 relative">
@@ -67,9 +68,9 @@
         @endphp
 
         @foreach($faqCategories as $category)
-        <div class="space-y-12 p-8 md:p-12 bg-card/30 backdrop-blur-sm border border-border/60 rounded-[3.5rem] hover:border-primary/20 transition-all duration-700">
+        <div class="space-y-12 p-8 md:p-12 bg-card/30 backdrop-blur-sm border border-border/60 rounded-[3.5rem] hover:border-primary/20 dark:hover:border-secondary/20 transition-all duration-700">
             <div class="flex items-center gap-6 border-b border-border/60 pb-8">
-                <div class="w-14 h-14 bg-primary text-background rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+                <div class="w-14 h-14 bg-primary text-background dark:bg-secondary dark:text-secondary-foreground rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 dark:shadow-secondary/20">
                     @svg('lucide-' . $category['icon'], 'w-6 h-6')
                 </div>
                 <div>
@@ -99,9 +100,10 @@
     </div>
 
     {{-- Post-FAQ CTA Card --}}
-    <div class="relative overflow-hidden bg-foreground text-background dark:bg-primary dark:text-background rounded-[4rem] p-16 md:p-28 text-center border border-primary/20 shadow-2xl">
+        <div class="relative overflow-hidden bg-foreground text-background dark:bg-primary dark:text-background rounded-[4rem] p-16 md:p-28 text-center border border-primary/20 shadow-2xl dark:border-secondary/20">
         <div class="absolute top-0 right-0 w-96 h-96 bg-background/5 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2"></div>
         <div class="absolute bottom-0 left-0 w-64 h-64 bg-background/5 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2"></div>
+        <div class="absolute top-1/2 left-1/3 w-48 h-48 bg-secondary/10 blur-[100px] rounded-full"></div>
         
         <div class="relative z-10 space-y-10">
             <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none">Unresolved <span class="opacity-30">Inquiry?</span></h2>

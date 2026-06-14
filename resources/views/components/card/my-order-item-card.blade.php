@@ -1,13 +1,16 @@
 @props(['item'])
 
 <tr wire:key="order-item-{{ $item->id }}" 
-    class="group border-b border-border dark:border-border transition-colors duration-700 hover:bg-muted/50 dark:hover:bg-muted">
+    class="group border-b border-border dark:border-border transition-colors duration-700 hover:bg-muted/50 dark:hover:bg-muted relative">
+
+    {{-- Secondary Decorative Dot --}}
+    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-1 rounded-full bg-secondary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
     
     {{-- Product Identity --}}
     <td class="py-8">
         <div class="flex items-center gap-8">
             {{-- Image Archive --}}
-            <div class="relative h-24 w-24 bg-muted dark:bg-black rounded-[1.5rem] overflow-hidden border border-border dark:border-border p-3 flex-shrink-0 transition-all duration-700 group-hover:border-primary/20 group-hover:scale-105">
+            <div class="relative h-24 w-24 bg-muted dark:bg-black rounded-[1.5rem] overflow-hidden border border-border dark:border-border p-3 flex-shrink-0 transition-all duration-700 group-hover:border-primary/20 group-hover:border-secondary/20 group-hover:scale-105">
                 <img class="h-full w-full object-contain filter grayscale-[0.4] group-hover:grayscale-0 transition-all duration-700" 
                      src="{{ url('storage', $item->product->images[0]) }}" 
                      alt="{{ $item->product->name }}">
@@ -16,6 +19,7 @@
             
             <div class="flex flex-col">
                 <span class="text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-2">Item Selection</span>
+                <span class="text-[10px] font-black uppercase tracking-[0.5em] text-secondary/50 ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-500">•</span>
                 <span class="text-xl font-black italic tracking-tighter text-foreground group-hover:text-primary transition-colors duration-500 leading-none">
                     {{ $item->product->name }}
                 </span>

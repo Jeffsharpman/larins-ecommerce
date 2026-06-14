@@ -7,7 +7,10 @@
 @endphp
 
 <div wire:key="cart-item-{{ $item['product_id'] }}"
-    class="group relative bg-card rounded-[3rem] p-8 border border-border transition-all duration-700 hover:border-primary/30 shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(var(--primary-rgb),0.08)] overflow-hidden mb-8">
+    class="group relative bg-card rounded-[3rem] p-8 border border-border transition-all duration-700 hover:border-primary/30 hover:border-secondary/30 shadow-sm hover:shadow-[0_40px_80px_-20px_rgba(var(--primary-rgb),0.08)] hover:shadow-secondary/5 overflow-hidden mb-8">
+
+    {{-- Secondary Ambient Glow --}}
+    <div class="absolute -top-10 -right-10 w-48 h-48 bg-secondary/5 blur-[100px] rounded-full pointer-events-none z-0"></div>
     
     <div class="flex flex-col md:flex-row gap-10 items-center md:items-start">
         
@@ -19,6 +22,7 @@
              
             {{-- Gradient Overlay on Hover --}}
             <div class="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div class="absolute inset-0 bg-gradient-to-bl from-secondary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-150"></div>
             
             {{-- Out of Stock Overlay --}}
             @if($isOutOfStock)
@@ -82,19 +86,19 @@
             <div class="flex flex-col sm:flex-row justify-between items-center sm:items-end mt-12 md:mt-0 gap-8">
                 {{-- Quantity Architecture --}}
                 <div class="flex flex-col items-center gap-2">
-                    <div class="flex items-center bg-muted rounded-full p-2 border border-border shadow-sm backdrop-blur-md">
+                    <div class="qty-selector">
                         <button wire:click="decreaseQty({{ $item['product_id'] }})" wire:loading.attr="disabled"
-                                class="w-11 h-11 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-card rounded-full transition-all duration-500 shadow-none hover:shadow-xl disabled:opacity-50">
+                                class="qty-selector-btn">
                             <x-lucide-minus class="w-5 h-5 stroke-[2.5]" />
                         </button>
                         
-                        <span class="w-16 text-center font-black text-lg tracking-widest text-foreground">
+                        <span class="qty-selector-value">
                             {{ str_pad($item['quantity'], 2, '0', STR_PAD_LEFT) }}
                         </span>
                         
                         <button wire:click="increaseQty({{ $item['product_id'] }})" wire:loading.attr="disabled"
                                 @if($isMaxQuantity || $isOutOfStock) disabled @endif
-                                class="w-11 h-11 flex items-center justify-center rounded-full transition-all duration-500 shadow-none hover:shadow-xl {{ $isMaxQuantity || $isOutOfStock ? 'text-muted-foreground/30 cursor-not-allowed' : 'text-muted-foreground hover:text-primary hover:bg-card' }}">
+                                class="qty-selector-btn {{ $isMaxQuantity || $isOutOfStock ? 'opacity-30 cursor-not-allowed' : '' }}">
                             <x-lucide-plus class="w-5 h-5 stroke-[2.5]" />
                         </button>
                     </div>
@@ -112,6 +116,7 @@
                         </span>
                         <div class="flex items-center justify-center sm:justify-end gap-2 mt-1">
                             <span class="h-[1px] w-3 bg-primary/30"></span>
+                            <span class="h-[1px] w-2 bg-secondary/30"></span>
                             <span class="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
                                 ₦{{ number_format($item['unit_amount'], 2) }} unit
                             </span>

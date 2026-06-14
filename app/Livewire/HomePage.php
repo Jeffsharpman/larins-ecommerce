@@ -2,6 +2,8 @@
 
 namespace App\Livewire;
 
+use App\Helpers\CartManagement;
+use App\Livewire\Partials\Navbar;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -12,10 +14,28 @@ use Livewire\Component;
 #[Title('Home')]
 class HomePage extends Component
 {
+    public function addToCart($productId)
+    {
+        $result = CartManagement::addItemToCart($productId);
+        $count = is_array($result) ? ($result['count'] ?? 0) : (int) $result;
+
+        $this->dispatch('cartUpdated', count: $count);
+        $this->dispatch('update-cart-count', total_count: $count)->to(Navbar::class);
+
+        $this->dispatch('swal:alert',
+            icon: 'success',
+            title: 'Added to Cart',
+            html: '<p class="text-[9px] font-medium uppercase tracking-widest">Item added to your collection</p>',
+            position: 'bottom-end',
+            timer: 3000,
+            toast: true,
+        );
+    }
+
     public function render()
     {
-        $brands = Brand::where('is_active', 1)->get();
-        $categories = Category::where('is_active', 1)->get();
+        $brands = Brand::where('is_active', '=', 1)->get();
+        $categories = Category::where('is_active', '=', 1)->get();
 
         $reviews = Review::with(['user', 'product'])
             ->where('is_approved', true)

@@ -45,13 +45,13 @@ class Navbar extends Component
     #[On('update-cart-count')]
     public function updateCartCount($total_count)
     {
-        $this->total_count = $total_count;
+        $this->total_count = is_array($total_count) ? (int) ($total_count['total_count'] ?? 0) : (int) $total_count;
     }
 
     #[On('cart-count-updated')]
     public function refreshCartCount($count)
     {
-        $this->total_count = $count;
+        $this->total_count = is_array($count) ? (int) ($count['count'] ?? 0) : (int) $count;
     }
 
     #[On('wishlistUpdated')]
@@ -98,10 +98,6 @@ class Navbar extends Component
 
     public function render()
     {
-        return view('livewire.partials.navbar')
-            ->layout('components.layouts.app', [
-                'announcements' => $this->announcements,
-                'dismissedAnnouncements' => $this->dismissedAnnouncements,
-            ]);
+        return view('livewire.partials.navbar');
     }
 }
