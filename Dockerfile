@@ -1,8 +1,7 @@
 FROM php:8.4-fpm
 
-# Install dependencies
+# Install system dependencies and PHP extensions
 RUN apt-get update && apt-get install -y \
-    nginx \
     libicu-dev \
     libzip-dev \
     zip \
@@ -10,40 +9,32 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    && docker-php-ext-install intl pdo pdo_mysql bcmath gd zip opcache \
+    libonig-dev \
+    libxml2-dev \
+    && docker-php-ext-install intl pdo pdo_mysql bcmath gd opcache zip exif \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy files
+# Copy application files
 COPY . .
 
-# Install dependencies
+# Install dependencies (skip scripts, needs .env first)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Nginx config
-COPY .docker/nginx.conf /etc/nginx/nginx.conf
+# Set up environment and generate app key
+RUN cp .env.example .env && php artisan key:generate
 
-# Permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Run post-install scripts
+RUN php artisan package:discover --ansi
+
+# Set permissions
+RUN chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
 EXPOSE 8080
 
-CMD ["./start.sh"]
-
-WORKDIR /var/www/html
-
-COPY . .
-
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-RUN chown -R www-data:www-data storage bootstrap/cache
-
-EXPOSE 8080
-
-# Simple and reliable for deployment platforms
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
