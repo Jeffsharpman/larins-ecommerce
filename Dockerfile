@@ -37,8 +37,9 @@ RUN cp .env.example .env \
     && echo "QUEUE_CONNECTION=sync" >> .env \
     && php -r '$key = "base64:" . base64_encode(random_bytes(32)); $env = file_get_contents(".env"); $env = preg_replace("/^APP_KEY=.*/m", "APP_KEY=" . $key, $env); file_put_contents(".env", $env);'
 
-# Create all required database tables
-RUN php artisan migrate --force --no-interaction 2>&1
+# Create the settings table manually (Spatie settings queries it during app boot, before migrations run)
+RUN php -r '$db = new SQLite3("database/database.sqlite"); $db->exec("CREATE TABLE IF NOT EXISTS settings (id INTEGER PRIMARY KEY AUTOINCREMENT, \"group\" TEXT NOT NULL, name TEXT NOT NULL, locked INTEGER NOT NULL DEFAULT 0, payload TEXT NOT NULL, created_at TEXT, updated_at TEXT, UNIQUE(\"group\", name))");' \
+    && php artisan migrate --force --no-interaction 2>&1
 
 # Run post-install scripts
 RUN php artisan package:discover --ansi 2>&1
