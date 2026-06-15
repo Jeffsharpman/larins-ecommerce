@@ -41,17 +41,19 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $primary = Color::Amber;
+        $secondary = Color::Amber;
+        $siteName = 'Larinstore Admin';
         $settings = null;
 
         try {
             $settings = app(GeneralSettings::class);
+            $primary = $this->parseColor($settings->primary_color);
+            $secondary = $this->parseColor($settings->secondary_color);
+            $siteName = $settings->site_name ?: 'Larinstore Admin';
         } catch (\Exception $e) {
             report($e);
         }
-
-        $primary = $settings ? $this->parseColor($settings->primary_color) : Color::Amber;
-        $secondary = $settings ? $this->parseColor($settings->secondary_color) : Color::Amber;
-        $siteName = $settings?->site_name ?: 'Larinstore Admin';
 
         return $panel
             ->default()

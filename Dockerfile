@@ -32,6 +32,9 @@ RUN cp .env.example .env \
     && touch database/database.sqlite \
     && echo "APP_ENV=production" >> .env \
     && echo "APP_DEBUG=false" >> .env \
+    && echo "SESSION_DRIVER=file" >> .env \
+    && echo "CACHE_STORE=array" >> .env \
+    && echo "QUEUE_CONNECTION=sync" >> .env \
     && php -r '$key = "base64:" . base64_encode(random_bytes(32)); $env = file_get_contents(".env"); $env = preg_replace("/^APP_KEY=.*/m", "APP_KEY=" . $key, $env); file_put_contents(".env", $env);'
 
 # Create all required database tables
