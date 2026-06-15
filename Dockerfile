@@ -1,8 +1,8 @@
-# Use PHP 8.4 with FPM
 FROM php:8.4-fpm
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
+    nginx \
     libicu-dev \
     libzip-dev \
     zip \
@@ -10,44 +10,40 @@ RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
-    libonig-dev \
-    libxml2-dev \
+    && docker-php-ext-install intl pdo pdo_mysql bcmath gd zip opcache \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install \
-    intl \
-    pdo \
-    pdo_mysql \
-    bcmath \
-    gd \
-    opcache \
-    zip \
-    exif
-
-# Install Composer
+# Copy Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files first for better caching
-COPY composer.json composer.lock ./
+# Copy files
+COPY . .
 
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Copy the rest of the application
+# Nginx config
+COPY .docker/nginx.conf /etc/nginx/nginx.conf
+
+# Permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+EXPOSE 8080
+
+CMD ["./start.sh"]
+
+WORKDIR /var/www/html
+
 COPY . .
 
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www-data /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
+RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Expose port
-EXPOSE 9000
+RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Start PHP-FPM
-CMD ["php-fpm"]
+EXPOSE 8080
+
+# Simple and reliable for deployment platforms
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
