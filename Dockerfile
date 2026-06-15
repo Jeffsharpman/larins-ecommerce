@@ -32,8 +32,7 @@ RUN cp .env.example .env \
     && touch database/database.sqlite \
     && echo "APP_ENV=production" >> .env \
     && echo "APP_DEBUG=false" >> .env \
-    && php -r "file_put_contents('.env', preg_replace('/^APP_KEY=.*/m', 'APP_KEY=base64:' . base64_encode(random_bytes(32)), file_get_contents('.env')));" \
-    && php artisan config:clear --ansi 2>&1
+    && php -r '$key = "base64:" . base64_encode(random_bytes(32)); $env = file_get_contents(".env"); $env = preg_replace("/^APP_KEY=.*/m", "APP_KEY=" . $key, $env); file_put_contents(".env", $env);'
 
 # Create all required database tables
 RUN php artisan migrate --force --no-interaction 2>&1
