@@ -8,7 +8,13 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create(config('settings.repositories.database.table') ?? 'settings', function (Blueprint $table): void {
+        $tableName = config('settings.repositories.database.table') ?? 'settings';
+
+        if (Schema::hasTable($tableName)) {
+            return;
+        }
+
+        Schema::create($tableName, function (Blueprint $table): void {
             $table->id();
 
             $table->string('group');
