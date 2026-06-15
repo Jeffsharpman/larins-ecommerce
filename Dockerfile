@@ -26,7 +26,7 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 # Set up environment and generate app key
-RUN cp .env.example .env && php artisan key:generate
+RUN cp .env.example .env && touch database/database.sqlite && php artisan key:generate
 
 # Run post-install scripts
 RUN php artisan package:discover --ansi
