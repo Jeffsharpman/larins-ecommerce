@@ -1,35 +1,52 @@
-# Use the official optimized PHP 8.4 FPM image
-FROM php:8.4-fpm-alpine
+# Use PHP 8.4 with FPM
+FROM php:8.4-fpm
 
-# Install system dependencies, critical core PHP extensions, AND Linux building tools
-RUN apk add --no-cache nginx supervisor curl libpng-dev libxml2-dev zip unzip git oniguruma-dev \
-    build-base autoconf automake libtool make g++ gcc \
-    && docker-php-ext-install pdo_mysql bcmath gd mbstring xml
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Get the latest stable Composer package manager
+# Install PHP extensions
+RUN docker-php-ext-install \
+    intl \
+    pdo \
+    pdo_mysql \
+    bcmath \
+    gd \
+    opcache \
+    zip
+
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# CRITICAL FIX 1: Allow Composer to use unlimited system memory during the build
-ENV COMPOSER_MEMORY_LIMIT=-1
-ENV COMPOSER_ALLOW_SUPERUSER=1
+# Set working directory
+WORKDIR /var/www/html
 
-# Set working directory inside the container
-WORKDIR /var/www
+# Copy composer files first for better caching
+COPY composer.json composer.lock ./
 
-# Copy your local project code into the container
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copy the rest of the application
 COPY . .
 
-# CRITICAL FIX 2: Completely bypass scripts, ignore platform mismatches, and run raw install
-RUN composer install --no-dev --no-scripts --no-interaction --optimize-autoloader --ignore-platform-reqs
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html/storage \
+    && chown -R www-data:www-data /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
-# Copy the example environment file
-RUN cp .env.example .env
+# Expose port
+EXPOSE 9000
 
-# Set permissions so web servers can write cache/logs
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-
-# Expose port 80 for Render web traffic routing
-EXPOSE 80
-
-# Run all artisan booting, key generation, and servers at RUNTIME instead of BUILD time
-CMD ["sh", "./deploy.sh"]
+# Start PHP-FPM
+CMD ["php-fpm"]
