@@ -1,5 +1,5 @@
 # Use the official optimized PHP 8.3 FPM image
-FROM php:8.3-fpm-alpine
+FROM php:8.4-fpm-alpine
 
 # Install system dependencies and PHP extensions for Laravel & MySQL
 RUN apk add --no-cache nginx supervisor curl libpng-dev libxml2-dev zip unzip git \
@@ -14,8 +14,14 @@ WORKDIR /var/www
 # Copy your local project code into the container
 COPY . .
 
-# Install your Laravel dependencies smoothly
-RUN composer install --no-dev --optimize-autoloader
+# Install dependencies without running scripts (needs .env first)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Set up environment and generate app key
+RUN cp .env.example .env && php artisan key:generate
+
+# Now run post-install scripts now that the app is bootable
+RUN php artisan package:discover --ansi
 
 # Set permissions so web servers can read your cache/storage
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
