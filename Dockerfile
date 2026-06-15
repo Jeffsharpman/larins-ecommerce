@@ -22,7 +22,8 @@ RUN docker-php-ext-install \
     bcmath \
     gd \
     opcache \
-    zip
+    zip \
+    exif
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
