@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libonig-dev \
     libxml2-dev \
-    && docker-php-ext-install intl pdo pdo_mysql bcmath gd opcache zip exif \
+    && docker-php-ext-install intl pdo pdo_mysql pdo_sqlite bcmath gd opcache zip exif \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
