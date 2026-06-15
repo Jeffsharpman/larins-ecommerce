@@ -27,8 +27,18 @@ COPY . .
 # Install dependencies (skip scripts, needs .env first)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Set up environment and generate app key
-RUN cp .env.example .env && touch database/database.sqlite && php artisan key:generate
+# Set up environment for build (use safe drivers to avoid DB table requirements)
+RUN cp .env.example .env \
+    && touch database/database.sqlite \
+    && echo "APP_ENV=production" >> .env \
+    && echo "APP_DEBUG=false" >> .env \
+    && echo "SESSION_DRIVER=file" >> .env \
+    && echo "CACHE_STORE=array" >> .env \
+    && echo "QUEUE_CONNECTION=sync" >> .env \
+    && php artisan key:generate
+
+# Create all required database tables
+RUN php artisan migrate --force --no-interaction
 
 # Run post-install scripts
 RUN php artisan package:discover --ansi

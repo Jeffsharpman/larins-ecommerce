@@ -41,7 +41,17 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $settings = app(GeneralSettings::class);
+        $settings = null;
+
+        try {
+            $settings = app(GeneralSettings::class);
+        } catch (\Exception $e) {
+            report($e);
+        }
+
+        $primary = $settings ? $this->parseColor($settings->primary_color) : Color::Amber;
+        $secondary = $settings ? $this->parseColor($settings->secondary_color) : Color::Amber;
+        $siteName = $settings?->site_name ?: 'Larinstore Admin';
 
         return $panel
             ->default()
@@ -50,13 +60,13 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->emailVerification()
             ->colors([
-                'primary' => $this->parseColor($settings->primary_color),
-                'secondary' => $this->parseColor($settings->secondary_color),
+                'primary' => $primary,
+                'secondary' => $secondary,
             ])
-            ->brandLogo(fn () => $settings->logo ? Storage::disk('public')->url($settings->logo) : asset('favicon.ico'))
+            ->brandLogo(fn () => $settings?->logo ? Storage::disk('public')->url($settings->logo) : asset('favicon.ico'))
             ->brandLogoHeight('2rem')
-            ->favicon(fn () => $settings->favicon ? Storage::disk('public')->url($settings->favicon) : asset('favicon.ico'))
-            ->brandName($settings->site_name ?: 'Larinstore Admin')
+            ->favicon(fn () => $settings?->favicon ? Storage::disk('public')->url($settings->favicon) : asset('favicon.ico'))
+            ->brandName($siteName)
 
             // Registering Resources/Pages/Widgets
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
