@@ -27,21 +27,19 @@ COPY . .
 # Install dependencies (skip scripts, needs .env first)
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Set up environment for build (use safe drivers to avoid DB table requirements)
+# Set up environment and generate APP_KEY without booting Laravel
 RUN cp .env.example .env \
     && touch database/database.sqlite \
     && echo "APP_ENV=production" >> .env \
     && echo "APP_DEBUG=false" >> .env \
-    && echo "SESSION_DRIVER=file" >> .env \
-    && echo "CACHE_STORE=array" >> .env \
-    && echo "QUEUE_CONNECTION=sync" >> .env \
-    && php artisan key:generate
+    && php -r "file_put_contents('.env', preg_replace('/^APP_KEY=.*/m', 'APP_KEY=base64:' . base64_encode(random_bytes(32)), file_get_contents('.env')));" \
+    && php artisan config:clear --ansi 2>&1
 
 # Create all required database tables
-RUN php artisan migrate --force --no-interaction
+RUN php artisan migrate --force --no-interaction 2>&1
 
 # Run post-install scripts
-RUN php artisan package:discover --ansi
+RUN php artisan package:discover --ansi 2>&1
 
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache \
