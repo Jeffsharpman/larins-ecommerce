@@ -36,6 +36,7 @@ class ProductionSeeder extends Seeder
             $user->assignRole('admin');
         }
 
+        // test user
         if (! User::query()->where('email', '=', 'test@example.com', 'and')->exists()) {
             $user = User::factory()->create([
                 'name' => 'Regular Customer',
