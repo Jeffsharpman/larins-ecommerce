@@ -19,28 +19,30 @@ class ProductionSeeder extends Seeder
         Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
 
         if (! User::query()->where('email', '=', 'superadmin@example.com', 'and')->exists()) {
-            $user = User::factory()->create([
+            $user = User::create([
                 'name' => 'Super Admin',
                 'email' => 'superadmin@example.com',
+                'email_verified_at' => now(),
                 'password' => Hash::make('password'),
             ]);
             $user->assignRole('super_admin');
         }
 
         if (! User::query()->where('email', '=', 'admin@example.com', 'and')->exists()) {
-            $user = User::factory()->create([
+            $user = User::create([
                 'name' => 'Admin',
                 'email' => 'admin@example.com',
+                'email_verified_at' => now(),
                 'password' => Hash::make('password'),
             ]);
             $user->assignRole('admin');
         }
 
-        // test user
         if (! User::query()->where('email', '=', 'test@example.com', 'and')->exists()) {
-            $user = User::factory()->create([
+            $user = User::create([
                 'name' => 'Regular Customer',
                 'email' => 'test@example.com',
+                'email_verified_at' => now(),
                 'password' => Hash::make('password'),
             ]);
             $user->assignRole('user');
