@@ -38,7 +38,7 @@ class ProductFactory extends Factory
         $current = $items[$index % count($items)];
         $index++;
         $stock = rand(0, 50);
-        $isOnSale = fake()->boolean(30);
+        $isOnSale = $this->faker->boolean(30);
         $salePrice = $isOnSale ? $current['price'] * 0.8 : $current['price'];
         $oldPrice = $isOnSale ? $current['price'] : $current['price'];
 

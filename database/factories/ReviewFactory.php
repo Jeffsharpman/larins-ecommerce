@@ -26,7 +26,7 @@ class ReviewFactory extends Factory
         return [
             'user_id' => User::inRandomOrder()->first()->id ?? User::factory(),
             'product_id' => Product::inRandomOrder()->first()->id ?? Product::factory(),
-            'rating' => fake()->numberBetween(3, 5),
+            'rating' => $this->faker->numberBetween(3, 5),
             'title' => $current['title'],
             'comment' => $current['comment'],
             'is_approved' => true,
