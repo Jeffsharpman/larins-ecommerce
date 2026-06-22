@@ -53,7 +53,7 @@ RUN php -r '$db = new SQLite3("database/database.sqlite"); $db->exec("CREATE TAB
 RUN php artisan package:discover --ansi 2>&1
 
 # Seed roles and admin users
-RUN php artisan db:seed --class=Database\\Seeders\\ProductionSeeder --force --no-interaction 2>&1
+RUN php artisan db:seed --class='Database\Seeders\ProductionSeeder' --force --no-interaction 2>&1
 
 # Build frontend assets
 RUN npm install && npm run build
