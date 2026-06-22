@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Brands\Schemas;
 
 use App\Models\Brand;
 use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
