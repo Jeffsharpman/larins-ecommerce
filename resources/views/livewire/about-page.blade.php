@@ -1,6 +1,7 @@
 <div class="max-w-7xl mx-auto px-6 py-20 selection:bg-primary/30 selection:text-foreground bg-background">
     
     {{-- Hero Section: The Statement --}}
+    {{-- about component --}}
     <div class="relative text-center mb-32">
             <div class="absolute inset-0 -z-10 overflow-hidden">
                 {{-- Glow follows primary color --}}
