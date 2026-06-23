@@ -13,7 +13,7 @@ use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -25,11 +25,9 @@ class BrandsTable
         return $table
             ->columns([
                 // Brand Logo: High visibility
-                SpatieMediaLibraryImageColumn::make('image')
-                    ->collection('image')
+                ImageColumn::make('image')
                     ->label('Logo')
                     ->circular()
-                    ->conversion('thumb')
                     ->toggleable(),
 
                 // Brand Name & Slug: Grouped for clean UI

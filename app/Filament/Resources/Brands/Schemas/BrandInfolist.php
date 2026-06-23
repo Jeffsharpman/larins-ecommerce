@@ -26,10 +26,7 @@ class BrandInfolist
                             ->square()
                             ->extraImgAttributes(['class' => 'shadow-lg ring-2 ring-primary-500'])
                             ->placeholder('No logo uploaded')
-                            ->ring(2)
-                            ->disk('public')
-                            ->visibility('public')
-                            ->placeholder('No images uploaded'),
+                            ->ring(2),
 
                         Section::make() // Nested clean section for text
                             ->schema([

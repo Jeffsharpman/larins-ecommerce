@@ -5,8 +5,8 @@
     <div class="relative text-center mb-32">
             <div class="absolute inset-0 -z-10 overflow-hidden">
                 {{-- Glow follows primary color --}}
-                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[140px] opacity-60"></div>
-                <div class="absolute bottom-0 right-[-10%] w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[120px] opacity-50"></div>
+                <div class="absolute top-0 left-1/2 -translate-x-1/2 w-150 h-150 bg-primary/10 rounded-full blur-[140px] opacity-60"></div>
+                <div class="absolute bottom-0 right-[-10%] w-100 h-100 bg-secondary/10 rounded-full blur-[120px] opacity-50"></div>
             </div>
         
         <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-primary/20 bg-primary/5 text-primary text-[10px] font-black uppercase tracking-[0.4em] mb-10 animate-fade-in">
@@ -30,10 +30,10 @@
     {{-- Brand Story: Asymmetric Grid --}}
     <div class="grid gap-24 lg:grid-cols-12 items-center mb-40">
         <div class="lg:col-span-7 relative group">
-            <div class="absolute -inset-6 bg-gradient-to-tr from-primary/20 to-transparent rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-            <div class="relative aspect-[16/10] overflow-hidden rounded-[2.5rem] border border-border bg-muted shadow-card">
+            <div class="absolute -inset-6 bg-linear-to-tr from-primary/20 to-transparent rounded-[3rem] blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
+            <div class="relative aspect-16/10 overflow-hidden rounded-[2.5rem] border border-border bg-muted shadow-card">
                 <img src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=1200" alt="Maison {{ $site->site_name }}" class="w-full h-full object-cover grayscale brightness-75 hover:grayscale-0 hover:brightness-100 transition-all duration-1000 scale-105 group-hover:scale-100" />
-                <div class="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent"></div>
+                <div class="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent"></div>
                 <div class="absolute top-10 right-10">
                     <div class="px-4 py-4 rounded-full bg-card/20 backdrop-blur-md border border-border/50">
                          <x-lucide-crown class="w-6 h-6 text-foreground" />
@@ -44,8 +44,8 @@
 
         <div class="lg:col-span-5 space-y-10">
                 <div class="inline-flex items-center gap-4">
-                    <div class="h-[1px] w-12 bg-primary"></div>
-                    <div class="h-[1px] w-6 bg-secondary/40"></div>
+                    <div class="h-px w-12 bg-primary"></div>
+                    <div class="h-px w-6 bg-secondary/40"></div>
                     <span class="text-primary dark:text-secondary text-[10px] font-black uppercase tracking-[0.4em]">Our Genesis</span>
                 </div>
             <h2 class="text-5xl font-black tracking-tighter text-foreground uppercase italic leading-none">Crafted from <br>Pure Passion</h2>
@@ -92,7 +92,7 @@
             <div class="p-10 rounded-[3rem] border border-border/40 bg-card hover:bg-background hover:shadow-card dark:hover:border-secondary/20 transition-all duration-500 group relative overflow-hidden">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/20 transition-colors"></div>
                 <div class="absolute -left-4 -bottom-4 w-20 h-20 bg-secondary/10 rounded-full blur-2xl group-hover:bg-secondary/20 transition-colors"></div>
-                <div class="w-14 h-14 bg-muted rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:rotate-12 transition-transform duration-500">
+                <div class="w-14 h-14 bg-muted rounded-3xl flex items-center justify-center mb-8 group-hover:rotate-12 transition-transform duration-500">
                     <x-dynamic-component :component="'lucide-' . $value['icon']" class="w-6 h-6 text-primary" />
                 </div>
                 <h3 class="text-lg font-black uppercase tracking-tight mb-4 text-foreground">{{ $value['title'] }}</h3>
@@ -125,8 +125,8 @@
     {{-- Final Call --}}
     <div class="relative group">
         {{-- Border follows primary gradient --}}
-        <div class="absolute -inset-1 bg-gradient-to-r from-primary via-primary/50 to-primary rounded-[3.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-        <div class="absolute -inset-1 bg-gradient-to-r from-secondary/30 via-secondary/10 to-secondary/30 rounded-[3.5rem] blur opacity-10 group-hover:opacity-30 transition duration-1000 delay-300"></div>
+        <div class="absolute -inset-1 bg-linear-to-r from-primary via-primary/50 to-primary rounded-[3.5rem] blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+        <div class="absolute -inset-1 bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 rounded-[3.5rem] blur opacity-10 group-hover:opacity-30 transition duration-1000 delay-300"></div>
         <div class="relative bg-card border border-border rounded-[3rem] p-16 md:p-24 text-center space-y-10 backdrop-blur-sm dark:border-secondary/10">
             <h2 class="text-5xl md:text-7xl font-black uppercase tracking-tighter italic leading-none text-foreground">
                 Join the <br> <span class="text-primary dark:text-secondary not-italic">Inner Circle</span>

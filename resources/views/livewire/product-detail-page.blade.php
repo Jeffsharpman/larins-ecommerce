@@ -36,7 +36,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start">
 
             {{-- Image Sculpture Gallery --}}
-            <div class="lg:col-span-7 space-y-10" x-data="{ mainImage: '{{ url('storage/' . $product->images[0]) }}' }">
+            <div class="lg:col-span-7 space-y-10" x-data="{ mainImage: '{{ $product->images[0] }}' }">
                 <div class="relative aspect-[4/5] bg-muted/20 rounded-[3.5rem] overflow-hidden border border-border/60 shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] group hover:border-secondary/20 transition-colors {{ $isOutOfStock ? 'opacity-60' : '' }}">
                     <img :src="mainImage" alt="{{ $product->name }}"
                         class="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-110" />
@@ -66,10 +66,10 @@
                 {{-- Horizontal Slide Strip --}}
                 <div class="flex gap-6 overflow-x-auto pb-6 no-scrollbar snap-x">
                     @foreach ($product->images as $image)
-                        <button @click="mainImage = '{{ url('storage/' . $image) }}'"
+                        <button @click="mainImage = '{{ $image }}'"
                             class="flex-shrink-0 w-28 h-36 bg-muted/30 rounded-3xl overflow-hidden border-2 transition-all duration-500 snap-start"
-                            :class="mainImage === '{{ url('storage/' . $image) }}' ? 'border-primary ring-8 ring-primary/5 scale-95' : 'border-transparent grayscale opacity-40 hover:opacity-100 hover:grayscale-0'">
-                            <img src="{{ url('storage/' . $image) }}" class="w-full h-full object-cover" />
+                            :class="mainImage === '{{ $image }}' ? 'border-primary ring-8 ring-primary/5 scale-95' : 'border-transparent grayscale opacity-40 hover:opacity-100 hover:grayscale-0'">
+                            <img src="{{ $image }}" class="w-full h-full object-cover" />
                         </button>
                     @endforeach
                 </div>

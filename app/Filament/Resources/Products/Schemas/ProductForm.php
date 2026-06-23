@@ -8,7 +8,7 @@ use App\Models\Product;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Group;
@@ -51,20 +51,10 @@ class ProductForm
                     ])->columns(2),
 
                     Section::make('images')->schema([
-                        SpatieMediaLibraryFileUpload::make('images')
-                            ->image()
-                            ->multiple()
-                            ->collection('images')
-                            ->directory('products')
-                            ->reorderable()
-                            ->imageEditor()
-                            ->panelLayout('grid')
-                            ->maxFiles(5)
-                            ->downloadable()
-                            ->disk('public')
-                            ->visibility('public')
-                            ->preserveFilenames()
-                            ->maxSize(5120),
+                        TagsInput::make('images')
+                            ->label('Image URLs')
+                            ->placeholder('Enter image URL and press Enter')
+                            ->nestedRecursiveRules(['url']),
                     ]),
 
                 ])->columnSpan(2),
@@ -118,10 +108,10 @@ class ProductForm
                                     ->unique(Category::class, 'slug', ignoreRecord: true)
                                     ->alphaDash(),
 
-                                SpatieMediaLibraryFileUpload::make('image')
-                                    ->image()
-                                    ->collection('image')
-                                    ->directory('categories'),
+                                TextInput::make('image')
+                                    ->label('Image URL')
+                                    ->url()
+                                    ->placeholder('https://example.com/images/category.jpg'),
 
                                 Toggle::make('is_active')
                                     ->label('Is Active')
@@ -149,10 +139,10 @@ class ProductForm
                                     ->unique(Brand::class, 'slug', ignoreRecord: true)
                                     ->alphaDash(),
 
-                                SpatieMediaLibraryFileUpload::make('image')
-                                    ->image()
-                                    ->collection('image')
-                                    ->directory('brands'),
+                                TextInput::make('image')
+                                    ->label('Image URL')
+                                    ->url()
+                                    ->placeholder('https://example.com/images/brand.jpg'),
 
                                 Toggle::make('is_active')
                                     ->label('Is Active')

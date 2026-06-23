@@ -13,7 +13,7 @@ use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -25,11 +25,9 @@ class CategoriesTable
         return $table
             ->columns([
                 // 1. Visual Lead: The Category Image
-                SpatieMediaLibraryImageColumn::make('image')
-                    ->collection('image')
+                ImageColumn::make('image')
                     ->label('Image')
                     ->circular()
-                    ->conversion('thumb')
                     ->toggleable(),
 
                 // 2. Primary Data: Name with Slug as a subtitle

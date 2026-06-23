@@ -8,10 +8,10 @@
 
     {{-- Secondary Ambient Glow --}}
     <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/5 blur-[80px] rounded-full pointer-events-none z-0"></div>
-    <div class="relative aspect-[4/5] overflow-hidden bg-muted">
+    <div class="relative aspect-4/5 overflow-hidden bg-muted">
         <a wire:navigate href="{{ route('product.details', $product->slug) }}">
             @if($product->images && count($product->images) > 0)
-            <img src="{{ url('storage', $product->images[0]) }}" alt="{{ $product->name }}" class="product-card-image w-full h-full object-cover">
+            <img src="{{ $product->images[0] }}" alt="{{ $product->name }}" class="product-card-image w-full h-full object-cover">
             @else
             <div class="w-full h-full flex items-center justify-center bg-muted">
                 <x-lucide-image class="w-12 h-12 text-muted-foreground/30" />
@@ -44,7 +44,7 @@
         </div>
 
         @if(!$isOutOfStock)
-        <div class="absolute inset-x-0 bottom-0 p-5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo bg-gradient-to-t from-black/80 to-transparent">
+        <div class="absolute inset-x-0 bottom-0 p-5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo bg-linear-to-t from-black/80 to-transparent">
             <button 
                 wire:click="{{ $action }}"
                 class="btn btn-primary btn-md w-full">

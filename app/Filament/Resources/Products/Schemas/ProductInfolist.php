@@ -81,12 +81,10 @@ class ProductInfolist
                     ->schema([
                         ImageEntry::make('images')
                             ->label('Product Images')
-                            ->imageHeight(200)          // or ->imageSize(180) for square
-                            ->stacked()                 // recommended for multiple images
+                            ->imageHeight(200)
+                            ->stacked()
                             ->circular()
                             ->ring(2)
-                            ->disk('public')
-                            ->visibility('public')
                             ->placeholder('No images uploaded')
                             ->columnSpanFull(),
 

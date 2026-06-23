@@ -5,13 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Product extends Model implements HasMedia
+class Product extends Model
 {
-    use HasFactory, InteractsWithMedia, LogsActivity;
+    use HasFactory, LogsActivity;
 
     protected $fillable = ['category_id', 'brand_id', 'name', 'slug', 'images', 'description', 'price', 'sale_price', 'old_price', 'is_active', 'is_featured', 'in_stock', 'on_sale', 'stock'];
 
@@ -144,24 +141,6 @@ class Product extends Model implements HasMedia
     public function getIsOutOfStockAttribute(): bool
     {
         return $this->total_stock <= 0;
-    }
-
-    public function registerMediaCollections(?Media $media = null): void
-    {
-        $this->addMediaCollection('images');
-    }
-
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion('thumb')
-            ->width(200)
-            ->height(200)
-            ->sharpen(10);
-
-        $this->addMediaConversion('optimized')
-            ->width(800)
-            ->height(800)
-            ->withResponsiveImages();
     }
 
     public static function deductStockForOrderItem(int $productId, int $quantity): bool

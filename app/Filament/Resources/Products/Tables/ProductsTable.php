@@ -13,7 +13,7 @@ use Filament\Actions\ExportAction;
 use Filament\Actions\ImportAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -47,9 +47,7 @@ class ProductsTable
                     ->color('primary')
                     ->sortable(),
 
-                SpatieMediaLibraryImageColumn::make('images')
-                    ->collection('images')
-                    ->conversion('thumb')
+                ImageColumn::make('images')
                     ->circular(),
 
                 // In ProductResource.php

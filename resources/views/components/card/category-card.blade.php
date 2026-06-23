@@ -16,13 +16,13 @@
 
     <div class="relative flex items-center z-10">
         {{-- Circular Image Frame with Ambient Glow --}}
-        <div class="relative flex-shrink-0 w-28 h-28 md:w-44 md:h-44 rounded-full overflow-hidden border border-border dark:border-border shadow-2xl transition-all duration-700 group-hover:shadow-primary/20 group-hover:shadow-secondary/10">
+        <div class="relative shrink-0 w-28 h-28 md:w-44 md:h-44 rounded-full overflow-hidden border border-border dark:border-border shadow-2xl transition-all duration-700 group-hover:shadow-primary/20 group-hover:shadow-secondary/10">
             <img class="h-full w-full object-cover transform scale-110 group-hover:scale-125 transition-transform duration-1000 ease-expo grayscale-[0.4] group-hover:grayscale-0"
-                 src="{{ url('storage', $category->image) }}" 
+                 src="{{ $category->image }}" 
                  alt="{{ $category->name }}">
             
             {{-- Internal Highlight --}}
-            <div class="absolute inset-0 bg-gradient-to-tr from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+            <div class="absolute inset-0 bg-linear-to-tr from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
         </div>
 
         <div class="ms-10 flex-1 min-w-0">
@@ -40,7 +40,7 @@
             </p>
 
             {{-- Elegant "Enter" Trigger with Sliding Motion --}}
-            <div class="mt-8 flex items-center text-foreground text-[11px] font-black uppercase tracking-[0.4em] transition-all duration-700 delay-100 translate-x-[-20px] opacity-0 group-hover:translate-x-0 group-hover:opacity-100">
+            <div class="mt-8 flex items-center text-foreground text-[11px] font-black uppercase tracking-[0.4em] transition-all duration-700 delay-100 -translate-x-5 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">
                 <span class="relative group-hover:text-primary transition-colors duration-300">
                     Enter Gallery
                     <span class="absolute bottom-0 left-0 w-full h-[1.5px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></span>

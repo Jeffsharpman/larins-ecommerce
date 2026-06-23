@@ -1,5 +1,6 @@
+
 <div class="min-h-screen bg-background text-foreground transition-colors duration-500 selection:bg-gold/20 relative overflow-hidden">
-  <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-secondary/5 via-secondary/5 to-transparent blur-[150px] rounded-full pointer-events-none -z-10"></div>
+  <div class="absolute top-0 right-0 w-150 h-150 bg-linear-to-br from-secondary/5 via-secondary/5 to-transparent blur-[150px] rounded-full pointer-events-none -z-10"></div>
   <div class="max-w-7xl mx-auto px-6 py-16">
 
     {{-- Header Section: Editorial Title --}}
@@ -35,87 +36,87 @@
     <div class="flex flex-col lg:flex-row gap-16">
 
       {{-- Filter Sidebar --}}
-      <aside class="hidden lg:block w-80 flex-shrink-0">
-    <div class="sticky top-28 space-y-10 bg-card/40 backdrop-blur-xl p-10 rounded-[3rem] border border-border hover:border-secondary/20 shadow-2xl shadow-primary/5 transition-colors duration-500">
+      <aside class="hidden lg:block w-80 shrink-0">
+        <div class="sticky top-28 space-y-10 bg-card/40 backdrop-blur-xl p-10 rounded-[3rem] border border-border hover:border-secondary/20 shadow-2xl shadow-primary/5 transition-colors duration-500">
 
-        {{-- Header: Refine --}}
-        <div class="flex items-center justify-between pb-6 border-b border-border/60">
-            <div class="flex items-center gap-3">
-                <x-lucide-sliders-horizontal class="w-4 h-4 text-primary" />
-                <h3 class="text-[11px] font-black uppercase tracking-[0.2em] italic">Refine</h3>
-            </div>
-                <button wire:click="resetFilters"
-                    class="btn btn-ghost btn-sm hover:bg-secondary/10 hover:text-secondary transition-colors">
-                    Reset Archive
-                </button>
-        </div>
-
-        {{-- Status Toggles --}}
-        <div class="space-y-6">
-            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-6">Status Archive</h4>
-            <div class="space-y-5">
-                @foreach (['is_featured' => ['Featured', 'primary'], 'on_sale' => ['On Sale', 'primary']] as $model => $meta)
-                    <label class="form-toggle flex items-center justify-between group cursor-pointer">
-                        <span class="text-sm font-bold text-foreground/70 group-hover:text-foreground transition-all italic tracking-tight">
-                            {{ $meta[0] }}
-                        </span>
-                        <input type="checkbox" wire:model.live="{{ $model }}" />
-                        <div class="toggle-track">
-                            <div class="toggle-thumb"></div>
-                        </div>
-                    </label>
-                @endforeach
-            </div>
-        </div>
-
-        {{-- Price Limit Slider --}}
-        <div class="space-y-6">
-            <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-2">Price Threshold</h4>
-            <div class="space-y-5">
-                <input type="range" wire:model.live="price_range" min="0" max="5000000" step="10000"
-                    class="w-full h-1 bg-muted rounded-lg appearance-none cursor-pointer accent-primary transition-all" />
-                
-                <div class="flex justify-between items-center p-5 bg-background/40 rounded-2xl border border-border/60 shadow-inner group hover:border-secondary/30 transition-colors">
-                    <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Limit</span>
-                    <span class="text-lg font-black italic tracking-tighter text-primary dark:text-secondary">
-                        ₦{{ number_format($price_range) }}
-                    </span>
+            {{-- Header: Refine --}}
+            <div class="flex items-center justify-between pb-6 border-b border-border/60">
+                <div class="flex items-center gap-3">
+                    <x-lucide-sliders-horizontal class="w-4 h-4 text-primary" />
+                    <h3 class="text-[11px] font-black uppercase tracking-[0.2em] italic">Refine</h3>
                 </div>
+                    <button wire:click="resetFilters"
+                        class="btn btn-ghost btn-sm hover:bg-secondary/10 hover:text-secondary transition-colors">
+                        Reset Archive
+                    </button>
             </div>
-        </div>
 
-        {{-- Multi-Select: Brands & Categories --}}
-        @foreach (['Brands' => $brands, 'Categories' => $categories] as $label => $collection)
-            <div class="space-y-5">
-                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-4">
-                    {{ $label }}
-                </h4>
-                <div class="space-y-3 max-h-56 overflow-y-auto custom-scrollbar pr-4">
-                    @forelse ($collection as $item)
-                        <label class="flex items-center group cursor-pointer">
-                            <input type="checkbox" value="{{ $item->id }}"
-                                wire:model.live="selected_{{ strtolower($label) }}"
-                                class="form-checkbox" />
-                            <span class="ml-4 text-[11px] font-bold text-foreground/60 group-hover:text-secondary transition-all uppercase tracking-widest">
-                                {{ $item->name }}
+            {{-- Status Toggles --}}
+            <div class="space-y-6">
+                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-6">Status Archive</h4>
+                <div class="space-y-5">
+                    @foreach (['is_featured' => ['Featured', 'primary'], 'on_sale' => ['On Sale', 'primary']] as $model => $meta)
+                        <label class="form-toggle flex items-center justify-between group cursor-pointer">
+                            <span class="text-sm font-bold text-foreground/70 group-hover:text-foreground transition-all italic tracking-tight">
+                                {{ $meta[0] }}
                             </span>
+                            <input type="checkbox" wire:model.live="{{ $model }}" />
+                            <div class="toggle-track">
+                                <div class="toggle-thumb"></div>
+                            </div>
                         </label>
-                    @empty
-                        <p class="text-[9px] italic text-muted-foreground opacity-50">Empty Archive</p>
-                    @endforelse
+                    @endforeach
                 </div>
             </div>
-        @endforeach
 
-    </div>
-</aside>
+            {{-- Price Limit Slider --}}
+            <div class="space-y-6">
+                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-2">Price Threshold</h4>
+                <div class="space-y-5">
+                    <input type="range" wire:model.live="price_range" min="0" max="5000000" step="10000"
+                        class="w-full h-1 bg-muted rounded-lg appearance-none cursor-pointer accent-primary transition-all" />
+                    
+                    <div class="flex justify-between items-center p-5 bg-background/40 rounded-2xl border border-border/60 shadow-inner group hover:border-secondary/30 transition-colors">
+                        <span class="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Limit</span>
+                        <span class="text-lg font-black italic tracking-tighter text-primary dark:text-secondary">
+                            ₦{{ number_format($price_range) }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Multi-Select: Brands & Categories --}}
+            @foreach (['Brands' => $brands, 'Categories' => $categories] as $label => $collection)
+                <div class="space-y-5">
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-4">
+                        {{ $label }}
+                    </h4>
+                    <div class="space-y-3 max-h-56 overflow-y-auto custom-scrollbar pr-4">
+                        @forelse ($collection as $item)
+                            <label class="flex items-center group cursor-pointer">
+                                <input type="checkbox" value="{{ $item->id }}"
+                                    wire:model.live="selected_{{ strtolower($label) }}"
+                                    class="form-checkbox" />
+                                <span class="ml-4 text-[11px] font-bold text-foreground/60 group-hover:text-secondary transition-all uppercase tracking-widest">
+                                    {{ $item->name }}
+                                </span>
+                            </label>
+                        @empty
+                            <p class="text-[9px] italic text-muted-foreground opacity-50">Empty Archive</p>
+                        @endforelse
+                    </div>
+                </div>
+            @endforeach
+
+        </div>
+      </aside>
 
       {{-- Product Main Grid --}}
       <div class="flex-1">
 
         {{-- Utility Bar --}}
         <div
-          class="flex flex-col sm:flex-row justify-between items-center gap-6 mb-12 bg-card/30 backdrop-blur-md p-6 rounded-[2rem] border border-border/50">
+          class="flex flex-col sm:flex-row justify-between items-center gap-6 mb-12 bg-card/30 backdrop-blur-md p-6 rounded-4xl border border-border/50">
           <p class="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
             Exhibiting <span class="text-foreground font-black">{{ $products->count() }}</span> of <span
               class="text-foreground font-black">{{ $products->total() }}</span> Masterpieces

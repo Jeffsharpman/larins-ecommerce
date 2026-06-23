@@ -26,10 +26,7 @@ class CategoryInfolist
                             ->square()
                             ->extraImgAttributes(['class' => 'rounded-xl shadow-md ring-1 ring-gray-200'])
                             ->placeholder('No category image')
-                            ->ring(2)
-                            ->disk('public')
-                            ->visibility('public')
-                            ->placeholder('No images uploaded'),
+                            ->ring(2),
 
                         Section::make()
                             ->schema([

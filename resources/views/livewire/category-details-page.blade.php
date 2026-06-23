@@ -3,7 +3,7 @@
     <header class="relative pt-40 pb-24 px-6 lg:px-12 border-b border-border/60 overflow-hidden">
         {{-- High-Fashion Gradient Glow --}}
         <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 blur-[150px] rounded-full -z-10"></div>
-        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-secondary/5 via-secondary/5 to-transparent blur-[150px] rounded-full -z-10"></div>
+        <div class="absolute bottom-0 left-0 w-125 h-125 bg-linear-to-tr from-secondary/5 via-secondary/5 to-transparent blur-[150px] rounded-full -z-10"></div>
 
         <div class="max-w-7xl mx-auto relative z-10">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-end">
@@ -12,7 +12,7 @@
                 <div class="space-y-6">
                     <div class="flex items-center gap-4 animate-in fade-in slide-in-from-left-4 duration-1000">
                         <span class="text-[10px] font-black uppercase tracking-[0.5em] text-primary">Collection</span>
-                        <span class="w-8 h-[1px] bg-gradient-to-r from-primary to-secondary"></span>
+                        <span class="w-8 h-px bg-gradient-to-r from-primary to-secondary"></span>
                         <span class="text-[10px] font-black uppercase tracking-[0.5em] text-secondary/80">VOL. 01</span>
                     </div>
                     
@@ -69,7 +69,7 @@
                         <div class="aspect-[3/4] p-12 flex items-center justify-center">
                             @php $images = is_array($product->images) ? $product->images : json_decode($product->images, true); @endphp
                             @if(!empty($images[0]))
-                                <img src="{{ url('storage', $images[0]) }}" 
+                                <img src="{{ $images[0] }}" 
                                      alt="{{ $product->name }}" 
                                      class="w-full h-full object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-1000 ease-out">
                             @else

@@ -14,7 +14,7 @@
 
         {{-- Brand Logo --}}
         <div class="relative z-10 w-full h-full flex items-center justify-center transition-all duration-700 ease-expo group-hover:scale-110">
-            <img src="{{ url('storage', $brand->image) }}" 
+            <img src="{{ $brand->image }}" 
                  alt="{{ $brand->name }}" 
                  class="max-w-[140px] max-h-full object-contain filter grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 drop-shadow-xl">
         </div>

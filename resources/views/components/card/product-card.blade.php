@@ -7,17 +7,18 @@
 @endphp
 
 <div wire:key="product-{{ $product->id }}"
-    class="product-card group relative bg-card dark:bg-card rounded-[2.5rem] overflow-hidden border {{ $isOutOfStock ? 'border-destructive/20 opacity-60' : 'border-border/60 dark:border-white/10' }} shadow-sm hover:shadow-2xl hover:shadow-primary/5 hover:shadow-secondary/5 hover:-translate-y-2 hover:border-secondary/30 transition-all duration-700 flex flex-col h-full min-h-[480px]">
+    class="product-card group relative bg-card dark:bg-card rounded-[2.5rem] overflow-hidden border {{ $isOutOfStock ? 'border-destructive/20 opacity-60' : 'border-border/60 dark:border-white/10' }} shadow-sm hover:shadow-2xl hover:shadow-primary/5 hover:shadow-secondary/5 hover:-translate-y-2 hover:border-secondary/30 transition-all duration-700 flex flex-col h-full min-h-120">
 
     {{-- Secondary Ambient Glow --}}
     <div class="absolute -top-10 -right-10 w-40 h-40 bg-secondary/5 blur-[80px] rounded-full pointer-events-none z-0"></div>
 
     {{-- Image Container --}}
-    <div class="relative aspect-[4/5] bg-muted dark:bg-gradient-to-br dark:from-secondary/5 dark:to-black overflow-hidden">
-        <img src="{{ url('storage', $product->images[0]) }}" 
-             alt="{{ $product->name }}"
-             class="product-card-image absolute inset-0 w-full h-full object-contain p-8"
-             loading="lazy">
+    <div class="relative aspect-4/5 bg-muted dark:bg-linear-to-br dark:from-secondary/5 dark:to-black overflow-hidden">
+       <img
+        src="https://cdn.jsdelivr.net/gh/Jeffsharpman/larins-assets@main/images/products/6-piece-non-stick-baking-set7.jpg"
+        alt="test"
+        style="width:300px;height:auto;"
+    >
 
         {{-- Hover Gradient Overlay --}}
         <div class="product-card-overlay"></div>
@@ -58,7 +59,7 @@
 
         {{-- Quick Acquire Overlay (Desktop) --}}
         @if(!$isOutOfStock)
-        <div class="absolute inset-x-0 bottom-0 p-5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo bg-gradient-to-t from-card via-card/95 to-transparent z-30 hidden lg:block">
+        <div class="absolute inset-x-0 bottom-0 p-5 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-expo bg-linear-to-t from-card via-card/95 to-transparent z-30 hidden lg:block">
             <button wire:click.prevent="addToCart({{ $product->id }})"
                     class="btn btn-dark btn-md w-full group/btn">
                 <div wire:loading.remove wire:target="addToCart({{ $product->id }})" class="flex items-center gap-3">
@@ -159,9 +160,9 @@
             </div>
 
             <a wire:navigate href="{{ route('product.details', $product->slug) }}"
-                class="relative w-11 h-11 rounded-full flex items-center justify-center border-2 border-primary/20 dark:border-primary/25 text-primary dark:text-primary bg-gradient-to-br from-primary/[0.08] to-primary/[0.03] dark:from-primary/[0.12] dark:to-primary/[0.05] shadow-sm shadow-primary/5 dark:shadow-primary/10 hover:scale-110 hover:border-primary hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-primary/25 dark:hover:shadow-primary/20 transition-all duration-400 ease-spring group/arrow overflow-hidden active:scale-95">
-                <span class="absolute inset-0 bg-gradient-to-br from-primary to-primary/80 dark:from-primary/90 dark:to-primary/70 scale-0 group-hover/arrow:scale-100 transition-transform duration-500 ease-expo rounded-full"></span>
-                <x-lucide-arrow-right class="relative z-10 w-[1.125rem] h-[1.125rem] transition-all duration-500 group-hover/arrow:translate-x-1 group-hover/arrow:-translate-y-1" />
+                class="relative w-11 h-11 rounded-full flex items-center justify-center border-2 border-primary/20 dark:border-primary/25 text-primary dark:text-primary bg-linear-to-br from-primary/[0.08] to-primary/[0.03] dark:from-primary/[0.12] dark:to-primary/[0.05] shadow-sm shadow-primary/5 dark:shadow-primary/10 hover:scale-110 hover:border-primary hover:bg-primary hover:text-white hover:shadow-lg hover:shadow-primary/25 dark:hover:shadow-primary/20 transition-all duration-400 ease-spring group/arrow overflow-hidden active:scale-95">
+                <span class="absolute inset-0 bg-linear-to-br from-primary to-primary/80 dark:from-primary/90 dark:to-primary/70 scale-0 group-hover/arrow:scale-100 transition-transform duration-500 ease-expo rounded-full"></span>
+                <x-lucide-arrow-right class="relative z-10 w-4.5 h-[1.125rem] transition-all duration-500 group-hover/arrow:translate-x-1 group-hover/arrow:-translate-y-1" />
             </a>
         </div>
     </div>
