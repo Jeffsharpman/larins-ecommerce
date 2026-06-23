@@ -93,10 +93,10 @@ return [
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => env('DB_CHARSET', 'utf8'),
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'search_path' => 'public',
-            'sslmode' => env('DB_SSLMODE', 'prefer'),
+            'prefix' => env('DB_PREFIX', ''),
+            'prefix_indexes' => env('DB_PREFIX_INDEXES', true),
+            'search_path' => env('DB_SEARCH_PATH', 'public'),
+            'sslmode' => env('DB_SSLMODE', 'require'),
         ],
 
         'sqlsrv' => [
